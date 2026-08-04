@@ -1,0 +1,28 @@
+name: app369
+description: "A new Flutter project."
+publish_to: 'none'
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  qr_flutter: ^4.1.0
+  cupertino_icons: ^1.0.8
+  flutter_snake_navigationbar: ^0.6.1
+  http: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/logo_ph.png
+
