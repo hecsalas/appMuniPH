@@ -15,12 +15,11 @@ class _InicioPageState extends State<InicioPage> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightGreen, Colors.brown],
-            stops: [0.0, 0.8, 1.0],
+            colors: [Colors.blue.shade400, Colors.green.shade800],
           ),
         ),
         child: SafeArea(
@@ -88,6 +87,7 @@ class _InicioPageState extends State<InicioPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
+
                       ],
                     ),
                   ),

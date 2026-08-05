@@ -1,12 +1,11 @@
 import 'package:app369/beneficios.dart';
 import 'package:app369/noticias.dart';
-import 'package:app369/notificaciones.dart';
 import 'package:app369/perfil.dart';
 import 'package:app369/sos.dart';
+import 'package:app369/tramites.dart';
 import 'package:app369/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
-
 import 'inicio.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,7 +31,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: false,
-      appBar: AppBar(
+      appBar:_currentIndex == 0 ?
+      AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.blue.shade900,
         elevation: 0,
@@ -49,22 +49,12 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.white.withAlpha(204),
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.w900,
               ),
             ),
           ],
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationsPage()),
-              );
-            },
-            icon: const Icon(Icons.notifications_rounded),
-            tooltip: 'Notificaciones',
-          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -75,16 +65,16 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.logout_rounded),
           ),
         ],
-      ),
+      )
+: null,
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightGreen, Colors.brown],
-            stops: [0.0, 0.6, 1.0],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.blue.shade900, Colors.green.shade800],
           ),
         ),
         child: _paginas[_currentIndex],
@@ -101,10 +91,10 @@ class _HomePageState extends State<HomePage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
         padding: const EdgeInsets.all(12),
 
-        backgroundColor: Colors.blue.shade900,
-        snakeViewColor: Colors.green,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
+        snakeViewColor: Colors.lightGreen,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black,
 
         items: [
           BottomNavigationBarItem(
@@ -242,8 +232,11 @@ class InicioContent extends StatelessWidget {
               }
             },
           ),
+          const SizedBox(height: 20),
+          _buildTramites(context),
         ],
       ),
+
     );
   }
 }
@@ -262,5 +255,44 @@ Widget _buildWeatherDetail(IconData icon, String value, String label) {
       ),
       Text(label, style: const TextStyle(color: Colors.white60, fontSize: 10)),
     ],
+  );
+}
+
+Widget _buildTramites(BuildContext context) {
+  return Card(
+    elevation: 4,
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadiusGeometry.circular(20),
+    ),
+    child: InkWell(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => TramitesPage()),
+        );
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.white, Colors.blue.shade50],
+          ),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 20),
+            Expanded(
+              child: Text('Trámites',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+          ],
+        ),
+      ),
+    ),
   );
 }

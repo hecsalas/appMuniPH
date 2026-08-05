@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 
 class WeatherService {
   // Coordenadas de Padre Hurtado
-  final String lat = "-33.5683";
-  final String lon = "-70.8353";
+  final String lat = "-33.57783170473039";
+  final String lon = "-70.82478747347665";
   final String apiKey = "bfba5f72d6f06e12fac7dde994f7814c";
 
   Future<Map<String, dynamic>> fetchWeather() async {
