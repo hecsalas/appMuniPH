@@ -337,7 +337,13 @@ void _mostrarDetallesBeneficio(
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () => _abrirMapa(item['direccion']),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ComercioPage()),
+                    );
+                  },
                   icon: const Icon(Icons.map_rounded, color: Colors.white),
                   label: const Text(
                     "VER UBICACIÓN EN MAPA",
@@ -347,7 +353,7 @@ void _mostrarDetallesBeneficio(
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade700,
+                    backgroundColor: Colors.blue.shade900,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

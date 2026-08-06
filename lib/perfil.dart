@@ -14,41 +14,46 @@ class PerfilPage extends StatefulWidget {
 class _PerfilPageState extends State<PerfilPage> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        children: [
-          _buildCredentialCard(),
-          const SizedBox(height: 8),
-          _buildMenuOpciones(
-            icon: Icons.person_outline,
-            titulo: "Datos Personales",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DatosPage()),
-              );
-            },
-          ),
-          _buildMenuOpciones(
-            icon: Icons.notifications_none_rounded,
-            titulo: "Notificaciones",
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NotificationsPage()),
-              );
-            },
-          ),
-          _buildMenuOpciones(
-            icon: Icons.help_outline_rounded,
-            titulo: "Centro de Ayuda",
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => HelpcenterPage()),
-              );
-            },
-          ),
-        ],
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            _buildCredentialCard(),
+            const SizedBox(height: 8),
+            _buildMenuOpciones(
+              icon: Icons.person_outline,
+              titulo: "Datos Personales",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DatosPage()),
+                );
+              },
+            ),
+            _buildMenuOpciones(
+              icon: Icons.notifications_none_rounded,
+              titulo: "Notificaciones",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NotificationsPage()),
+                );
+              },
+            ),
+            _buildMenuOpciones(
+              icon: Icons.help_outline_rounded,
+              titulo: "Centro de Ayuda",
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HelpcenterPage()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

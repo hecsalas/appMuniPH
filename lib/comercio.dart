@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class ComercioPage extends StatefulWidget {
   const ComercioPage({super.key});
@@ -18,66 +20,83 @@ class _ComercioPageState extends State<ComercioPage> {
   // Lista de comercios de ejemplo con coordenadas reales
   final List<Map<String, dynamic>> _comercios = [
     {
-      'nombre': 'Dulce Reino Cafetería & Pasteleria',
-      'direccion': 'Av. Papa Juan Pablo II 1644',
-      'tipo': 'Alimentos',
-      'icono': Icons.bakery_dining,
-      'distancia': '200m',
-      'latlng': const LatLng(-33.57592914393441, -70.82714594011577),
+      'nombre': 'Casa Guau',
+      'direccion': 'Papá Juan XXIII N°1240',
+      'tipo': 'Mascotas',
+      'icono': Icons.pets_rounded,
+      'latlng': const LatLng(-33.5704, -70.8163),
     },
     {
-      'nombre': 'Farmacia "Ibiza"',
-      'direccion': 'Av. San Ignacio 1005',
+      'nombre': 'Clínica del Sol',
+      'direccion': 'San Ignacio N°1624 local 16 y 17',
       'tipo': 'Salud',
-      'icono': Icons.local_pharmacy,
-      'distancia': '450m',
-      'latlng': const LatLng(-33.56594927233234, -70.8227955239937),
+      'icono': FontAwesomeIcons.tooth,
+      'latlng': const LatLng(-33.5829, -70.8098),
     },
     {
-      'nombre': 'Supermercado Tottus',
-      'direccion': 'Cmo. a Melipilla 2436',
-      'tipo': 'Abastos',
-      'icono': Icons.shopping_cart,
-      'distancia': '1.2km',
-      'latlng': const LatLng(-33.57161255578461, -70.817826515072),
+      'nombre': 'Escuela del Valle',
+      'direccion': 'Rodolfo Jaramillo N°2523',
+      'tipo': 'Educación',
+      'icono': Icons.directions_car_rounded,
+      'latlng': const LatLng(-33.5747, -70.8153),
     },
     {
-      'nombre': 'Ferretería "El Martillo"',
-      'direccion': 'Pasaje Los Olivos 78',
-      'tipo': 'Hogar',
-      'icono': Icons.hardware,
-      'distancia': '800m',
-      'latlng': const LatLng(-33.4590, -70.6460),
+      'nombre': "Licorería Charl's",
+      'direccion': 'San Genaro N°2605, local 1',
+      'tipo': 'Bebidas Alcohólicas',
+      'icono': Icons.local_bar_rounded,
+      'latlng': const LatLng(-33.5591, -70.8341),
+    },
+    {
+      'nombre': 'Optica Optik V&C',
+      'direccion': 'El Manzano Sur N°1261',
+      'tipo': 'Salud',
+      'icono': FontAwesomeIcons.glasses,
+      'latlng': const LatLng(-33.5752, -70.8028),
+    },
+    {
+      'nombre': 'Otto Fritz',
+      'direccion': 'Av. Caupolican N° 3461, Peñaflor',
+      'tipo': 'Entretenimiento y Comida',
+      'icono': Icons.local_activity_rounded,
+      'latlng': const LatLng(-33.5969, -70.8877),
+    },
+    {
+      'nombre': 'Restobar Ibridos',
+      'direccion': 'San Ignacio N°1180',
+      'tipo': 'Comida y Bebida',
+      'icono': Icons.nightlife_rounded,
+      'latlng': const LatLng(-33.5701, -70.8202),
+    },
+    {
+      'nombre': 'Veterinaria Rompecorreas',
+      'direccion': 'Rodolfo Jaramillo N°894',
+      'tipo': 'Mascotas',
+      'icono': Icons.pets_rounded,
+      'latlng': const LatLng(-33.5671, -70.8231),
     },
   ];
 
   Color _getCategoryColor(String type) {
     switch (type) {
-      case 'Alimentos':
-        return Colors.orange.shade700;
-      case 'Salud':
-        return Colors.green.shade600;
-      case 'Abastos':
-        return Colors.blue.shade600;
-      case 'Hogar':
-        return Colors.purple.shade600;
-      default:
-        return Colors.grey;
+      case 'Mascotas': return Colors.brown;
+      case 'Salud': return Colors.blue.shade300;
+      case 'Educación': return Colors.red;
+      case 'Bebidas Alcohólicas': return Colors.blueGrey;
+      case 'Entretenimiento y Comida': return Colors.cyan;
+      case 'Comida y Bebida': return Colors.deepOrange;
+      default: return Colors.orange;
     }
   }
 
   double _getMarkerHue(String type) {
     switch (type) {
-      case 'Alimentos':
-        return BitmapDescriptor.hueOrange;
-      case 'Salud':
-        return BitmapDescriptor.hueGreen;
-      case 'Abastos':
-        return BitmapDescriptor.hueAzure;
-      case 'Hogar':
-        return BitmapDescriptor.hueViolet;
-      default:
-        return BitmapDescriptor.hueRed;
+      case 'Mascotas': return BitmapDescriptor.hueRose;
+      case 'Salud': return BitmapDescriptor.hueAzure;
+      case 'Educación': return BitmapDescriptor.hueRed;
+      case 'Entretenimiento y Comida': return BitmapDescriptor.hueCyan;
+      case 'Comida y Bebida': return BitmapDescriptor.hueOrange;
+      default: return BitmapDescriptor.hueOrange;
     }
   }
 
@@ -118,8 +137,9 @@ class _ComercioPageState extends State<ComercioPage> {
                 children: [
                   CircleAvatar(
                     backgroundColor: colorCategoria.withOpacity(0.1),
-                    child: Icon(comercio['icono'], color: colorCategoria),
-                  ),
+                    child: (comercio['icono'] is IconData)
+                        ? Icon(comercio['icono'], color: colorCategoria)
+                        : FaIcon(comercio['icono'], color: colorCategoria, size: 20),                  ),
                   const SizedBox(width: 15),
                   Text(
                     comercio['tipo'].toUpperCase(),
@@ -233,12 +253,12 @@ class _ComercioPageState extends State<ComercioPage> {
             children: [
               // MAPA
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.78,
+                height: MediaQuery.of(context).size.height * 0.45,
                 child: GoogleMap(
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: const CameraPosition(
                     target: _center,
-                    zoom: 14.0,
+                    zoom: 12.0,
                   ),
                   markers: _getMarkers(),
                   myLocationEnabled: true,
@@ -314,8 +334,9 @@ class _ComercioPageState extends State<ComercioPage> {
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor: colorCategoria.withOpacity(0.1),
-                      child: Icon(comercio['icono'], color: colorCategoria),
-                    ),
+                      child: (comercio['icono'] is IconData)
+                          ? Icon(comercio['icono'], color: colorCategoria)
+                          : FaIcon(comercio['icono'], color: colorCategoria, size: 20),                    ),
                     title: Text(
                       comercio['nombre'],
                       style: const TextStyle(fontWeight: FontWeight.bold),
