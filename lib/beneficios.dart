@@ -118,61 +118,17 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
   final List<Map<String, dynamic>> _beneficiosMunicipales = [
     {
-      'titulo': 'Alimentos y Productos Para Mascota',
+      'titulo': 'Bono por Logro Escolar Municipal',
       'descripcion':
-          'Alimentos Humedos y accesorios para mascotas.\nSacos de alimentos para Mascotas.',
-      'categoria': 'Mascotas',
-      'icono': Icons.pets_rounded,
-      'color': Colors.brown,
-    },
-    {
-      'titulo': 'Salud Dental',
-      'descripcion': 'Prestaciones Odontologicas. \nTratamiento dentales.',
-      'categoria': 'Salud',
-      'icono': FontAwesomeIcons.tooth,
-      'color': Colors.blue.shade200,
-    },
-    {
-      'titulo': 'Escuela de Conducción',
-      'descripcion': 'Cursos de Manejo en Descuento',
+          'Incentivo económico para estudiantes con rendimiento destacado.\nApoyo para la compra de útiles y materiales educativos.',
       'categoria': 'Educación',
-      'icono': Icons.directions_car_rounded,
-      'color': Colors.red,
-    },
-    {
-      'titulo': 'Licorería',
-      'descripcion': 'Destilados en Descuento',
-      'categoria': 'Bebidas Alcohólicas',
-      'icono': Icons.local_bar_rounded,
-      'color': Colors.grey,
-    },
-    {
-      'titulo': 'Óptica',
-      'descripcion': 'Productos Ópticos en Descuento',
-      'categoria': 'Salud',
-      'icono': FontAwesomeIcons.glasses,
-      'color': Colors.deepPurpleAccent,
-    },
-    {
-      'titulo': 'Parque acuático y Restaurant',
-      'descripcion': 'Restaurant y Entrada del Parque acuático en Descuento',
-      'categoria': 'Entretenimiento y Comida',
-      'icono': Icons.local_activity_rounded,
-      'color': Colors.cyan,
-    },
-    {
-      'titulo': 'Restobar',
-      'descripcion': 'Restaurant y Coctelería en Descuento',
-      'categoria': 'Comida y Bebida',
-      'icono': Icons.nightlife_rounded,
-      'color': Colors.deepOrange,
-    },
-    {
-      'titulo': 'Veterinaria',
-      'descripcion': 'Atención veterinaria completa en Descuento',
-      'categoria': 'Mascotas',
-      'icono': Icons.pets_rounded,
-      'color': Colors.green,
+      'icono': Icons.school_rounded,
+      'color': Colors.blue,
+      'descuento': 'Monto fijo anual según tramo',
+      'dias': 'Lunes a Viernes (Postulación)',
+      'horario': '09:00 a 14:00',
+      'condiciones': 'Certificado de notas, Residencia en PH',
+      'direccion': 'DIDECO - San Alberto Hurtado 3295',
     },
   ];
 
@@ -307,8 +263,9 @@ void _mostrarDetallesBeneficio(
             const SizedBox(height: 20),
             Text(
               item['titulo'],
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 8),
             Text(
               item['categoria'].toUpperCase(),
               style: TextStyle(
@@ -347,7 +304,7 @@ void _mostrarDetallesBeneficio(
 
             const SizedBox(height: 30),
             if (item['direccion'] != null &&
-                item['direccion'].toString().isNotEmpty)
+                item['direccion'].toString().isNotEmpty && item['latlng'] != null)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

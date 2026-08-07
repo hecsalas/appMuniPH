@@ -72,5 +72,9 @@
     <string>Necesitamos acceso a tu galería por si quieres subir una foto que ya tomaste.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Necesitamos tu ubicación para mostrarte los comercios más cercanos y reportar incidentes con precisión.</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>comgooglemaps</string>
+    </array>
 </dict>
 </plist>
