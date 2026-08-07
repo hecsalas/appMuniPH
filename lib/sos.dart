@@ -19,7 +19,7 @@ class _SosPageState extends State<SosPage> {
           "EMERGENCIAS",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.red.shade900,
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         centerTitle: true,
       ),

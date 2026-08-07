@@ -68,8 +68,7 @@ class _HistorialPageState extends State<HistorialPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightGreen, Colors.brown],
-            stops: [0.0, 0.6, 1.0],
+            colors: [Colors.blue, Colors.lightGreen],
           ),
         ),
         child: ListView.builder(

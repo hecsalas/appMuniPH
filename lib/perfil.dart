@@ -1,5 +1,6 @@
 import 'package:app369/datos.dart';
 import 'package:app369/helpCenter.dart';
+import 'package:app369/inicio.dart';
 import 'package:app369/notificaciones.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -52,6 +53,43 @@ class _PerfilPageState extends State<PerfilPage> {
                 );
               },
             ),
+            const SizedBox(height: 6),
+
+            Center(
+              child: TextButton.icon(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const InicioPage()),
+                    (route) => false,
+                  );
+                },
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  color: Colors.white70,
+                  size: 20,
+                ),
+                label: const Text(
+                  "Cerrar Sesión",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  backgroundColor: Colors.white.withAlpha(30),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -88,7 +126,7 @@ Widget _buildCredentialCard() {
               ),
               const SizedBox(height: 4),
               Text(
-                'Benjamín Muñoz Navarro',
+                'Miguel Tapia',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(

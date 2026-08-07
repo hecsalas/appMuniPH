@@ -12,6 +12,7 @@ class ReportPage extends StatefulWidget {
 class _ReportPageState extends State<ReportPage> {
   File? _imagenSeleccionada;
   final ImagePicker _picker = ImagePicker();
+  final TextEditingController _descripcionController = TextEditingController();
 
   Future<void> _tomarFoto() async {
     try {
@@ -38,90 +39,170 @@ class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Icon(Icons.report_problem, size: 80, color: Colors.orange),
-            const SizedBox(height: 16),
-            const Text(
-              "Reportar Incidencia",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              "Captura una fotografía del problema para que la municipalidad pueda gestionarlo.",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54),
-            ),
-            const SizedBox(height: 32),
-
-            // Área de previsualización de imagen
-            Container(
-              height: 250,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: _imagenSeleccionada != null
-                  ? ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.file(_imagenSeleccionada!, fit: BoxFit.cover),
-              )
-                  : const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.image, size: 50, color: Colors.grey),
-                    Text("Sin imagen capturada", style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            ElevatedButton.icon(
-              onPressed: _tomarFoto,
-              icon: const Icon(Icons.camera_alt),
-              label: const Text("ABRIR CÁMARA"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-
-            if (_imagenSeleccionada != null) ...[
-              const SizedBox(height: 12),
-              TextButton.icon(
-                onPressed: () => setState(() => _imagenSeleccionada = null),
-                icon: const Icon(Icons.delete, color: Colors.red),
-                label: const Text("ELIMINAR Y REPETIR", style: TextStyle(color: Colors.red)),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  // No hay logica aun
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Reporte enviado con éxito")),
-                  );
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text("ENVIAR REPORTE FINAL"),
-              ),
-            ],
-          ],
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text(
+          "REPORTAR INCIDENCIA",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        foregroundColor: Colors.white,
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.blue, Colors.lightGreen],
+              ),
+            ),
+          ),
+
+          SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    size: 60,
+                    color: Colors.white70,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Ayúdanos a mejorar Padre Hurtado",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+
+                  Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: _imagenSeleccionada != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.file(
+                                      _imagenSeleccionada!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_a_photo_outlined,
+                                        size: 40,
+                                        color: Colors.blue.shade900,
+                                      ),
+                                      const Text(
+                                        "Captura el problema",
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          TextField(
+                            controller: _descripcionController,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              labelText: "Descripción del problema",
+                              hintText: "Ej: Poste de luz apagado...",
+                              alignLabelWithHint: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  ElevatedButton.icon(
+                    onPressed: _tomarFoto,
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text("ABRIR CÁMARA"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade900,
+                      foregroundColor: Colors.white,
+                      maximumSize: const Size(double.infinity, 55),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+
+                  if (_imagenSeleccionada != null) ...[
+                    const SizedBox(height: 15),
+                    ElevatedButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Reporte Enviado. La municipalidad lo revisará pronto.",
+                            ),
+                          ),
+                        );
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade700,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 55),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: const Text(
+                        "ENVIAR REPORTE FINAL",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          setState(() => _imagenSeleccionada = null),
+                      child: const Text(
+                        "Eliminar foto y repetir",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

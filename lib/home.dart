@@ -30,43 +30,44 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      extendBodyBehindAppBar: false,
-      appBar:_currentIndex == 0 ?
-      AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.blue.shade900,
-        elevation: 0,
-        foregroundColor: Colors.white,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Hola, Benjamín',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              '¡Que bueno tenerte aquí!',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white.withAlpha(204),
-                fontWeight: FontWeight.w900,
+      extendBodyBehindAppBar: true,
+
+      appBar: _currentIndex == 0
+          ? AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              surfaceTintColor: Colors.transparent,
+              foregroundColor: Colors.white,
+
+              title: Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Hola, Miguel',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    Text(
+                      'Bienvenido a Mi Padre Hurtado',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withAlpha(200),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InicioPage()),
-              );
-            },
-            icon: const Icon(Icons.logout_rounded),
-          ),
-        ],
-      )
-: null,
+            )
+          : null,
+
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -77,7 +78,7 @@ class _HomePageState extends State<HomePage> {
             colors: [Colors.blue.shade900, Colors.green.shade800],
           ),
         ),
-        child: _paginas[_currentIndex],
+        child: SafeArea(child: _paginas[_currentIndex]),
       ),
 
       bottomNavigationBar: SnakeNavigationBar.color(
@@ -236,7 +237,6 @@ class InicioContent extends StatelessWidget {
           _buildTramites(context),
         ],
       ),
-
     );
   }
 }
@@ -267,7 +267,9 @@ Widget _buildTramites(BuildContext context) {
     ),
     child: InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TramitesPage()),
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TramitesPage()),
         );
       },
       borderRadius: BorderRadius.circular(20),
@@ -285,7 +287,8 @@ Widget _buildTramites(BuildContext context) {
           children: [
             const SizedBox(width: 20),
             Expanded(
-              child: Text('Trámites',
+              child: Text(
+                'Trámites',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
