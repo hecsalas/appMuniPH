@@ -5,7 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class ComercioPage extends StatefulWidget {
-  const ComercioPage({super.key});
+  final LatLng? initialLocation;
+  const ComercioPage({super.key, this.initialLocation});
 
   @override
   State<ComercioPage> createState() => _ComercioPageState();
@@ -251,14 +252,13 @@ class _ComercioPageState extends State<ComercioPage> {
         children: [
           Stack(
             children: [
-              // MAPA
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.45,
                 child: GoogleMap(
                   onMapCreated: _onMapCreated,
-                  initialCameraPosition: const CameraPosition(
-                    target: _center,
-                    zoom: 12.0,
+                  initialCameraPosition: CameraPosition(
+                    target: widget.initialLocation ?? _center,
+                    zoom: widget.initialLocation != null ? 17.0 : 12.0,
                   ),
                   markers: _getMarkers(),
                   myLocationEnabled: true,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class BeneficiosPage extends StatefulWidget {
   const BeneficiosPage({super.key});
@@ -24,6 +25,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'horario': 'Horario de Atención',
       'condiciones': 'Mayor 18 años',
       'direccion': 'Papa Juan XXIII N°1240, Padre Hurtado',
+      'latlng': const LatLng(-33.57334196235139, -70.82780493383449),
     },
     {
       'titulo': 'Clínica del Sol',
@@ -35,6 +37,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'horario': 'Horario de Atención',
       'condiciones': 'Tarjeta Vecino',
       'direccion': 'San Ignacio N°1624 local 16 y 17, Padre Hurtado',
+      'latlng': const LatLng(-33.5611360599154, -70.82747058214169),
     },
     {
       'titulo': 'Escuela del Valle',
@@ -46,6 +49,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'horario': '10:00 a 14:00 - 16:00 a 20:00',
       'condiciones': 'Mayor 18, Presencial, No acumulable, Tarjeta Vecino',
       'direccion': 'Rodolfo Jaramillo N°2523, Padre Hurtado',
+      'latlng': const LatLng(-33.564232834951014, -70.82255738057556),
     },
     {
       'titulo': "Licorería Charl's",
@@ -57,6 +61,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'horario': 'Horario de Atención',
       'condiciones': 'Pago efectivo, Mayor 18 años',
       'direccion': 'San Genaro N°2605, local 1, Padre Hurtado',
+      'latlng': const LatLng(-33.56409908847409, -70.82447630409058),
     },
     {
       'titulo': 'Optica Optik V&C',
@@ -69,6 +74,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'horario': 'Horario de Atención',
       'condiciones': 'Atención en local, No acumulable',
       'direccion': 'El Manzano Sur N°1261, Padre Hurtado',
+      'latlng': const LatLng(-33.57384623693479, -70.80304424272943),
     },
     {
       'titulo': 'Otto Fritz',
@@ -81,6 +87,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'horario': 'Horario de Atención',
       'condiciones': 'No acumulable, Entrada solo por venta online',
       'direccion': 'Av. Caupolican N°3461, Peñaflor',
+      'latlng': const LatLng(-33.597966560136605, -70.88734338817774),
     },
     {
       'titulo': 'Restobar Ibridos',
@@ -93,6 +100,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           'Mar-Vie 13:00 a 17:00\nMar-Sab 13:00 - 21:00 (Func. Municipal)',
       'condiciones': 'Mayor de 18 años, No acumulable',
       'direccion': 'San Ignacio N°1180, Padre Hurtado',
+      'latlng': const LatLng(-33.56495104660019, -70.82419764090052),
     },
     {
       'titulo': 'Veterinaria Rompecorreas',
@@ -104,6 +112,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'horario': '09:00 a 19:00',
       'condiciones': 'Sin límite de uso, No válido para urgencias, Presencial',
       'direccion': 'Rodolfo Jaramillo N°894, Padre Hurtado',
+      'latlng': const LatLng(-33.56717678649047, -70.82316685745141),
     },
   ];
 
@@ -315,7 +324,11 @@ void _mostrarDetallesBeneficio(
               "Descuento",
               item['descuento'] ?? "",
             ),
-            _buildInfoRow(Icons.calendar_month_rounded, "Días", item['dias'] ?? ""),
+            _buildInfoRow(
+              Icons.calendar_month_rounded,
+              "Días",
+              item['dias'] ?? "",
+            ),
             _buildInfoRow(
               Icons.access_time_rounded,
               "Horario",
@@ -333,7 +346,8 @@ void _mostrarDetallesBeneficio(
             ),
 
             const SizedBox(height: 30),
-            if (item['direccion'] != null && item['direccion'].toString().isNotEmpty)
+            if (item['direccion'] != null &&
+                item['direccion'].toString().isNotEmpty)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -341,7 +355,10 @@ void _mostrarDetallesBeneficio(
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ComercioPage()),
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ComercioPage(initialLocation: item['latlng']),
+                      ),
                     );
                   },
                   icon: const Icon(Icons.map_rounded, color: Colors.white),
@@ -369,7 +386,8 @@ void _mostrarDetallesBeneficio(
 }
 
 Widget _buildInfoRow(IconData icon, String label, String value) {
-  if (value.isEmpty) return const SizedBox.shrink(); // No dibuja nada si está vacío
+  if (value.isEmpty)
+    return const SizedBox.shrink(); // No dibuja nada si está vacío
 
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
