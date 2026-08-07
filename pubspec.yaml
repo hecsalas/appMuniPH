@@ -31,13 +31,13 @@ flutter:
   uses-material-design: true
   assets:
     - assets/logo_ph.png
-    - assets/logo-app-2-mph.png
-    - assets/logo-app-4-mph.png
-    - assets/logo-app-5-mph.png
+    - assets/logo_app.png
+    - assets/logo_montana.png
+    - assets/logo_verde_montana.png
 
 
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo-app-5-mph.png"
+  image_path: "assets/logo_app.png"
   min_sdk_android: 21
