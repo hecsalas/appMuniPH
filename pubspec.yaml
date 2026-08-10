@@ -35,10 +35,11 @@ flutter:
     - assets/logo_montana.png
     - assets/logo_verde_montana.png
     - assets/xd.png
+    - assets/logo-ios.png
 
 
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/xd.png"
+  image_path: "assets/logo-ios.png"
   min_sdk_android: 21
