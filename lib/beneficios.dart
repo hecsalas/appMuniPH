@@ -140,7 +140,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.blue.shade900,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
           title: const Text(
             'Beneficios',
             style: TextStyle(color: Colors.white),
