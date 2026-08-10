@@ -144,8 +144,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           title: const Text(
-            'Beneficios',
-            style: TextStyle(color: Colors.white),
+            'BENEFICIOS',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
           centerTitle: true,
           actions: [
@@ -306,7 +306,8 @@ void _mostrarDetallesBeneficio(
 
             const SizedBox(height: 30),
             if (item['direccion'] != null &&
-                item['direccion'].toString().isNotEmpty && item['latlng'] != null)
+                item['direccion'].toString().isNotEmpty &&
+                item['latlng'] != null)
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

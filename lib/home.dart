@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Colors.blue.shade900, Colors.green.shade800],
+            colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
         child: SafeArea(child: _paginas[_currentIndex]),

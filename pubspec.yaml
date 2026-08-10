@@ -37,6 +37,7 @@ flutter:
     - assets/logo_verde_montana.png
     - assets/xd.png
     - assets/logo-ios.png
+    - assets/padrehurtado.png
 
 
 flutter_launcher_icons:

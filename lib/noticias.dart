@@ -26,7 +26,8 @@ class _NewsPageState extends State<NewsPage> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('Noticias'),
+          title: Text('NOTICIAS',
+          style: TextStyle(fontWeight: FontWeight.bold)),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -40,7 +41,7 @@ class _NewsPageState extends State<NewsPage> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Colors.blue.shade900, Colors.green.shade800],
+                  colors: [Colors.green.shade800, Colors.blue.shade800],
                 ),
               ),
             ),

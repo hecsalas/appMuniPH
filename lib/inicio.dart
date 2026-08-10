@@ -19,7 +19,7 @@ class _InicioPageState extends State<InicioPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue.shade400, Colors.green.shade800],
+            colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
         child: SafeArea(
@@ -31,28 +31,32 @@ class _InicioPageState extends State<InicioPage> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: <Widget>[
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 10),
                         Image.asset(
-                          'assets/logo_ph.png',
-                          width: 250,
-                          height: 250,
+                          'assets/padrehurtado.png',
+                          width: 400,
+                          height: 400,
                           fit: BoxFit.contain,
                         ),
                         Text(
                           'Mi Padre Hurtado',
                           style: TextStyle(
-                            color: Colors.blue[900],
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w900,
                             letterSpacing: 1.5,
                           ),
                         ),
-                        Text(
-                          'Tu Comuna En Tu Bolsillo',
-                          style: TextStyle(
-                            color: Colors.blue[900],
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Text(
+                            'Tu Comuna En Tu Bolsillo',
+                            style: TextStyle(
+                              color: Colors.blue.shade900,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
 
@@ -70,8 +74,7 @@ class _InicioPageState extends State<InicioPage> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue[900],
-                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -79,7 +82,7 @@ class _InicioPageState extends State<InicioPage> {
                             child: Text(
                               'Continuar',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.blue.shade900,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -87,7 +90,6 @@ class _InicioPageState extends State<InicioPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-
                       ],
                     ),
                   ),
