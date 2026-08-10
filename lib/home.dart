@@ -39,9 +39,10 @@ class _HomePageState extends State<HomePage> {
               elevation: 0,
               surfaceTintColor: Colors.transparent,
               foregroundColor: Colors.white,
+              toolbarHeight: 100,
 
               title: Padding(
-                padding: const EdgeInsets.only(top: 10.0),
+                padding: const EdgeInsets.only(top: 20.0),
 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,6 +55,7 @@ class _HomePageState extends State<HomePage> {
                         letterSpacing: -0.5,
                       ),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       'Bienvenido a Mi Padre Hurtado',
                       style: TextStyle(
@@ -130,7 +132,7 @@ class InicioContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20.0, 110.0, 20.0, 20.0),
+      padding: const EdgeInsets.fromLTRB(20.0, 80.0, 20.0, 100.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
