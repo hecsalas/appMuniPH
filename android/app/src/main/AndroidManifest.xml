@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
@@ -35,6 +37,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB2dXUWxg1fhdz4hgmUsMuuenXvbIDn1ww" />
+
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

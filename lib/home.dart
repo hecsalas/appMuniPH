@@ -6,6 +6,7 @@ import 'package:app369/tramites.dart';
 import 'package:app369/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:app369/scanner_page.dart';
 import 'inicio.dart';
 
 class HomePage extends StatefulWidget {
@@ -67,6 +68,32 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0, left: 10.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(40),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.qr_code_scanner_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ScannerPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             )
           : null,
 
