@@ -126,7 +126,7 @@ Widget _buildCredentialCard() {
               ),
               const SizedBox(height: 4),
               Text(
-                'Miguel Tapia',
+                'Miguel Tapia Troncoso',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(

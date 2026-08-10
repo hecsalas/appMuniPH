@@ -1,5 +1,6 @@
 import 'package:app369/home.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,6 +10,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  Future<void> _signInWithClaveUnica() async {
+    try {
+      // Esto abrirá el navegador seguro del iPhone
+      await Supabase.instance.client.auth.signInWithOAuth(
+        OAuthProvider('oidc'), // Usaremos el estándar OIDC de Clave Única
+        redirectTo: 'miph-app://login-callback',
+        authScreenLaunchMode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error de conexión: $e")),
+        );
+      }
+    }
+  }
+
+// onPressed: _signInWithClaveUnica,
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,13 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                          //Por ahora el botón redirecciona a la Pagina Principal
-                        );
-                      },
+                      onPressed: _signInWithClaveUnica,
                       icon: const Icon(
                         Icons.vpn_key_outlined,
                         color: Colors.white,

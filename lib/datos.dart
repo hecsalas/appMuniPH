@@ -62,7 +62,7 @@ class _DatosPageState extends State<DatosPage> {
                 ),
                 const SizedBox(height: 15),
                 const Text(
-                  "Benjamín Muñoz Navarro",
+                  "Miguel Tapia Troncoso",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
