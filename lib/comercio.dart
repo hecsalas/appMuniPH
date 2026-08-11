@@ -17,6 +17,45 @@ class _ComercioPageState extends State<ComercioPage> {
   GoogleMapController? _mapController;
   String _categoriaSeleccionada = 'Todos';
 
+  void _ajustarCamara() {
+    final comerciosVisibles = _comercios
+        .where(
+          (c) =>
+              _categoriaSeleccionada == 'Todos' ||
+              c['tipo'] == _categoriaSeleccionada,
+        )
+        .toList();
+
+    if (comerciosVisibles.isEmpty) return;
+
+    if (comerciosVisibles.length == 1) {
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLngZoom(comerciosVisibles.first['latlng'], 16.0),
+      );
+    } else {
+      double? minLat, maxLat, minLng, maxLng;
+
+      for (final c in comerciosVisibles) {
+        final lat = c['latlng'].latitude;
+        final lng = c['latlng'].longitude;
+
+        if (minLat == null || lat < minLat) minLat = lat;
+        if (maxLat == null || lat > maxLat) maxLat = lat;
+        if (minLng == null || lng < minLng) minLng = lng;
+        if (maxLng == null || lng > maxLng) maxLng = lng;
+      }
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLngBounds(
+          LatLngBounds(
+            southwest: LatLng(minLat!, minLng!),
+            northeast: LatLng(maxLat!, maxLng!),
+          ),
+          50.0,
+        ),
+      );
+    }
+  }
+
   // Coordenadas iniciales
   static const LatLng _center = LatLng(-33.577828251662254, -70.82479220461471);
 

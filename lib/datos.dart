@@ -9,7 +9,7 @@ class DatosPage extends StatefulWidget {
 
 class _DatosPageState extends State<DatosPage> {
   final TextEditingController _emailControlador = TextEditingController(
-    text: "benjamin.munoz@mph.cl",
+    text: "miguel.tapia@mph.cl",
   );
   final TextEditingController _phoneControlador = TextEditingController(
     text: "+56 9 1234 5678",

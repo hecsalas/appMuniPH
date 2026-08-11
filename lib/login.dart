@@ -1,4 +1,5 @@
 import 'package:app369/home.dart';
+import 'package:app369/inicio.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -11,32 +12,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  Future<void> _signInWithClaveUnica() async {
-    try {
-      // Esto abrirá el navegador seguro del iPhone
-      await Supabase.instance.client.auth.signInWithOAuth(
-        OAuthProvider('oidc'), // Usaremos el estándar OIDC de Clave Única
-        redirectTo: 'miph-app://login-callback',
-        authScreenLaunchMode: LaunchMode.externalApplication,
-      );
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error de conexión: $e")),
-        );
-      }
-    }
-  }
-
-// onPressed: _signInWithClaveUnica,
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(''),
+        title: const Text(''),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -108,7 +90,12 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton.icon(
-                      onPressed: _signInWithClaveUnica,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePage()),
+                        );
+                      },
                       icon: const Icon(
                         Icons.vpn_key_outlined,
                         color: Colors.white,
@@ -124,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF003399),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusGeometry.circular(10),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
