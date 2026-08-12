@@ -10,22 +10,35 @@ import 'package:app369/scanner_page.dart';
 import 'inicio.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int initialIndex;
+  final String? initialBenefitTitle;
+
+  const HomePage({
+    super.key,
+    this.initialIndex = 0,
+    this.initialBenefitTitle,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
+  late int _currentIndex;
 
-  final List<Widget> _paginas = [
-    const InicioContent(),
-    const BeneficiosPage(),
-    const SosPage(),
-    const NewsPage(),
-    const PerfilPage(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  List<Widget> get _paginas => [
+        const InicioContent(),
+        BeneficiosPage(initialBenefitTitle: widget.initialBenefitTitle),
+        const SosPage(),
+        const NewsPage(),
+        const PerfilPage(),
+      ];
 
   @override
   Widget build(BuildContext context) {

@@ -7,13 +7,35 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class BeneficiosPage extends StatefulWidget {
-  const BeneficiosPage({super.key});
+  final String? initialBenefitTitle;
+  const BeneficiosPage({super.key, this.initialBenefitTitle});
 
   @override
   State<BeneficiosPage> createState() => _BeneficiosPageState();
 }
 
 class _BeneficiosPageState extends State<BeneficiosPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialBenefitTitle != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _abrirModalPorTitulo(widget.initialBenefitTitle!);
+      });
+    }
+  }
+
+  void _abrirModalPorTitulo(String titulo) {
+    // Buscamos en ambas listas
+    final item = [..._beneficiosComercios, ..._beneficiosMunicipales].firstWhere(
+      (element) => element['titulo'].toString().toLowerCase() == titulo.toLowerCase(),
+      orElse: () => {},
+    );
+
+    if (item.isNotEmpty) {
+      _mostrarDetallesBeneficio(item, context);
+    }
+  }
   final List<Map<String, dynamic>> _beneficiosComercios = [
     {
       'titulo': 'Casa Guau',

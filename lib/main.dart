@@ -59,10 +59,23 @@ class _MyAppState extends State<MyApp> {
 
   void _handleDeepLink(Uri uri) {
     debugPrint('Deep Link recibido: $uri');
-    
-    // Ejemplo: miph-app://comercio/123
+
+    // miph-app://beneficios?target=Escuela del Valle
+    if (uri.scheme == 'miph-app' && uri.host == 'beneficios') {
+      final target = uri.queryParameters['target'];
+      _navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            initialIndex: 1,
+            initialBenefitTitle: target,
+          ),
+        ),
+        (route) => false,
+      );
+    }
+
+    // Compatibilidad con la ruta anterior de comercio
     if (uri.scheme == 'miph-app' && uri.host == 'comercio') {
-      // Redirigir al módulo del mapa
       _navigatorKey.currentState?.push(
         MaterialPageRoute(builder: (context) => const ComercioPage()),
       );
