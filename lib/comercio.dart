@@ -401,7 +401,12 @@ class _ComercioPageState extends State<ComercioPage> {
                       label: Text(cat),
                       selected: isSelected,
                       onSelected: (bool selected) {
-                        setState(() => _categoriaSeleccionada = cat);
+                        if (selected) {
+                          setState(() {
+                            _categoriaSeleccionada = cat;
+                          });
+                          _ajustarCamara();
+                        }
                       },
                       selectedColor: Colors.orange,
                       backgroundColor: Colors.white.withOpacity(0.9),

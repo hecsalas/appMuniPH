@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:app369/home.dart';
 import 'package:app369/inicio.dart';
+import 'package:app369/comercio.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:app_links/app_links.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,12 +19,60 @@ Future<void> main() async {
 
 final supabase = Supabase.instance.client;
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinks();
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  void _initDeepLinks() {
+    _appLinks = AppLinks();
+
+    // Maneja enlaces cuando la app ya está abierta
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      _handleDeepLink(uri);
+    });
+
+    // Maneja el enlace inicial (cuando la app se abre desde cero)
+    _appLinks.getInitialLink().then((uri) {
+      if (uri != null) _handleDeepLink(uri);
+    });
+  }
+
+  void _handleDeepLink(Uri uri) {
+    debugPrint('Deep Link recibido: $uri');
+    
+    // Ejemplo: miph-app://comercio/123
+    if (uri.scheme == 'miph-app' && uri.host == 'comercio') {
+      // Redirigir al módulo del mapa
+      _navigatorKey.currentState?.push(
+        MaterialPageRoute(builder: (context) => const ComercioPage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: _navigatorKey,
       title: 'Mi Padre Hurtado',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
