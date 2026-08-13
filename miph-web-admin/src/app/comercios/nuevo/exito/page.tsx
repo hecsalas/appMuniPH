@@ -46,7 +46,8 @@ export default function ExitoIncorporacionPage() {
             decreto_numero: d.decreto,
             fecha_inicio: d.fechaInicio,
             fecha_termino: d.fechaTermino,
-            archivo_url: d.archivoUrl
+            archivo_url: d.archivoUrl,
+            estado: 'Pendiente' // Aseguramos que entre a la bandeja de aprobación
           })
           .select()
           .single();

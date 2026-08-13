@@ -1,3 +1,4 @@
+import 'package:app369/home.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -11,6 +12,38 @@ class ScannerPage extends StatefulWidget {
 class _ScannerPageState extends State<ScannerPage> {
   MobileScannerController controller = MobileScannerController();
   bool isScanCompleted = false;
+
+  void _processScannedCode(String code) {
+    setState(() => isScanCompleted = true);
+    final uri = Uri.tryParse(code);
+
+    if (uri != null && uri.scheme == 'miph-app' && uri.host == 'beneficios') {
+      final target = uri.queryParameters['target'];
+      final sucursal = uri.queryParameters['sucursal'];
+
+      // Navegación directa al modal de beneficios
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(
+            initialIndex: 1,
+            initialBenefitTitle: target,
+            initialSucursal: sucursal,
+          ),
+        ),
+        (route) => false,
+      );
+    } else {
+      // Acción para QRs no municipales
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Código QR no reconocido por Mi Padre Hurtado"),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +117,8 @@ class _ScannerPageState extends State<ScannerPage> {
               if (!isScanCompleted) {
                 final List<Barcode> barcodes = capture.barcodes;
                 for (final barcode in barcodes) {
-                  setState(() => isScanCompleted = true);
                   final String code = barcode.rawValue ?? "---";
-
-                  // Acción al detectar: Cerramos y mostramos el resultado
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Comercio detectado: $code")),
-                  );
+                  _processScannedCode(code);
                 }
               }
             },

@@ -2,7 +2,6 @@ import 'package:app369/comercio.dart';
 import 'package:app369/historialBeneficios.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class BeneficiosPage extends StatefulWidget {
@@ -45,6 +44,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Mascotas',
       'icono': Icons.pets_rounded,
       'color': Colors.brown,
+      'telefono': '+56 2 1234 5678',
       'beneficios': [
         {'titulo': '10% Alimentos Húmedos y Accesorios', 'dias': 'Lunes', 'horario': 'Horario de Atención', 'condiciones': 'Mayor 18 años'},
         {'titulo': '5% Sacos de Alimento', 'dias': 'Lunes', 'horario': 'Horario de Atención', 'condiciones': 'Mayor 18 años'},
@@ -57,6 +57,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Salud',
       'icono': FontAwesomeIcons.tooth,
       'color': Colors.blue.shade200,
+      'telefono': '+56 9 9876 5432',
       'beneficios': [
         {'titulo': '15% Prestaciones Odontológicas', 'dias': 'Todos los días', 'horario': 'Horario de Atención', 'condiciones': 'Tarjeta Vecino'},
         {'titulo': '17% Tratamientos Dentales', 'dias': 'Todos los días', 'horario': 'Horario de Atención', 'condiciones': 'Tarjeta Vecino'},
@@ -69,6 +70,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Educación',
       'icono': Icons.directions_car_rounded,
       'color': Colors.red,
+      'telefono': '+56 2 2222 3333',
       'beneficios': [
         {'titulo': '30% en Clase B, C, D', 'dias': 'Lunes a Viernes', 'horario': '10:00 a 14:00 - 16:00 a 20:00', 'condiciones': 'Mayor 18, Presencial, Tarjeta Vecino'},
         {'titulo': '30% en Clases Profesionales (A2 a A5)', 'dias': 'Lunes a Viernes', 'horario': '10:00 a 14:00 - 16:00 a 20:00', 'condiciones': 'Mayor 18, Presencial, Tarjeta Vecino'},
@@ -81,6 +83,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Bebidas Alcohólicas',
       'icono': Icons.local_bar_rounded,
       'color': Colors.grey,
+      'telefono': '+56 2 4444 5555',
       'beneficios': [
         {'titulo': '10% en Vinos y Cervezas', 'dias': 'Martes', 'horario': 'Horario de Atención', 'condiciones': 'Pago efectivo, Mayor 18 años'},
         {'titulo': '10% en Destilados', 'dias': 'Miércoles', 'horario': 'Horario de Atención', 'condiciones': 'Pago efectivo, Mayor 18 años'},
@@ -93,18 +96,20 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Salud',
       'icono': FontAwesomeIcons.glasses,
       'color': Colors.deepPurpleAccent,
+      'telefono': '+56 2 6666 7777',
       'beneficios': [
         {'titulo': '15% en Productos ópticos', 'dias': 'Lunes a Sábado', 'horario': 'Horario de Atención', 'condiciones': 'Atención en local, No acumulable'},
         {'titulo': 'Lente monofocal desde \$25.000', 'dias': 'Lunes a Sábado', 'horario': 'Horario de Atención', 'condiciones': 'Atención en local'},
       ],
       'direccion': 'El Manzano Sur N°1261, Padre Hurtado',
-      'latlng': const LatLng(-33.57384623693479, -70.80304424272943),
+      'latlng': const LatLng(-33.57334196235139, -70.82780493383449),
     },
     {
       'titulo': 'Otto Fritz',
       'categoria': 'Entretenimiento y Comida',
       'icono': Icons.local_activity_rounded,
       'color': Colors.cyan,
+      'telefono': '+56 2 8888 9999',
       'beneficios': [
         {'titulo': '15% en Restaurant', 'dias': 'Lunes a Domingo', 'horario': 'Horario de Atención', 'condiciones': 'No acumulable'},
         {'titulo': '\$8.000 Entrada Parque Acuático', 'dias': 'Lunes a Viernes', 'horario': 'Horario de Atención', 'condiciones': 'Entrada solo por venta online'},
@@ -117,6 +122,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Comida y Bebida',
       'icono': Icons.nightlife_rounded,
       'color': Colors.deepOrange,
+      'telefono': '+56 2 1111 2222',
       'beneficios': [
         {'titulo': '10% Total consumido', 'dias': 'Martes a Sábado', 'horario': '13:00 a 17:00', 'condiciones': 'Mayor de 18 años, No acumulable'},
         {'titulo': '10% Beneficio Funcionario Municipal', 'dias': 'Martes a Sábado', 'horario': '13:00 a 21:00', 'condiciones': 'Presentar credencial municipal'},
@@ -129,6 +135,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Mascotas',
       'icono': Icons.pets_rounded,
       'color': Colors.green,
+      'telefono': '+56 2 3333 4444',
       'beneficios': [
         {'titulo': '20% Consultas y Vacunas', 'dias': 'Lunes a Sábado', 'horario': '09:00 a 19:00', 'condiciones': 'Sin límite de uso'},
         {'titulo': '20% Esterilización y Procedimientos', 'dias': 'Lunes a Sábado', 'horario': '09:00 a 19:00', 'condiciones': 'No válido para urgencias'},
@@ -144,6 +151,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'categoria': 'Educación',
       'icono': Icons.school_rounded,
       'color': Colors.blue,
+      'telefono': '+56 2 2810 1600',
       'beneficios': [
         {'titulo': 'Apoyo compra de materiales', 'dias': 'Lunes a Viernes', 'horario': '09:00 a 14:00', 'condiciones': 'Residencia en PH, Certificado de notas'},
       ],
@@ -271,83 +279,275 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+      backgroundColor: Colors.transparent,
       builder: (context) {
         final sucursal = item['sucursal_seleccionada'] ?? "";
         final beneficios = item['beneficios'] as List;
+
         return Container(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                item['titulo'] + (sucursal.isNotEmpty ? " → $sucursal" : ""),
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                item['categoria'].toUpperCase(),
-                style: TextStyle(color: item['color'], fontWeight: FontWeight.w900, letterSpacing: 1.2),
-              ),
-              const Divider(height: 40),
-              
-              // RESUMEN DE BENEFICIOS
-              ...beneficios.map((b) => Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
+          height: MediaQuery.of(context).size.height * 0.9,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(35)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. HEADER CON FONDO DE COLOR Y ICONO
+                Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    const Icon(Icons.check_circle_outline, size: 16, color: Colors.green),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(b['titulo'], style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500))),
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: item['color'].withOpacity(0.8),
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
+                      ),
+                      child: Center(
+                        child: _buildIcon(item['icono'], size: 80, color: Colors.white24),
+                      ),
+                    ),
+                    Positioned(
+                      top: 20,
+                      left: 20,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white.withOpacity(0.3),
+                        child: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () => Navigator.pop(context)),
+                      ),
+                    ),
+                    // Logo "flotante" por encima de la unión
+                    Positioned(
+                      bottom: -40,
+                      left: 25,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 8),
+                            )
+                          ],
+                        ),
+                        child: Container(
+                          width: 90,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            color: item['color'].withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: _buildIcon(item['icono'], size: 45, color: item['color']),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              )),
+                const SizedBox(height: 50),
 
-              const Divider(height: 40),
-              _buildInfoRow(Icons.location_on_rounded, "Dirección", item['direccion'] ?? ""),
-              const SizedBox(height: 30),
-              
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _mostrarSolicitudBeneficio(item, context);
+                // 2. TÍTULO Y INFO BÁSICA
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item['titulo'] + (sucursal.isNotEmpty ? " - $sucursal" : ""),
+                        style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        item['categoria'],
+                        style: TextStyle(color: item['color'], fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const SizedBox(height: 15),
+                      
+                      // RATING SIMULADO
+                      Row(
+                        children: List.generate(5, (index) => Icon(Icons.star, color: index < 4 ? Colors.amber : Colors.grey.shade300, size: 20)),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                // 3. BLOQUE DE INFORMACIÓN (DIRECCIÓN, HORARIO, TELÉFONO)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(color: Colors.grey.shade100),
+                  ),
+                  child: Column(
+                    children: [
+                      _buildPremiumInfoRow(Icons.location_on, item['direccion'] ?? ""),
+                      const Divider(height: 30),
+                      _buildPremiumInfoRow(Icons.access_time_filled, "Horario de Atención"),
+                      const Divider(height: 30),
+                      _buildPremiumInfoRow(Icons.phone, item['telefono'] ?? "Sin teléfono"),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                // 4. BENEFICIOS DISPONIBLES
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25),
+                  child: Text("Beneficios disponibles para ti", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 15),
+
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: beneficios.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final b = beneficios[index];
+                    final available = _isAvailableNow(b['dias'] ?? "", b['horario'] ?? "");
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: available ? Colors.white : Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: available ? Colors.grey.shade200 : Colors.grey.shade100),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: available ? Colors.green.shade50 : Colors.grey.shade100,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.local_offer,
+                              color: available ? Colors.green : Colors.grey,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  b['titulo'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: available ? Colors.black87 : Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  b['dias'],
+                                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: available ? Colors.green.shade50 : Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              available ? "Disponible" : "Cerrado",
+                              style: TextStyle(
+                                color: available ? Colors.green : Colors.grey.shade600,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   },
-                  icon: const Icon(Icons.check_circle_outline_rounded, color: Colors.white),
-                  label: const Text("SOLICITAR BENEFICIO", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade700,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                ),
+
+                const SizedBox(height: 30),
+
+                // 5. BOTÓN PRINCIPAL
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => _mostrarSolicitudBeneficio(item, context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade700,
+                          minimumSize: const Size(double.infinity, 60),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          elevation: 5,
+                          shadowColor: Colors.green.withOpacity(0.3),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.local_offer, color: Colors.white),
+                            SizedBox(width: 10),
+                            Text("SOLICITAR BENEFICIO", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      if (item['latlng'] != null)
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ComercioPage(initialLocation: item['latlng']),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.map_rounded, color: Colors.black87),
+                          label: const Text(
+                            "VER UBICACIÓN EN MAPA",
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey.shade200,
+                            minimumSize: const Size(double.infinity, 55),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                            elevation: 0,
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              if (item['latlng'] != null)
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ComercioPage(initialLocation: item['latlng'])));
-                    },
-                    icon: const Icon(Icons.map_rounded, color: Colors.black87),
-                    label: const Text("VER UBICACIÓN EN MAPA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey.shade200,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
-                ),
-            ],
+
+                const SizedBox(height: 50),
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  Widget _buildIcon(dynamic iconData, {double size = 24, Color? color}) {
+    if (iconData is IconData) {
+      // Intentamos detectar si es un icono de FontAwesome por su tipo de dato o familia
+      // En la mayoría de las versiones, FaIcon es necesario para renderizar correctamente
+      if (iconData.fontFamily?.toLowerCase().contains('fontawesome') ?? false) {
+        return FaIcon(iconData as dynamic, size: size, color: color);
+      }
+      return Icon(iconData, size: size, color: color);
+    }
+    return Icon(Icons.help_outline, size: size, color: color);
   }
 
   void _mostrarSolicitudBeneficio(Map<String, dynamic> item, BuildContext context) {
@@ -365,7 +565,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Beneficios disponibles para ti", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text("Selecciona tu beneficio", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
               Flexible(
                 child: ListView.separated(
@@ -375,42 +575,40 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   itemBuilder: (context, index) {
                     final b = beneficios[index];
                     final available = _isAvailableNow(b['dias'] ?? "", b['horario'] ?? "");
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: available ? Colors.green.shade50 : Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: available ? Colors.green.shade200 : Colors.grey.shade300),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.local_offer_rounded, color: available ? Colors.green : Colors.grey),
-                          const SizedBox(width: 15),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(b['titulo'], style: TextStyle(fontWeight: FontWeight.bold, color: available ? Colors.green.shade900 : Colors.grey.shade600)),
-                                Text(available ? "✓ Disponible ahora" : "× Fuera de horario", 
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: available ? Colors.green : Colors.grey)),
-                              ],
+                    return InkWell(
+                      onTap: available ? () => _confirmarCanje(context, b) : null,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: available ? Colors.white : Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: available ? Colors.green.shade200 : Colors.grey.shade200),
+                          boxShadow: available ? [BoxShadow(color: Colors.green.withOpacity(0.05), blurRadius: 10)] : null,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.local_offer_rounded, color: available ? Colors.green : Colors.grey),
+                            const SizedBox(width: 15),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(b['titulo'], style: TextStyle(fontWeight: FontWeight.bold, color: available ? Colors.black87 : Colors.grey)),
+                                  Text(available ? "✓ Disponible ahora" : "× Fuera de horario", 
+                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: available ? Colors.green : Colors.grey)),
+                                ],
+                              ),
                             ),
-                          ),
-                          if (available)
-                            ElevatedButton(
-                              onPressed: () => _confirmarCanje(context, b),
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.green.shade700, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                              child: const Text("Solicitar", style: TextStyle(color: Colors.white)),
-                            ),
-                        ],
+                            if (available)
+                              const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.green),
+                          ],
+                        ),
                       ),
                     );
                   },
                 ),
               ),
-              const SizedBox(height: 24),
-              const Text("Selecciona el beneficio que deseas utilizar.", style: TextStyle(fontSize: 13, color: Colors.black45)),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
             ],
           ),
         );
@@ -428,7 +626,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("¿Deseas activar el beneficio:"),
+            const Text("¿Deseas activar el beneficio:"),
             Text("${beneficio['titulo']}?", style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
             const Text("Condiciones:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
@@ -445,7 +643,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                 SnackBar(content: Text("Beneficio solicitado: ${beneficio['titulo']}. Muestra tu pantalla en caja."), backgroundColor: Colors.green),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green.shade700),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green.shade700, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
             child: const Text("CONFIRMAR", style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -453,26 +651,13 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    if (value.isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, size: 20, color: Colors.grey.shade600),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.grey)),
-                Text(value, style: const TextStyle(fontSize: 14)),
-              ],
-            ),
-          ),
-        ],
-      ),
+  Widget _buildPremiumInfoRow(IconData icon, String text) {
+    return Row(
+      children: [
+        _buildIcon(icon, color: Colors.blue.shade900, size: 22),
+        const SizedBox(width: 15),
+        Expanded(child: Text(text, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87))),
+      ],
     );
   }
 }

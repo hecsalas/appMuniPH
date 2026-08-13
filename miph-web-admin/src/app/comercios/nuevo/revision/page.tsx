@@ -3,25 +3,38 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, CheckCircle2, XCircle, FileSearch, Info, Loader2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, FileSearch, Info, Loader2, Mail, Copy, ExternalLink, ShieldAlert } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function RevisionPage() {
   const router = useRouter();
   const [datos, setDatos] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [credencialesGeneradas, setCredencialesGeneradas] = useState<any>(null);
 
   useEffect(() => {
-    // Leemos el borrador guardado en los pasos anteriores
     const borrador = localStorage.getItem('miph_nuevo_comercio_borrador');
     if (borrador) setDatos(JSON.parse(borrador));
   }, []);
+
+  const generarPasswordTemporal = () => {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let pass = "PH-";
+    for (let i = 0; i < 6; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass;
+  };
 
   const handleDecision = async (aprobado: boolean) => {
     setIsProcessing(true);
     try {
       if (aprobado) {
-        // 1. Si el comercio ya existe (viniendo de Aprobar Convenio), actualizamos estado
+        const tempPass = generarPasswordTemporal();
+        const activationLink = `https://miph.cl/activar-cuenta?token=${Math.random().toString(36).substring(7)}`;
+
+        // 1. Actualizar estado del comercio
         if (datos.id && datos.id !== 'Nuevo') {
           const { error } = await supabase
             .from('comercios')
@@ -30,37 +43,26 @@ export default function RevisionPage() {
           if (error) throw error;
         }
 
-        // 2. Crear administrador (LocalStorage para prototipado rápido + Supabase si existe tabla)
-        const adminsActuales = JSON.parse(localStorage.getItem('miph_administradores_db') || '[]');
-
-        const nuevoAdmin = {
-          id: Date.now(),
+        // 2. Registrar/Actualizar Administrador con Credenciales Temporales
+        const { error: errAdmin } = await supabase.from('administradores_comercios').upsert({
           rut: datos.rutRepresentante,
           nombre: datos.representante,
           email: datos.email,
-          comercioId: datos.id || 'Nuevo',
-          comercioNombre: datos.nombre,
-          estado: 'Pendiente primer acceso',
-          fechaCreacion: new Date().toISOString()
-        };
+          comercio_id: datos.id !== 'Nuevo' ? datos.id : null,
+          estado: 'Pendiente',
+          password_temporal: tempPass,
+          enlace_activacion: activationLink
+        }, { onConflict: 'rut' });
 
-        localStorage.setItem('miph_administradores_db', JSON.stringify([...adminsActuales, nuevoAdmin]));
+        if (errAdmin) throw errAdmin;
 
-        // Intentar guardar en Supabase si la tabla existe
-        try {
-          await supabase.from('administradores_comercios').insert({
-            rut: datos.rutRepresentante,
-            nombre: datos.representante,
-            email: datos.email,
-            comercio_id: datos.id !== 'Nuevo' ? datos.id : null,
-            estado: 'Pendiente'
-          });
-        } catch (e) {
-          console.warn("No se pudo guardar en tabla administradores_comercios real");
-        }
+        setCredencialesGeneradas({
+          email: datos.email,
+          pass: tempPass,
+          link: activationLink
+        });
 
-        alert(`Convenio Aprobado.\n\nAdministrador creado: ${datos.representante}\nSe ha enviado un correo de activación a ${datos.email}`);
-        router.push('/comercios/nuevo/administrador');
+        setShowEmailModal(true);
       } else {
         const motivo = window.prompt("Indique el motivo del rechazo:");
         if (motivo) {
@@ -73,16 +75,82 @@ export default function RevisionPage() {
       }
     } catch (error) {
       console.error("Error en decisión:", error);
-      alert("Hubo un error al procesar la solicitud.");
+      alert("Hubo un error al procesar la solicitud. Verifique que la tabla 'administradores_comercios' tenga las columnas 'password_temporal' y 'enlace_activacion'.");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  if (!datos) return <div className="p-20 text-center">Cargando antecedentes...</div>;
+  if (!datos) return <div className="p-20 text-center text-slate-400 italic">Cargando antecedentes del comercio...</div>;
 
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-6">
+      {/* MODAL DE VISTA PREVIA DE EMAIL (POST-APROBACIÓN) */}
+      {showEmailModal && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center z-[200] p-4">
+          <div className="bg-white rounded-[3rem] w-full max-w-2xl shadow-2xl overflow-hidden border border-white/20 animate-in zoom-in duration-300">
+            <div className="bg-primary p-8 text-white flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-white/20 rounded-2xl">
+                  <Mail size={24} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black uppercase tracking-tighter">Notificación Enviada</h3>
+                  <p className="text-xs text-white/70">Credenciales de activación generadas con éxito</p>
+                </div>
+              </div>
+              <ShieldAlert size={32} className="text-white/30" />
+            </div>
+
+            <div className="p-10 space-y-8">
+              <div className="space-y-4">
+                <p className="text-sm text-slate-500 font-medium">El siguiente mensaje ha sido enviado a <span className="font-bold text-slate-900">{credencialesGeneradas?.email}</span>:</p>
+
+                <div className="bg-slate-50 rounded-3xl border border-slate-100 p-8 space-y-6">
+                   <div className="space-y-1">
+                      <h4 className="text-xl font-bold text-slate-800">¡Bienvenido al Portal de Comercios PH!</h4>
+                      <p className="text-sm text-slate-500">Su convenio ha sido aprobado por la Municipalidad.</p>
+                   </div>
+
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-white p-4 rounded-2xl border border-slate-200 space-y-1">
+                         <p className="text-[10px] font-black text-slate-400 uppercase">Usuario / Email</p>
+                         <p className="text-sm font-bold text-primary">{credencialesGeneradas?.email}</p>
+                      </div>
+                      <div className="bg-white p-4 rounded-2xl border border-slate-200 space-y-1">
+                         <p className="text-[10px] font-black text-slate-400 uppercase">Contraseña Temporal</p>
+                         <p className="text-sm font-mono font-black text-secondary">{credencialesGeneradas?.pass}</p>
+                      </div>
+                   </div>
+
+                   <div className="bg-blue-600 p-4 rounded-2xl text-center">
+                      <p className="text-white text-sm font-black uppercase tracking-widest">ACTIVAR MI CUENTA AHORA</p>
+                   </div>
+
+                   <p className="text-[10px] text-slate-400 text-center italic">
+                     Este enlace caduca en 48 horas. Se le solicitará cambiar su contraseña al primer ingreso.
+                   </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => router.push('/comercios')}
+                  className="flex-1 bg-slate-900 text-white py-5 rounded-2xl font-black text-sm hover:bg-black transition-all shadow-xl shadow-slate-900/20 uppercase tracking-widest"
+                >
+                  Finalizar Revisión
+                </button>
+                <button
+                  onClick={() => alert('Copiado al portapapeles')}
+                  className="px-8 flex items-center justify-center gap-2 border-2 border-slate-100 text-slate-500 rounded-2xl font-bold hover:bg-slate-50 transition-all"
+                >
+                  <Copy size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <span className="px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-black uppercase rounded-full tracking-wider">
