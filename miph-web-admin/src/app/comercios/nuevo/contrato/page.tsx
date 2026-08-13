@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, FileText, Calendar, Plus, ShieldCheck, Save, FileCheck, Loader2 } from 'lucide-react';
 import { saveFile } from '@/lib/fileStorage';
+import { supabase } from '@/lib/supabase';
 
 export default function ContratoVigenciaPage() {
   const router = useRouter();
@@ -39,22 +40,57 @@ export default function ContratoVigenciaPage() {
     try {
       const formData = new FormData(e.currentTarget as HTMLFormElement);
       const borradorActual = JSON.parse(localStorage.getItem('miph_nuevo_comercio_borrador') || '{}');
+
+      // 1. Subimos el ARCHIVO REAL al Storage de Supabase
       const publicUrl = await saveFile(borradorActual.rut, file);
 
+      // 2. Preparamos el objeto completo
+      const decreto = `DEC-2026-${Math.floor(Math.random() * 1000)}`;
+      const fInicio = formData.get('fechaInicio');
+      const fTermino = formData.get('fechaTermino');
+
+      // 3. GUARDAMOS EN SUPABASE COMO PENDIENTE (Para que aparezca en la bandeja municipal)
+      const { data: comercio, error: errSup } = await supabase
+        .from('comercios')
+        .upsert({
+          rut: borradorActual.rut,
+          razon_social: borradorActual.razonSocial,
+          nombre_fantasia: borradorActual.nombre,
+          giro: borradorActual.giro,
+          telefono: borradorActual.telefono,
+          email: borradorActual.email,
+          direccion_matriz: borradorActual.direccion,
+          comuna: borradorActual.comuna,
+          representante_legal: borradorActual.representante,
+          rut_representante_legal: borradorActual.rutRepresentante,
+          categoria: borradorActual.categoria,
+          decreto_numero: decreto,
+          fecha_inicio: fInicio,
+          fecha_termino: fTermino,
+          archivo_url: publicUrl,
+          estado: 'Pendiente'
+        }, { onConflict: 'rut' })
+        .select()
+        .single();
+
+      if (errSup) throw errSup;
+
+      // 4. Actualizamos el borrador local con el ID real de la base de datos
       const borradorActualizado = {
         ...borradorActual,
-        fechaInicio: formData.get('fechaInicio'),
-        fechaTermino: formData.get('fechaTermino'),
+        id: comercio.id, // ID ÚNICO DE SUPABASE
+        fechaInicio: fInicio,
+        fechaTermino: fTermino,
         nombreArchivo: file.name,
         archivoUrl: publicUrl,
-        decreto: `DEC-2026-${Math.floor(Math.random() * 1000)}`,
+        decreto: decreto,
       };
 
       localStorage.setItem('miph_nuevo_comercio_borrador', JSON.stringify(borradorActualizado));
       router.push('/comercios/nuevo/revision');
     } catch (error: any) {
-      console.error("Error al procesar el archivo:", error);
-      alert(`Error técnico de Supabase: ${error.message || 'No se pudo conectar con el servidor'}. Asegúrese de que el bucket "contratos" existe y es público.`);
+      console.error("Error al procesar el archivo o guardar en nube:", error);
+      alert(`Error técnico: ${error.message || 'No se pudo conectar con el servidor'}`);
     } finally {
       setIsSaving(false);
     }

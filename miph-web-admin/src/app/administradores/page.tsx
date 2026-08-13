@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Search, UserCog, Mail, CheckCircle2, XCircle, Clock, MoreHorizontal, Loader2, Edit } from 'lucide-react';
+import { Search, UserCog, Mail, CheckCircle2, XCircle, Clock, MoreHorizontal, Loader2, Edit, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function AdministradoresPage() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
+  const [isSendingEmail, setIsSendingEmail] = useState<string | null>(null);
 
   const fetchAdmins = async () => {
     setLoading(true);
@@ -48,8 +49,46 @@ export default function AdministradoresPage() {
     return () => window.removeEventListener('click', cerrarMenu);
   }, []);
 
-  const handleResendEmail = (email: string) => {
-    alert(`Reenviando correo de activación a: ${email}`);
+  const handleResendEmail = async (admin: any) => {
+    setIsSendingEmail(admin.id.toString());
+    try {
+      const res = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: admin.email,
+          nombre: admin.nombre,
+          tempPass: admin.password_temporal || 'Consultar con Municipalidad',
+          activationLink: admin.enlace_activacion || '#'
+        })
+      });
+
+      if (!res.ok) throw new Error('Error al enviar email');
+      alert(`Correo de activación reenviado con éxito a: ${admin.email}`);
+    } catch (e) {
+      console.error("Fallo reenvío de email:", e);
+      alert("No se pudo reenviar el correo. Verifique la conexión o que los datos del administrador sean correctos.");
+    } finally {
+      setIsSendingEmail(null);
+      setMenuAbierto(null);
+    }
+  };
+
+  const handleDeleteAdmin = async (id: string, nombre: string) => {
+    if (window.confirm(`¿Estás seguro que deseas ELIMINAR permanentemente al administrador "${nombre}"?`)) {
+      try {
+        const { error } = await supabase
+          .from('administradores_comercios')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        fetchAdmins();
+      } catch (error: any) {
+        console.error('Error deleting admin:', error.message || error);
+        alert("No se pudo eliminar el registro.");
+      }
+    }
     setMenuAbierto(null);
   };
 
@@ -142,16 +181,28 @@ export default function AdministradoresPage() {
                     {menuAbierto === (admin.id ? admin.id.toString() : index.toString()) && (
                       <div className="absolute right-0 top-12 w-48 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 overflow-hidden" onClick={e => e.stopPropagation()}>
                         <button
-                          onClick={() => handleResendEmail(admin.email)}
-                          className="w-full flex items-center gap-2 p-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                          onClick={() => handleResendEmail(admin)}
+                          disabled={isSendingEmail === admin.id.toString()}
+                          className="w-full flex items-center gap-2 p-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50"
                         >
-                          <Mail size={16} /> Reenviar Email
+                          {isSendingEmail === admin.id.toString() ? (
+                            <Loader2 className="animate-spin" size={16} />
+                          ) : (
+                            <Mail size={16} />
+                          )}
+                          {isSendingEmail === admin.id.toString() ? 'Enviando...' : 'Reenviar Email'}
                         </button>
                         <button
                           onClick={() => alert('Función próximamente')}
                           className="w-full flex items-center gap-2 p-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors border-t border-slate-100"
                         >
                           <Edit size={16} /> Editar Perfil
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAdmin(admin.id, admin.nombre)}
+                          className="w-full flex items-center gap-2 p-3 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-slate-100"
+                        >
+                          <Trash2 size={16} /> Eliminar
                         </button>
                       </div>
                     )}

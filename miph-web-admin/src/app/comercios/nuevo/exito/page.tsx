@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from 'react'; // Agregamos useRef
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle2, LayoutDashboard, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -9,11 +9,10 @@ export default function ExitoIncorporacionPage() {
   const router = useRouter();
   const [comercioFinal, setComercioFinal] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(true);
-  const hasSaved = useRef(false); // Ref para evitar doble ejecución
+  const hasSaved = useRef(false);
 
   useEffect(() => {
     const saveToSupabase = async () => {
-      // 1. Evitar que se ejecute dos veces o si no hay datos
       if (hasSaved.current) return;
 
       const dStr = localStorage.getItem('miph_nuevo_comercio_borrador');
@@ -22,16 +21,17 @@ export default function ExitoIncorporacionPage() {
         return;
       }
 
-      hasSaved.current = true; // Marcamos como "en proceso"
+      hasSaved.current = true;
       const d = JSON.parse(dStr);
       const s = JSON.parse(localStorage.getItem('miph_sucursales_borrador') || '[]');
       const b = JSON.parse(localStorage.getItem('miph_beneficios_borrador') || '[]');
 
       try {
-        // 2. Insertar Comercio
+        // 2. INSERTAR O ACTUALIZAR COMERCIO (UPSERT)
         const { data: comercio, error: errC } = await supabase
           .from('comercios')
-          .insert({
+          .upsert({
+            id: d.id,
             rut: d.rut,
             razon_social: d.razonSocial,
             nombre_fantasia: d.nombre,
@@ -47,52 +47,43 @@ export default function ExitoIncorporacionPage() {
             fecha_inicio: d.fechaInicio,
             fecha_termino: d.fechaTermino,
             archivo_url: d.archivoUrl,
-            estado: 'Pendiente' // Aseguramos que entre a la bandeja de aprobación
-          })
+            estado: 'Vigente'
+          }, { onConflict: 'rut' })
           .select()
           .single();
 
-        if (errC) {
-          // Si el error es por RUT duplicado, intentamos recuperarlo en lugar de fallar
-          if (errC.code === '23505') {
-             const { data: existing } = await supabase.from('comercios').select().eq('rut', d.rut).single();
-             setComercioFinal(existing);
-          } else {
-            throw errC;
-          }
-        } else {
-          setComercioFinal(comercio);
+        if (errC) throw errC;
+        setComercioFinal(comercio);
 
-          // 3. Insertar Sucursales
-          if (s.length > 0) {
-            await supabase.from('sucursales').insert(
-              s.map((suc: any) => ({
-                comercio_id: comercio.id,
-                nombre: suc.nombre,
-                direccion: suc.direccion,
-                telefono: suc.telefono,
-                horario: suc.horario
-              }))
-            );
-          }
-
-          // 4. Insertar Beneficios
-          if (b.length > 0) {
-            await supabase.from('beneficios').insert(
-              b.map((ben: any) => ({
-                comercio_id: comercio.id,
-                titulo: ben.titulo,
-                descripcion: ben.descripcion,
-                dias_uso: ben.diasUso,
-                horario_uso: ben.horarioUso,
-                condiciones: ben.condiciones,
-                estado: ben.estado
-              }))
-            );
-          }
+        // 3. Insertar Sucursales
+        if (s.length > 0) {
+          await supabase.from('sucursales').insert(
+            s.map((suc: any) => ({
+              comercio_id: comercio.id,
+              nombre: suc.nombre,
+              direccion: suc.direccion,
+              telefono: suc.telefono,
+              horario: suc.horario
+            }))
+          );
         }
 
-        // 5. Limpiar borradores solo después de un éxito total o parcial controlado
+        // 4. Insertar Beneficios
+        if (b.length > 0) {
+          await supabase.from('beneficios').insert(
+            b.map((ben: any) => ({
+              comercio_id: comercio.id,
+              titulo: ben.titulo,
+              descripcion: ben.descripcion,
+              dias_uso: ben.diasUso,
+              horario_uso: ben.horarioUso,
+              condiciones: ben.condiciones,
+              estado: ben.estado
+            }))
+          );
+        }
+
+        // 5. Limpiar borradores
         localStorage.removeItem('miph_nuevo_comercio_borrador');
         localStorage.removeItem('miph_sucursales_borrador');
         localStorage.removeItem('miph_beneficios_borrador');
@@ -100,7 +91,7 @@ export default function ExitoIncorporacionPage() {
       } catch (error: any) {
         console.error('Error saving to Supabase:', error);
         alert(`Error al guardar: ${error.message}`);
-        hasSaved.current = false; // Permitir reintento si falló realmente
+        hasSaved.current = false;
       } finally {
         setIsSaving(false);
       }
@@ -143,17 +134,23 @@ export default function ExitoIncorporacionPage() {
             <span>Estado</span>
           </div>
           <div className="flex justify-between items-center">
-            <p className="font-bold text-slate-800">{comercioFinal?.nombre || '...'}</p>
+            <p className="font-bold text-slate-800">{comercioFinal?.nombre_fantasia || comercioFinal?.nombre || '...'}</p>
             <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] font-black rounded-full uppercase">Activo</span>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-3">
           <button
-            onClick={() => router.push('/comercios')}
+            onClick={() => router.push('/comercios/nuevo')}
             className="w-full py-4 bg-primary text-white rounded-xl font-black shadow-lg shadow-blue-900/20 hover:bg-blue-800 transition-all flex items-center justify-center gap-2"
           >
-            VER EN LA APP <LayoutDashboard size={20} />
+            REGISTRAR OTRO COMERCIO
+          </button>
+          <button
+            onClick={() => router.push('/comercios')}
+            className="w-full py-4 bg-slate-100 text-slate-700 rounded-xl font-black hover:bg-slate-200 transition-all flex items-center justify-center gap-2"
+          >
+            IR A GESTIÓN DE COMERCIOS
           </button>
           <button
             onClick={() => router.push('/')}

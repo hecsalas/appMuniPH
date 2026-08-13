@@ -12,6 +12,7 @@ export default function RevisionPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [credencialesGeneradas, setCredencialesGeneradas] = useState<any>(null);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   useEffect(() => {
     const borrador = localStorage.getItem('miph_nuevo_comercio_borrador');
@@ -43,7 +44,7 @@ export default function RevisionPage() {
           if (error) throw error;
         }
 
-        // 2. Registrar/Actualizar Administrador con Credenciales Temporales
+        // 2. Registrar/Actualizar Administrador en Supabase
         const { error: errAdmin } = await supabase.from('administradores_comercios').upsert({
           rut: datos.rutRepresentante,
           nombre: datos.representante,
@@ -55,6 +56,29 @@ export default function RevisionPage() {
         }, { onConflict: 'rut' });
 
         if (errAdmin) throw errAdmin;
+
+        // 3. ENVIAR EMAIL REAL VIA API
+        setIsSendingEmail(true);
+        try {
+          const res = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: datos.email,
+              nombre: datos.representante,
+              tempPass: tempPass,
+              activationLink: activationLink
+            })
+          });
+
+          if (!res.ok) throw new Error('Error al enviar email');
+          console.log("Email enviado satisfactoriamente");
+        } catch (e) {
+          console.error("Fallo envío de email:", e);
+          alert("El convenio se aprobó, pero hubo un problema al enviar el correo automático. Por favor, entregue las credenciales manualmente.");
+        } finally {
+          setIsSendingEmail(false);
+        }
 
         setCredencialesGeneradas({
           email: datos.email,
@@ -75,7 +99,7 @@ export default function RevisionPage() {
       }
     } catch (error) {
       console.error("Error en decisión:", error);
-      alert("Hubo un error al procesar la solicitud. Verifique que la tabla 'administradores_comercios' tenga las columnas 'password_temporal' y 'enlace_activacion'.");
+      alert("Hubo un error al procesar la solicitud.");
     } finally {
       setIsProcessing(false);
     }
@@ -104,7 +128,15 @@ export default function RevisionPage() {
 
             <div className="p-10 space-y-8">
               <div className="space-y-4">
-                <p className="text-sm text-slate-500 font-medium">El siguiente mensaje ha sido enviado a <span className="font-bold text-slate-900">{credencialesGeneradas?.email}</span>:</p>
+                <p className="text-sm text-slate-500 font-medium">
+                  {isSendingEmail ? (
+                    <span className="flex items-center gap-2 text-primary font-bold">
+                      <Loader2 className="animate-spin" size={16} /> Enviando correo real a la bandeja...
+                    </span>
+                  ) : (
+                    <>El siguiente mensaje ha sido enviado a <span className="font-bold text-slate-900">{credencialesGeneradas?.email}</span>:</>
+                  )}
+                </p>
 
                 <div className="bg-slate-50 rounded-3xl border border-slate-100 p-8 space-y-6">
                    <div className="space-y-1">
@@ -135,10 +167,10 @@ export default function RevisionPage() {
 
               <div className="flex gap-4">
                 <button
-                  onClick={() => router.push('/comercios')}
+                  onClick={() => router.push('/comercios/nuevo/administrador')}
                   className="flex-1 bg-slate-900 text-white py-5 rounded-2xl font-black text-sm hover:bg-black transition-all shadow-xl shadow-slate-900/20 uppercase tracking-widest"
                 >
-                  Finalizar Revisión
+                  Continuar con Registro
                 </button>
                 <button
                   onClick={() => alert('Copiado al portapapeles')}

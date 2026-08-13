@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:app369/comercio.dart';
 import 'package:app369/historialBeneficios.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BeneficiosPage extends StatefulWidget {
   final String? initialBenefitTitle;
@@ -14,137 +16,57 @@ class BeneficiosPage extends StatefulWidget {
 }
 
 class _BeneficiosPageState extends State<BeneficiosPage> {
+  final _supabase = Supabase.instance.client;
+  List<Map<String, dynamic>> _comerciosReal = [];
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    if (widget.initialBenefitTitle != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _abrirModalPorTitulo(widget.initialBenefitTitle!, sucursal: widget.initialSucursal);
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    setState(() => _isLoading = true);
+    try {
+      // 1. Obtener comercios reales de Supabase
+      final List<dynamic> data = await _supabase
+          .from('comercios')
+          .select('*, sucursales(*), beneficios(*)');
+
+      setState(() {
+        _comerciosReal = data.map((e) => Map<String, dynamic>.from(e)).toList();
+        _isLoading = false;
       });
+
+      // 2. Si viene de un QR, abrir modal automáticamente
+      if (widget.initialBenefitTitle != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _abrirModalPorTitulo(widget.initialBenefitTitle!, sucursal: widget.initialSucursal);
+        });
+      }
+    } catch (e) {
+      debugPrint("Error fetching benefits from Supabase: $e");
+      setState(() => _isLoading = false);
     }
   }
 
   void _abrirModalPorTitulo(String titulo, {String? sucursal}) {
-    final item = [..._beneficiosComercios, ..._beneficiosMunicipales].firstWhere(
-      (element) => element['titulo'].toString().toLowerCase() == titulo.toLowerCase(),
+    // Buscar en la lista real de Supabase
+    final item = _comerciosReal.firstWhere(
+      (element) => element['nombre_fantasia'].toString().toLowerCase() == titulo.toLowerCase(),
       orElse: () => {},
     );
 
     if (item.isNotEmpty) {
       if (sucursal != null) {
-        item['sucursal_seleccionada'] = sucursal;
+        item['sucursal_escaneada_nombre'] = sucursal;
       }
       _mostrarDetallesBeneficio(item, context);
     }
   }
 
-  final List<Map<String, dynamic>> _beneficiosComercios = [
-    {
-      'titulo': 'Casa Guau',
-      'categoria': 'Mascotas',
-      'icono': Icons.pets_rounded,
-      'color': Colors.brown,
-      'telefono': '+56 2 1234 5678',
-      'beneficios': [
-        {'titulo': '10% Alimentos Húmedos y Accesorios', 'dias': 'Lunes', 'horario': 'Horario de Atención', 'condiciones': 'Mayor 18 años'},
-        {'titulo': '5% Sacos de Alimento', 'dias': 'Lunes', 'horario': 'Horario de Atención', 'condiciones': 'Mayor 18 años'},
-      ],
-      'direccion': 'Papa Juan XXIII N°1240, Padre Hurtado',
-      'latlng': const LatLng(-33.57334196235139, -70.82780493383449),
-    },
-    {
-      'titulo': 'Clínica del Sol',
-      'categoria': 'Salud',
-      'icono': FontAwesomeIcons.tooth,
-      'color': Colors.blue.shade200,
-      'telefono': '+56 9 9876 5432',
-      'beneficios': [
-        {'titulo': '15% Prestaciones Odontológicas', 'dias': 'Todos los días', 'horario': 'Horario de Atención', 'condiciones': 'Tarjeta Vecino'},
-        {'titulo': '17% Tratamientos Dentales', 'dias': 'Todos los días', 'horario': 'Horario de Atención', 'condiciones': 'Tarjeta Vecino'},
-      ],
-      'direccion': 'San Ignacio N°1624 local 16 y 17, Padre Hurtado',
-      'latlng': const LatLng(-33.5611360599154, -70.82747058214169),
-    },
-    {
-      'titulo': 'Escuela del Valle',
-      'categoria': 'Educación',
-      'icono': Icons.directions_car_rounded,
-      'color': Colors.red,
-      'telefono': '+56 2 2222 3333',
-      'beneficios': [
-        {'titulo': '30% en Clase B, C, D', 'dias': 'Lunes a Viernes', 'horario': '10:00 a 14:00 - 16:00 a 20:00', 'condiciones': 'Mayor 18, Presencial, Tarjeta Vecino'},
-        {'titulo': '30% en Clases Profesionales (A2 a A5)', 'dias': 'Lunes a Viernes', 'horario': '10:00 a 14:00 - 16:00 a 20:00', 'condiciones': 'Mayor 18, Presencial, Tarjeta Vecino'},
-      ],
-      'direccion': 'Rodolfo Jaramillo N°2523, Padre Hurtado',
-      'latlng': const LatLng(-33.564232834951014, -70.82255738057556),
-    },
-    {
-      'titulo': "Licorería Charl's",
-      'categoria': 'Bebidas Alcohólicas',
-      'icono': Icons.local_bar_rounded,
-      'color': Colors.grey,
-      'telefono': '+56 2 4444 5555',
-      'beneficios': [
-        {'titulo': '10% en Vinos y Cervezas', 'dias': 'Martes', 'horario': 'Horario de Atención', 'condiciones': 'Pago efectivo, Mayor 18 años'},
-        {'titulo': '10% en Destilados', 'dias': 'Miércoles', 'horario': 'Horario de Atención', 'condiciones': 'Pago efectivo, Mayor 18 años'},
-      ],
-      'direccion': 'San Genaro N°2605, local 1, Padre Hurtado',
-      'latlng': const LatLng(-33.56409908847409, -70.82447630409058),
-    },
-    {
-      'titulo': 'Optica Optik V&C',
-      'categoria': 'Salud',
-      'icono': FontAwesomeIcons.glasses,
-      'color': Colors.deepPurpleAccent,
-      'telefono': '+56 2 6666 7777',
-      'beneficios': [
-        {'titulo': '15% en Productos ópticos', 'dias': 'Lunes a Sábado', 'horario': 'Horario de Atención', 'condiciones': 'Atención en local, No acumulable'},
-        {'titulo': 'Lente monofocal desde \$25.000', 'dias': 'Lunes a Sábado', 'horario': 'Horario de Atención', 'condiciones': 'Atención en local'},
-      ],
-      'direccion': 'El Manzano Sur N°1261, Padre Hurtado',
-      'latlng': const LatLng(-33.57334196235139, -70.82780493383449),
-    },
-    {
-      'titulo': 'Otto Fritz',
-      'categoria': 'Entretenimiento y Comida',
-      'icono': Icons.local_activity_rounded,
-      'color': Colors.cyan,
-      'telefono': '+56 2 8888 9999',
-      'beneficios': [
-        {'titulo': '15% en Restaurant', 'dias': 'Lunes a Domingo', 'horario': 'Horario de Atención', 'condiciones': 'No acumulable'},
-        {'titulo': '\$8.000 Entrada Parque Acuático', 'dias': 'Lunes a Viernes', 'horario': 'Horario de Atención', 'condiciones': 'Entrada solo por venta online'},
-      ],
-      'direccion': 'Av. Caupolican N°3461, Peñaflor',
-      'latlng': const LatLng(-33.597966560136605, -70.88734338817774),
-    },
-    {
-      'titulo': 'Restobar Ibridos',
-      'categoria': 'Comida y Bebida',
-      'icono': Icons.nightlife_rounded,
-      'color': Colors.deepOrange,
-      'telefono': '+56 2 1111 2222',
-      'beneficios': [
-        {'titulo': '10% Total consumido', 'dias': 'Martes a Sábado', 'horario': '13:00 a 17:00', 'condiciones': 'Mayor de 18 años, No acumulable'},
-        {'titulo': '10% Beneficio Funcionario Municipal', 'dias': 'Martes a Sábado', 'horario': '13:00 a 21:00', 'condiciones': 'Presentar credencial municipal'},
-      ],
-      'direccion': 'San Ignacio N°1180, Padre Hurtado',
-      'latlng': const LatLng(-33.56495104660019, -70.82419764090052),
-    },
-    {
-      'titulo': 'Veterinaria Rompecorreas',
-      'categoria': 'Mascotas',
-      'icono': Icons.pets_rounded,
-      'color': Colors.green,
-      'telefono': '+56 2 3333 4444',
-      'beneficios': [
-        {'titulo': '20% Consultas y Vacunas', 'dias': 'Lunes a Sábado', 'horario': '09:00 a 19:00', 'condiciones': 'Sin límite de uso'},
-        {'titulo': '20% Esterilización y Procedimientos', 'dias': 'Lunes a Sábado', 'horario': '09:00 a 19:00', 'condiciones': 'No válido para urgencias'},
-      ],
-      'direccion': 'Rodolfo Jaramillo N°894, Padre Hurtado',
-      'latlng': const LatLng(-33.56717678649047, -70.82316685745141),
-    },
-  ];
-
+  // Mantenemos los beneficios municipales como lista fija o podemos traerlos también
   final List<Map<String, dynamic>> _beneficiosMunicipales = [
     {
       'titulo': 'Bono por Logro Escolar Municipal',
@@ -161,7 +83,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
   bool _isAvailableNow(String dias, String horario) {
     final lowerDias = dias.toLowerCase();
-    if (lowerDias == 'todos los días' || lowerDias == 'lunes a domingo') return _isWithinHorario(horario);
+    if (lowerDias == 'todos los días' || lowerDias == 'lunes a domingo' || lowerDias.isEmpty) return _isWithinHorario(horario);
 
     final now = DateTime.now();
     final weekday = now.weekday; // 1 = Monday, 7 = Sunday
@@ -182,7 +104,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
   bool _isWithinHorario(String horario) {
     final lowerHorario = horario.toLowerCase();
-    if (lowerHorario == 'horario de atención' || lowerHorario == 'todo el día') return true;
+    if (lowerHorario == 'horario de atención' || lowerHorario == 'todo el día' || lowerHorario.isEmpty) return true;
 
     try {
       final now = DateTime.now();
@@ -237,36 +159,44 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            _buildListaBeneficios(_beneficiosMunicipales),
-            _buildListaBeneficios(_beneficiosComercios),
-          ],
-        ),
+        body: _isLoading 
+          ? const Center(child: CircularProgressIndicator(color: Colors.white))
+          : TabBarView(
+              children: [
+                _buildListaBeneficios(_beneficiosMunicipales, isMunicipal: true),
+                _buildListaBeneficios(_comerciosReal, isMunicipal: false),
+              ],
+            ),
       ),
     );
   }
 
-  Widget _buildListaBeneficios(List<Map<String, dynamic>> lista) {
+  Widget _buildListaBeneficios(List<Map<String, dynamic>> lista, {required bool isMunicipal}) {
+    if (lista.isEmpty) {
+      return const Center(child: Text("No hay beneficios disponibles", style: TextStyle(color: Colors.white70)));
+    }
+
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemCount: lista.length,
       itemBuilder: (context, index) {
         final item = lista[index];
-        final totalBeneficios = (item['beneficios'] as List).length;
+        final nombre = isMunicipal ? item['titulo'] : item['nombre_fantasia'];
+        final categoria = item['categoria'] ?? "General";
+        final color = _getCategoryColor(categoria);
+        final beneficios = item['beneficios'] as List;
+
         return Card(
           elevation: 4,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: item['color'].withOpacity(0.1),
-              child: (item['icono'] is IconData)
-                  ? Icon(item['icono'], color: item['color'])
-                  : FaIcon(item['icono'], color: item['color'], size: 20),
+              backgroundColor: color.withOpacity(0.1),
+              child: _buildIcon(isMunicipal ? item['icono'] : _getIconForCategory(categoria), color: color, size: 20),
             ),
-            title: Text(item['titulo'], style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text("$totalBeneficios beneficios disponibles"),
+            title: Text(nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text("${beneficios.length} beneficios disponibles"),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _mostrarDetallesBeneficio(item, context),
           ),
@@ -275,14 +205,39 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     );
   }
 
+  Color _getCategoryColor(String cat) {
+    switch (cat.toLowerCase()) {
+      case 'mascotas': return Colors.brown;
+      case 'salud': return Colors.blue;
+      case 'educación': return Colors.red;
+      case 'alimentos': return Colors.orange;
+      case 'entretenimiento': return Colors.cyan;
+      default: return Colors.green;
+    }
+  }
+
+  IconData _getIconForCategory(String cat) {
+    switch (cat.toLowerCase()) {
+      case 'mascotas': return Icons.pets_rounded;
+      case 'salud': return FontAwesomeIcons.heartPulse;
+      case 'educación': return Icons.school_rounded;
+      case 'alimentos': return Icons.restaurant_rounded;
+      case 'entretenimiento': return Icons.local_activity_rounded;
+      default: return Icons.storefront_rounded;
+    }
+  }
+
   void _mostrarDetallesBeneficio(Map<String, dynamic> item, BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        final sucursal = item['sucursal_seleccionada'] ?? "";
+        final sucursalEscaneada = item['sucursal_escaneada_nombre'] ?? "";
         final beneficios = item['beneficios'] as List;
+        final categoria = item['categoria'] ?? "General";
+        final color = _getCategoryColor(categoria);
+        final icono = _getIconForCategory(categoria);
 
         return Container(
           height: MediaQuery.of(context).size.height * 0.9,
@@ -302,11 +257,11 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                       height: 200,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: item['color'].withOpacity(0.8),
+                        color: color.withOpacity(0.8),
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
                       ),
                       child: Center(
-                        child: _buildIcon(item['icono'], size: 80, color: Colors.white24),
+                        child: _buildIcon(icono, size: 80, color: Colors.white24),
                       ),
                     ),
                     Positioned(
@@ -317,7 +272,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         child: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () => Navigator.pop(context)),
                       ),
                     ),
-                    // Logo "flotante" por encima de la unión
                     Positioned(
                       bottom: -40,
                       left: 25,
@@ -326,22 +280,13 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 15,
-                              offset: const Offset(0, 8),
-                            )
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 15, offset: const Offset(0, 8))],
                         ),
                         child: Container(
                           width: 90,
                           height: 90,
-                          decoration: BoxDecoration(
-                            color: item['color'].withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: _buildIcon(item['icono'], size: 45, color: item['color']),
+                          decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(16)),
+                          child: _buildIcon(icono, size: 45, color: color),
                         ),
                       ),
                     ),
@@ -356,40 +301,29 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item['titulo'] + (sucursal.isNotEmpty ? " - $sucursal" : ""),
+                        (item['nombre_fantasia'] ?? item['titulo']) + (sucursalEscaneada.isNotEmpty ? " - $sucursalEscaneada" : ""),
                         style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, letterSpacing: -0.5),
                       ),
                       const SizedBox(height: 5),
-                      Text(
-                        item['categoria'],
-                        style: TextStyle(color: item['color'], fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
+                      Text(categoria, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16)),
                       const SizedBox(height: 15),
-                      
-                      // RATING SIMULADO
-                      Row(
-                        children: List.generate(5, (index) => Icon(Icons.star, color: index < 4 ? Colors.amber : Colors.grey.shade300, size: 20)),
-                      ),
+                      Row(children: List.generate(5, (index) => Icon(Icons.star, color: index < 4 ? Colors.amber : Colors.grey.shade300, size: 20))),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 25),
 
-                // 3. BLOQUE DE INFORMACIÓN (DIRECCIÓN, HORARIO, TELÉFONO)
+                // 3. BLOQUE DE INFORMACIÓN
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(color: Colors.grey.shade100),
-                  ),
+                  decoration: BoxDecoration(color: Colors.grey.shade50, borderRadius: BorderRadius.circular(25), border: Border.all(color: Colors.grey.shade100)),
                   child: Column(
                     children: [
-                      _buildPremiumInfoRow(Icons.location_on, item['direccion'] ?? ""),
+                      _buildPremiumInfoRow(Icons.location_on, item['direccion_matriz'] ?? item['direccion'] ?? ""),
                       const Divider(height: 30),
-                      _buildPremiumInfoRow(Icons.access_time_filled, "Horario de Atención"),
+                      _buildPremiumInfoRow(Icons.access_time_filled, "Horario Municipal Vigente"),
                       const Divider(height: 30),
                       _buildPremiumInfoRow(Icons.phone, item['telefono'] ?? "Sin teléfono"),
                     ],
@@ -413,7 +347,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   separatorBuilder: (context, index) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final b = beneficios[index];
-                    final available = _isAvailableNow(b['dias'] ?? "", b['horario'] ?? "");
+                    final available = _isAvailableNow(b['dias_uso'] ?? b['dias'] ?? "", b['horario_uso'] ?? b['horario'] ?? "");
                     return Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -425,50 +359,23 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         children: [
                           Container(
                             padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: available ? Colors.green.shade50 : Colors.grey.shade100,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.local_offer,
-                              color: available ? Colors.green : Colors.grey,
-                              size: 20,
-                            ),
+                            decoration: BoxDecoration(color: available ? Colors.green.shade50 : Colors.grey.shade100, shape: BoxShape.circle),
+                            child: Icon(Icons.local_offer, color: available ? Colors.green : Colors.grey, size: 20),
                           ),
                           const SizedBox(width: 15),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  b['titulo'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: available ? Colors.black87 : Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  b['dias'],
-                                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                                ),
+                                Text(b['titulo'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: available ? Colors.black87 : Colors.grey)),
+                                Text(b['dias_uso'] ?? b['dias'] ?? "", style: const TextStyle(fontSize: 12, color: Colors.grey)),
                               ],
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: available ? Colors.green.shade50 : Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              available ? "Disponible" : "Cerrado",
-                              style: TextStyle(
-                                color: available ? Colors.green : Colors.grey.shade600,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            decoration: BoxDecoration(color: available ? Colors.green.shade50 : Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
+                            child: Text(available ? "Disponible" : "Cerrado", style: TextStyle(color: available ? Colors.green : Colors.grey.shade600, fontSize: 10, fontWeight: FontWeight.bold)),
                           ),
                         ],
                       ),
@@ -502,33 +409,18 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      if (item['latlng'] != null)
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ComercioPage(initialLocation: item['latlng']),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.map_rounded, color: Colors.black87),
-                          label: const Text(
-                            "VER UBICACIÓN EN MAPA",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey.shade200,
-                            minimumSize: const Size(double.infinity, 55),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                            elevation: 0,
-                          ),
-                        ),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          // Lógica de mapa (coordenadas si existen)
+                        },
+                        icon: const Icon(Icons.map_rounded, color: Colors.black87),
+                        label: const Text("VER UBICACIÓN EN MAPA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade200, minimumSize: const Size(double.infinity, 55), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                      ),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 50),
               ],
             ),
@@ -536,18 +428,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         );
       },
     );
-  }
-
-  Widget _buildIcon(dynamic iconData, {double size = 24, Color? color}) {
-    if (iconData is IconData) {
-      // Intentamos detectar si es un icono de FontAwesome por su tipo de dato o familia
-      // En la mayoría de las versiones, FaIcon es necesario para renderizar correctamente
-      if (iconData.fontFamily?.toLowerCase().contains('fontawesome') ?? false) {
-        return FaIcon(iconData as dynamic, size: size, color: color);
-      }
-      return Icon(iconData, size: size, color: color);
-    }
-    return Icon(Icons.help_outline, size: size, color: color);
   }
 
   void _mostrarSolicitudBeneficio(Map<String, dynamic> item, BuildContext context) {
@@ -574,16 +454,15 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   separatorBuilder: (context, index) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final b = beneficios[index];
-                    final available = _isAvailableNow(b['dias'] ?? "", b['horario'] ?? "");
+                    final available = _isAvailableNow(b['dias_uso'] ?? b['dias'] ?? "", b['horario_uso'] ?? b['horario'] ?? "");
                     return InkWell(
-                      onTap: available ? () => _confirmarCanje(context, b) : null,
+                      onTap: available ? () => _iniciarProcesoCanje(context, item, b) : null,
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: available ? Colors.white : Colors.grey.shade50,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: available ? Colors.green.shade200 : Colors.grey.shade200),
-                          boxShadow: available ? [BoxShadow(color: Colors.green.withOpacity(0.05), blurRadius: 10)] : null,
                         ),
                         child: Row(
                           children: [
@@ -594,13 +473,11 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(b['titulo'], style: TextStyle(fontWeight: FontWeight.bold, color: available ? Colors.black87 : Colors.grey)),
-                                  Text(available ? "✓ Disponible ahora" : "× Fuera de horario", 
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: available ? Colors.green : Colors.grey)),
+                                  Text(available ? "✓ Disponible ahora" : "× Fuera de horario", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: available ? Colors.green : Colors.grey)),
                                 ],
                               ),
                             ),
-                            if (available)
-                              const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.green),
+                            if (available) const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.green),
                           ],
                         ),
                       ),
@@ -616,39 +493,130 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     );
   }
 
-  void _confirmarCanje(BuildContext context, Map<String, dynamic> beneficio) {
-    showDialog(
+  Future<void> _iniciarProcesoCanje(BuildContext context, Map<String, dynamic> comercio, Map<String, dynamic> beneficio) async {
+    // 1. Confirmación Inicial
+    final bool? confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-        title: const Text("Confirmar uso"),
+        title: const Text("Confirmar Solicitud"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("¿Deseas activar el beneficio:"),
+            Text("¿Deseas activar el beneficio de:"),
             Text("${beneficio['titulo']}?", style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             const Text("Condiciones:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-            Text(beneficio['condiciones'] ?? "Sin condiciones adicionales", style: const TextStyle(fontSize: 12)),
+            Text(beneficio['condiciones'] ?? "Sin condiciones adicionales", style: const TextStyle(fontSize: 12, color: Colors.black54)),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("CANCELAR")),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("CANCELAR")),
           ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context); // Cerrar dialogo
-              Navigator.pop(context); // Cerrar modal solicitud
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Beneficio solicitado: ${beneficio['titulo']}. Muestra tu pantalla en caja."), backgroundColor: Colors.green),
-              );
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green.shade700, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.green.shade700, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
             child: const Text("CONFIRMAR", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
+
+    if (confirm != true) return;
+
+    // 2. Transacción Real en Supabase
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 20),
+              const Text("Esperando aprobación del comercio...", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              const Text("Por favor, informe al cajero que ha solicitado el beneficio.", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey)),
+            ],
+          ),
+        ),
+      );
+
+      // Insertar solicitud
+      final response = await _supabase.from('solicitudes_canje').insert({
+        'comercio_id': comercio['id'],
+        'beneficio_id': beneficio['id'],
+        'vecino_nombre': 'Miguel Ángel (Vecino PH)', // Simulado por ahora
+        'estado': 'Pendiente',
+      }).select().single();
+
+      final solicitudId = response['id'];
+
+      // 3. Listener Realtime para esperar respuesta
+      final stream = _supabase
+          .from('solicitudes_canje')
+          .stream(primaryKey: ['id'])
+          .eq('id', solicitudId);
+
+      final subscription = stream.listen((data) {
+        if (data.isNotEmpty) {
+          final estado = data.first['estado'];
+          if (estado != 'Pendiente') {
+            Navigator.pop(context); // Cerrar diálogo de espera
+            _mostrarResultadoCanje(context, estado, data.first['motivo_rechazo']);
+          }
+        }
+      });
+
+      // Timeout de 2 minutos
+      Future.delayed(const Duration(minutes: 2), () {
+        subscription.cancel();
+        if (Navigator.canPop(context)) Navigator.pop(context);
+      });
+
+    } catch (e) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al conectar: $e"), backgroundColor: Colors.red));
+    }
+  }
+
+  void _mostrarResultadoCanje(BuildContext context, String estado, String? motivo) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(estado == 'Aprobado' ? Icons.check_circle : Icons.error, color: estado == 'Aprobado' ? Colors.green : Colors.red, size: 80),
+            const SizedBox(height: 20),
+            Text(estado == 'Aprobado' ? "¡BENEFICIO ACTIVADO!" : "SOLICITUD RECHAZADA", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Text(estado == 'Aprobado' ? "Ya puedes utilizar tu descuento en caja." : "Motivo: ${motivo ?? 'No especificado'}", textAlign: TextAlign.center),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Cerrar resultado
+                Navigator.pop(context); // Cerrar selector de beneficios
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue.shade900, minimumSize: const Size(double.infinity, 50)),
+              child: const Text("ENTENDIDO", style: TextStyle(color: Colors.white)),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIcon(dynamic iconData, {double size = 24, Color? color}) {
+    if (iconData is IconData) {
+      if (iconData.fontFamily?.toLowerCase().contains('fontawesome') ?? false) {
+        return FaIcon(iconData as dynamic, size: size, color: color);
+      }
+      return Icon(iconData, size: size, color: color);
+    }
+    return Icon(Icons.help_outline, size: size, color: color);
   }
 
   Widget _buildPremiumInfoRow(IconData icon, String text) {
