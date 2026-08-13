@@ -1,4 +1,4 @@
-package com.example.app369
+package cl.padrehurtado.miph
 
 import io.flutter.embedding.android.FlutterActivity
 
