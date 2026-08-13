@@ -345,7 +345,7 @@ export default function SucursalesPage() {
               <div className="bg-slate-50 p-6 rounded-[2.5rem] border-4 border-white shadow-inner inline-block mx-auto relative group">
                 <div className="absolute inset-0 bg-primary/5 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity" />
                 <QRCode
-                  value={`miph-app://beneficios?target=${encodeURIComponent(sucursalParaQR.comercios?.nombre_fantasia || sucursalParaQR.nombre)}`}
+                  value={`miph-app://beneficios?target=${encodeURIComponent(sucursalParaQR.comercios?.nombre_fantasia || sucursalParaQR.nombre)}&sucursal=${encodeURIComponent(sucursalParaQR.nombre)}`}
                   size={200}
                   fgColor="#1e3a8a" // Azul institucional en el código
                   level="H" // Mayor nivel de corrección de errores

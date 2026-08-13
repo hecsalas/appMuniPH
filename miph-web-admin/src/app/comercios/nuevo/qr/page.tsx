@@ -52,7 +52,7 @@ export default function GeneracionQRPage() {
             {/* QR CODE PREMIUM CON COLOR INSTITUCIONAL */}
             <div className="p-4 bg-slate-50 rounded-[2.5rem] border-4 border-white shadow-inner">
               <QRCode
-                value={`miph-app://beneficios?target=${encodeURIComponent(datos.nombre)}`}
+                value={`miph-app://beneficios?target=${encodeURIComponent(datos.nombre)}&sucursal=${encodeURIComponent(sucursal.nombre)}`}
                 size={180}
                 fgColor="#1e3a8a" // Azul institucional
                 level="H"

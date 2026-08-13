@@ -60,14 +60,16 @@ class _MyAppState extends State<MyApp> {
   void _handleDeepLink(Uri uri) {
     debugPrint('Deep Link recibido: $uri');
 
-    // miph-app://beneficios?target=Escuela del Valle
+    // miph-app://beneficios?target=Escuela del Valle&sucursal=Padre Hurtado
     if (uri.scheme == 'miph-app' && uri.host == 'beneficios') {
       final target = uri.queryParameters['target'];
+      final sucursal = uri.queryParameters['sucursal'];
       _navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => HomePage(
             initialIndex: 1,
             initialBenefitTitle: target,
+            initialSucursal: sucursal,
           ),
         ),
         (route) => false,

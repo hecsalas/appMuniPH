@@ -12,11 +12,13 @@ import 'inicio.dart';
 class HomePage extends StatefulWidget {
   final int initialIndex;
   final String? initialBenefitTitle;
+  final String? initialSucursal;
 
   const HomePage({
     super.key,
     this.initialIndex = 0,
     this.initialBenefitTitle,
+    this.initialSucursal,
   });
 
   @override
@@ -34,7 +36,10 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> get _paginas => [
         const InicioContent(),
-        BeneficiosPage(initialBenefitTitle: widget.initialBenefitTitle),
+        BeneficiosPage(
+          initialBenefitTitle: widget.initialBenefitTitle,
+          initialSucursal: widget.initialSucursal,
+        ),
         const SosPage(),
         const NewsPage(),
         const PerfilPage(),
