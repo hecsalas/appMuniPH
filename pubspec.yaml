@@ -40,10 +40,11 @@ flutter:
     - assets/xd.png
     - assets/logo-ios.png
     - assets/padrehurtado.png
+    - assets/logo-ios1.png
 
 
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo-ios.png"
+  image_path: "assets/logo-ios1.png"
   min_sdk_android: 21
