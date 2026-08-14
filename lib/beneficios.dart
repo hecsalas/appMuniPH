@@ -226,7 +226,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       default: return Icons.storefront_rounded;
     }
   }
- Riverside, CA
 
   void _mostrarDetallesBeneficio(Map<String, dynamic> item, BuildContext context) {
     showModalBottomSheet(
