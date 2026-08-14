@@ -549,20 +549,50 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
     // 2. Transacción Real en Supabase
     try {
+      // Definimos la suscripción fuera para poder cancelarla desde el diálogo
+      StreamSubscription? subscription;
+      String? solicitudId;
+
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const CircularProgressIndicator(),
               const SizedBox(height: 20),
-              const Text("Esperando aprobación del comercio...", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text("Esperando aprobación del comercio...",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text("Por favor, informe al cajero que ha solicitado el beneficio.", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, color: Colors.grey)),
+              const Text(
+                  "Por favor, informe al cajero que ha solicitado el beneficio.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 12, color: Colors.grey)),
             ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await subscription?.cancel();
+                if (solicitudId != null) {
+                  // Avisamos al comercio que cancelamos
+                  await _supabase
+                      .from('solicitudes_canje')
+                      .update({'estado': 'Cancelado'})
+                      .eq('id', solicitudId!);
+                }
+                Navigator.pop(dialogContext);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Solicitud cancelada por el usuario")),
+                );
+              },
+              child: const Text("CANCELAR SOLICITUD",
+                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            ),
+          ],
         ),
       );
 
@@ -574,33 +604,36 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         'estado': 'Pendiente',
       }).select().single();
 
-      final solicitudId = response['id'];
+      solicitudId = response['id'];
 
       // 3. Listener Realtime para esperar respuesta
       final stream = _supabase
           .from('solicitudes_canje')
           .stream(primaryKey: ['id'])
-          .eq('id', solicitudId);
+          .eq('id', solicitudId!);
 
-      final subscription = stream.listen((data) {
+      subscription = stream.listen((data) {
         if (data.isNotEmpty) {
           final estado = data.first['estado'];
-          if (estado != 'Pendiente') {
+          if (estado != 'Pendiente' && estado != 'Cancelado') {
             Navigator.pop(context); // Cerrar diálogo de espera
             _mostrarResultadoCanje(context, estado, data.first['motivo_rechazo']);
+            subscription?.cancel();
           }
         }
       });
 
       // Timeout de 2 minutos
       Future.delayed(const Duration(minutes: 2), () {
-        subscription.cancel();
-        if (Navigator.canPop(context)) Navigator.pop(context);
+        if (subscription != null) {
+          subscription!.cancel();
+          if (Navigator.canPop(context)) Navigator.pop(context);
+        }
       });
-
     } catch (e) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al conectar: $e"), backgroundColor: Colors.red));
+      if (Navigator.canPop(context)) Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error al conectar: $e"), backgroundColor: Colors.red));
     }
   }
 
