@@ -81,23 +81,46 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     },
   ];
 
+  String _normalizeText(String text) {
+    var str = text.toLowerCase();
+    const withDia = 'áéíóúü';
+    const withoutDia = 'aeiouu';
+    for (int i = 0; i < withDia.length; i++) {
+      str = str.replaceAll(withDia[i], withoutDia[i]);
+    }
+    return str;
+  }
+
   bool _isAvailableNow(String dias, String horario) {
-    final lowerDias = dias.toLowerCase();
-    if (lowerDias == 'todos los días' || lowerDias == 'lunes a domingo' || lowerDias.isEmpty) return _isWithinHorario(horario);
+    final normalizedDias = _normalizeText(dias);
+    if (normalizedDias == 'todos los dias' || 
+        normalizedDias == 'lunes a domingo' || 
+        normalizedDias.isEmpty) {
+      return _isWithinHorario(horario);
+    }
 
     final now = DateTime.now();
     final weekday = now.weekday; // 1 = Monday, 7 = Sunday
 
-    if (lowerDias.contains('lunes') && weekday == 1) return _isWithinHorario(horario);
-    if (lowerDias.contains('martes') && weekday == 2) return _isWithinHorario(horario);
-    if (lowerDias.contains('miércoles') && weekday == 3) return _isWithinHorario(horario);
-    if (lowerDias.contains('jueves') && weekday == 4) return _isWithinHorario(horario);
-    if (lowerDias.contains('viernes') && weekday == 5) return _isWithinHorario(horario);
-    if (lowerDias.contains('sábado') && weekday == 6) return _isWithinHorario(horario);
-    if (lowerDias.contains('domingo') && weekday == 7) return _isWithinHorario(horario);
+    // Mapeo de días para búsqueda flexible
+    final mapDias = {
+      1: 'lunes',
+      2: 'martes',
+      3: 'miercoles',
+      4: 'jueves',
+      5: 'viernes',
+      6: 'sabado',
+      7: 'domingo',
+    };
 
-    if (lowerDias == 'lunes a viernes' && weekday >= 1 && weekday <= 5) return _isWithinHorario(horario);
-    if (lowerDias == 'lunes a sábado' && weekday >= 1 && weekday <= 6) return _isWithinHorario(horario);
+    final hoy = mapDias[weekday]!;
+
+    // Verificación por palabra clave (flexible)
+    if (normalizedDias.contains(hoy)) return _isWithinHorario(horario);
+
+    // Verificación de rangos comunes
+    if (normalizedDias.contains('lunes a viernes') && weekday >= 1 && weekday <= 5) return _isWithinHorario(horario);
+    if (normalizedDias.contains('lunes a sabado') && weekday >= 1 && weekday <= 6) return _isWithinHorario(horario);
 
     return false;
   }
