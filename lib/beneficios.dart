@@ -216,7 +216,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     }
   }
 
-  IconData _getIconForCategory(String cat) {
+  dynamic _getIconForCategory(String cat) {
     switch (cat.toLowerCase()) {
       case 'mascotas': return Icons.pets_rounded;
       case 'salud': return FontAwesomeIcons.heartPulse;
@@ -226,6 +226,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       default: return Icons.storefront_rounded;
     }
   }
+ Riverside, CA
 
   void _mostrarDetallesBeneficio(Map<String, dynamic> item, BuildContext context) {
     showModalBottomSheet(
