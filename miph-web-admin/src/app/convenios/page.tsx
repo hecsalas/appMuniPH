@@ -1,62 +1,51 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Search, Gift, CheckCircle2, XCircle, Filter, MoreHorizontal, Edit, Trash2, Loader2 } from 'lucide-react';
+import { Search, Gift, CheckCircle2, XCircle, Filter, MoreHorizontal, Edit, Trash2, Loader2, Plus, X, Store, Calendar, Clock, Save } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function ConveniosPage() {
   const [listaBeneficios, setListaBeneficios] = useState<any[]>([]);
+  const [listaComercios, setListaComercios] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [beneficioAEditar, setBeneficioAEditar] = useState<any | null>(null);
+  const [mostrarModalNuevo, setMostrarModalNuevo] = useState(false);
+  const [isSavingNuevo, setIsSavingNuevo] = useState(false);
 
   const cargarDatos = async () => {
     setLoading(true);
     try {
-      console.log("Intentando cargar beneficios y comercios...");
-
-      // 1. Obtener beneficios con selector universal para evitar bloqueos por cache de columnas
+      // 1. Obtener beneficios
       const { data: bData, error: bError } = await supabase
         .from('beneficios')
         .select('*');
 
-      if (bError) {
-        console.error("Error al obtener beneficios:", bError);
-        throw bError;
-      }
-
-      if (bData && bData.length > 0) {
-        console.log("Columnas detectadas en primer beneficio:", Object.keys(bData[0]));
-      }
+      if (bError) throw bError;
 
       // 2. Obtener comercios
       const { data: cData, error: cError } = await supabase
         .from('comercios')
         .select('*');
 
-      if (cError) {
-        console.error("Error al obtener comercios:", cError);
-        throw cError;
-      }
+      if (cError) throw cError;
+      setListaComercios(cData || []);
 
-      // 3. Unir manualmente en el navegador con manejo de diferentes nomenclaturas posibles
+      // 3. Unir manualmente
       const joined = (bData || []).map(ben => {
-        // Buscamos el comercio_id intentando varias variaciones si falló el esquema
         const cId = ben.comercio_id || ben.comercioid || ben.ComercioId;
         const comercio = (cData || []).find(c => c.id === cId);
 
         return {
           ...ben,
-          estado: ben.estado || 'Activo', // Salvavidas: si la columna no llega, asumimos Activo
+          estado: ben.estado || 'Activo',
           comercios: comercio || null
         };
       });
 
-      console.log("Sincronización de datos completada. Registros:", joined.length);
       setListaBeneficios(joined);
     } catch (error: any) {
-      console.error('Error detallado en la carga del portal:', error.message || error);
-      alert(`Error de sincronización: ${error.message}. Por favor, ejecute "NOTIFY pgrst, 'reload schema';" en Supabase si el problema persiste.`);
+      console.error('Error en la carga:', error.message);
     } finally {
       setLoading(false);
     }
@@ -138,6 +127,37 @@ export default function ConveniosPage() {
     }
   };
 
+  const handleCreateBenefit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSavingNuevo(true);
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const { error } = await supabase
+        .from('beneficios')
+        .insert({
+          comercio_id: formData.get('comercio_id'),
+          titulo: formData.get('titulo'),
+          descripcion: formData.get('descripcion'),
+          dias_uso: formData.get('dias_uso'),
+          horario_uso: formData.get('horario_uso'),
+          condiciones: formData.get('condiciones'),
+          estado: 'Activo'
+        });
+
+      if (error) throw error;
+
+      alert("Beneficio creado exitosamente.");
+      setMostrarModalNuevo(false);
+      cargarDatos();
+    } catch (error: any) {
+      console.error('Error creating benefit:', error);
+      alert(`Error al crear: ${error.message}`);
+    } finally {
+      setIsSavingNuevo(false);
+    }
+  };
+
   return (
     <div className="p-8 space-y-6">
       <div className="flex justify-between items-center">
@@ -145,13 +165,19 @@ export default function ConveniosPage() {
           <h2 className="text-2xl font-bold text-slate-900">Catálogo de Beneficios</h2>
           <p className="text-slate-500 text-sm">Visualización global de convenios y ofertas para el vecino</p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
           <div className="bg-green-50 px-4 py-2 rounded-xl border border-green-100 text-center">
             <p className="text-[10px] font-black text-green-400 uppercase">Ofertas Activas</p>
             <p className="text-xl font-bold text-green-700">
               {listaBeneficios.filter(b => b.estado === 'Activo' && b.comercios?.estado === 'Vigente').length}
             </p>
           </div>
+          <button
+            onClick={() => setMostrarModalNuevo(true)}
+            className="bg-primary text-white px-6 py-3 rounded-xl font-black text-sm hover:bg-blue-800 transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2 uppercase tracking-widest"
+          >
+            <Plus size={18} /> Añadir Beneficio
+          </button>
         </div>
       </div>
 
@@ -291,6 +317,98 @@ export default function ConveniosPage() {
               <div className="flex gap-3 pt-6">
                 <button type="submit" className="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition-all">Guardar Cambios</button>
                 <button type="button" onClick={() => setBeneficioAEditar(null)} className="px-6 text-slate-500 font-medium hover:bg-slate-100 rounded-xl transition-all">Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE NUEVO BENEFICIO */}
+      {mostrarModalNuevo && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[110] p-4">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden border border-white/20 animate-in zoom-in duration-300">
+            <div className="bg-primary p-6 text-white flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-xl">
+                  <Plus size={20} />
+                </div>
+                <div>
+                  <h3 className="font-black uppercase tracking-tighter text-sm">Nuevo Beneficio</h3>
+                  <p className="text-[10px] text-white/70 uppercase font-bold tracking-widest">Añadir oferta al catálogo</p>
+                </div>
+              </div>
+              <button onClick={() => setMostrarModalNuevo(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateBenefit} className="p-8 space-y-5">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Comercio Responsable</label>
+                  <div className="relative">
+                    <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <select name="comercio_id" required className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-700 appearance-none">
+                      <option value="">Seleccionar comercio...</option>
+                      {listaComercios.map(c => (
+                        <option key={c.id} value={c.id}>{c.nombre_fantasia}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Título del Beneficio</label>
+                  <div className="relative">
+                    <Gift className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input name="titulo" required placeholder="Ej: 20% de descuento en consultas" className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-slate-700" />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Descripción Breve</label>
+                  <textarea name="descripcion" required placeholder="Detalle qué incluye el beneficio..." className="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm h-24" />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                   <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Días de Uso</label>
+                      <div className="relative">
+                        <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                        <input name="dias_uso" required placeholder="Lun a Vie" className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs" />
+                      </div>
+                   </div>
+                   <div className="space-y-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Horario</label>
+                      <div className="relative">
+                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                        <input name="horario_uso" required placeholder="09:00 - 18:00" className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs" />
+                      </div>
+                   </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Condiciones</label>
+                  <input name="condiciones" placeholder="Ej: No acumulable, solo presencial" className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs" />
+                </div>
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="submit"
+                  disabled={isSavingNuevo}
+                  className="flex-1 bg-primary text-white py-4 rounded-2xl font-black text-xs hover:bg-blue-800 transition-all shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 uppercase tracking-widest"
+                >
+                  {isSavingNuevo ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                  {isSavingNuevo ? 'Creando...' : 'Crear Beneficio'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMostrarModalNuevo(false)}
+                  className="px-6 text-slate-500 font-bold hover:bg-slate-50 rounded-2xl transition-all uppercase text-[10px] tracking-widest"
+                >
+                  Cancelar
+                </button>
               </div>
             </form>
           </div>

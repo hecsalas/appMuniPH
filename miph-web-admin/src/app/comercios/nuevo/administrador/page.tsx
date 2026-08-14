@@ -10,10 +10,17 @@ export default function AdministradorConfirmacionPage() {
   const [admin, setAdmin] = useState<any>(null);
 
   useEffect(() => {
-    const admins = JSON.parse(localStorage.getItem('miph_administradores_db') || '[]');
-    if (admins.length > 0) {
-      // Tomamos el último administrador creado (el de este flujo)
-      setAdmin(admins[admins.length - 1]);
+    // Priorizamos leer al administrador de la sesión activa
+    const currentAdmin = localStorage.getItem('miph_current_active_admin');
+
+    if (currentAdmin) {
+      setAdmin(JSON.parse(currentAdmin));
+    } else {
+      // Fallback: Tomamos el último administrador de la lista general
+      const admins = JSON.parse(localStorage.getItem('miph_administradores_db') || '[]');
+      if (admins.length > 0) {
+        setAdmin(admins[admins.length - 1]);
+      }
     }
   }, []);
 

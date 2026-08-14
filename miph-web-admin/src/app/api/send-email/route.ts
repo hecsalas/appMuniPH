@@ -46,11 +46,14 @@ export async function POST(request: Request) {
     });
 
     if (error) {
+      console.error("Resend API Error:", error);
       return NextResponse.json({ error }, { status: 400 });
     }
 
+    console.log("Email sent successfully via Resend:", data);
     return NextResponse.json({ message: 'Email enviado con éxito', data });
   } catch (error: any) {
+    console.error("Catch block Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

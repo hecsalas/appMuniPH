@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Search, UserCog, Mail, CheckCircle2, XCircle, Clock, MoreHorizontal, Loader2, Edit, Trash2 } from 'lucide-react';
+import { Search, UserCog, Mail, CheckCircle2, XCircle, Clock, MoreHorizontal, Loader2, Edit, Trash2, X, Save, Copy, Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export default function AdministradoresPage() {
@@ -9,6 +9,8 @@ export default function AdministradoresPage() {
   const [loading, setLoading] = useState(true);
   const [menuAbierto, setMenuAbierto] = useState<string | null>(null);
   const [isSendingEmail, setIsSendingEmail] = useState<string | null>(null);
+  const [adminAEditar, setAdminAEditar] = useState<any | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchAdmins = async () => {
     setLoading(true);
@@ -89,6 +91,42 @@ export default function AdministradoresPage() {
         alert("No se pudo eliminar el registro.");
       }
     }
+    setMenuAbierto(null);
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSaving(true);
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      const { error } = await supabase
+        .from('administradores_comercios')
+        .update({
+          email: formData.get('email'),
+          password_temporal: formData.get('password'),
+        })
+        .eq('id', adminAEditar.id);
+
+      if (error) throw error;
+
+      alert("Perfil actualizado con éxito.");
+      setAdminAEditar(null);
+      fetchAdmins();
+    } catch (error: any) {
+      console.error("Error updating admin:", error);
+      alert(`Error al guardar: ${error.message}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCopyCredentials = (admin: any) => {
+    const text = `Hola ${admin.nombre},\n\nTu acceso al Portal de Comercios Mi Padre Hurtado ha sido habilitado.\n\nUsuario: ${admin.email}\nClave Temporal: ${admin.password_temporal || 'Consultar'}\nLink de Activación: ${admin.enlace_activacion || 'https://miph.cl'}\n\nPor favor, ingresa y cambia tu clave en el primer acceso.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Datos de acceso copiados al portapapeles. Ya puedes pegarlos en WhatsApp o Email.");
+    });
     setMenuAbierto(null);
   };
 
@@ -193,7 +231,16 @@ export default function AdministradoresPage() {
                           {isSendingEmail === admin.id.toString() ? 'Enviando...' : 'Reenviar Email'}
                         </button>
                         <button
-                          onClick={() => alert('Función próximamente')}
+                          onClick={() => handleCopyCredentials(admin)}
+                          className="w-full flex items-center gap-2 p-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors border-t border-slate-100"
+                        >
+                          <Copy size={16} /> Copiar Accesos
+                        </button>
+                        <button
+                          onClick={() => {
+                            setAdminAEditar(admin);
+                            setMenuAbierto(null);
+                          }}
                           className="w-full flex items-center gap-2 p-3 text-sm text-slate-600 hover:bg-slate-50 transition-colors border-t border-slate-100"
                         >
                           <Edit size={16} /> Editar Perfil
@@ -213,6 +260,79 @@ export default function AdministradoresPage() {
           </tbody>
         </table>
       </div>
+
+      {/* MODAL DE EDICIÓN DE PERFIL */}
+      {adminAEditar && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden border border-white/20 animate-in zoom-in duration-300">
+            <div className="bg-primary p-6 text-white flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-xl">
+                  <UserCog size={20} />
+                </div>
+                <div>
+                  <h3 className="font-black uppercase tracking-tighter text-sm">Editar Perfil de Acceso</h3>
+                  <p className="text-[10px] text-white/70 uppercase font-bold tracking-widest">{adminAEditar.nombre}</p>
+                </div>
+              </div>
+              <button onClick={() => setAdminAEditar(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="p-8 space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Correo de Contacto / Usuario</label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input
+                      name="email"
+                      type="email"
+                      defaultValue={adminAEditar.email}
+                      required
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-700"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Contraseña Temporal</label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input
+                      name="password"
+                      type="text"
+                      defaultValue={adminAEditar.password_temporal}
+                      required
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 transition-all font-mono font-bold text-primary text-lg"
+                    />
+                  </div>
+                  <p className="text-[10px] text-slate-400 italic px-1">Esta clave es solo para el primer acceso del socio.</p>
+                </div>
+              </div>
+
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="flex-1 bg-primary text-white py-4 rounded-2xl font-black text-xs hover:bg-blue-800 transition-all shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 uppercase tracking-widest"
+                >
+                  {isSaving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
+                  {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdminAEditar(null)}
+                  className="px-6 text-slate-500 font-bold hover:bg-slate-50 rounded-2xl transition-all uppercase text-[10px] tracking-widest"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

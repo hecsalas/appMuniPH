@@ -57,7 +57,24 @@ export default function RevisionPage() {
 
         if (errAdmin) throw errAdmin;
 
-        // 3. ENVIAR EMAIL REAL VIA API
+        // 3. Sincronizar con LocalStorage para la página de confirmación
+        const adminsActuales = JSON.parse(localStorage.getItem('miph_administradores_db') || '[]');
+        const nuevoAdminLocal = {
+          id: Date.now(),
+          rut: datos.rutRepresentante,
+          nombre: datos.representante,
+          email: datos.email,
+          comercioId: datos.id || 'Nuevo',
+          comercioNombre: datos.nombre,
+          estado: 'Pendiente primer acceso',
+          fechaCreacion: new Date().toISOString()
+        };
+        localStorage.setItem('miph_administradores_db', JSON.stringify([...adminsActuales, nuevoAdminLocal]));
+
+        // Guardar como administrador ACTIVO para evitar desincronización en la siguiente pantalla
+        localStorage.setItem('miph_current_active_admin', JSON.stringify(nuevoAdminLocal));
+
+        // 4. ENVIAR EMAIL REAL VIA API
         setIsSendingEmail(true);
         try {
           const res = await fetch('/api/send-email', {
@@ -71,11 +88,16 @@ export default function RevisionPage() {
             })
           });
 
-          if (!res.ok) throw new Error('Error al enviar email');
+          if (!res.ok) {
+            const errorData = await res.json();
+            console.error("Detalle error email:", errorData);
+            throw new Error(errorData.error?.message || 'Error al enviar email');
+          }
+
           console.log("Email enviado satisfactoriamente");
-        } catch (e) {
+        } catch (e: any) {
           console.error("Fallo envío de email:", e);
-          alert("El convenio se aprobó, pero hubo un problema al enviar el correo automático. Por favor, entregue las credenciales manualmente.");
+          alert(`El convenio se aprobó, pero el correo falló: ${e.message}\n\nRECUERDA: Si usas el dominio gratuito de Resend, solo puedes enviarte correos a TI MISMO.`);
         } finally {
           setIsSendingEmail(false);
         }
