@@ -255,6 +255,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      showDragHandle: true,
+      barrierColor: Colors.black54,
       builder: (context) {
         final sucursalEscaneada = item['sucursal_escaneada_nombre'] ?? "";
         final beneficios = item['beneficios'] as List;
@@ -459,6 +461,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
+      showDragHandle: true,
+      barrierColor: Colors.black54,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
       builder: (context) {
         return Container(
@@ -574,23 +578,36 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             ],
           ),
           actions: [
-            TextButton(
-              onPressed: () async {
-                await subscription?.cancel();
-                if (solicitudId != null) {
-                  // Avisamos al comercio que cancelamos
-                  await _supabase
-                      .from('solicitudes_canje')
-                      .update({'estado': 'Cancelado'})
-                      .eq('id', solicitudId!);
-                }
-                Navigator.pop(dialogContext);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Solicitud cancelada por el usuario")),
-                );
-              },
-              child: const Text("CANCELAR SOLICITUD",
-                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+              child: OutlinedButton(
+                onPressed: () async {
+                  await subscription?.cancel();
+                  if (solicitudId != null) {
+                    await _supabase
+                        .from('solicitudes_canje')
+                        .update({'estado': 'Cancelado'})
+                        .eq('id', solicitudId!);
+                  }
+                  if (context.mounted) Navigator.pop(dialogContext);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Operación cancelada"),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.red,
+                  side: const BorderSide(color: Colors.red),
+                  minimumSize: const Size(double.infinity, 45),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text("CANCELAR OPERACIÓN",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
             ),
           ],
         ),

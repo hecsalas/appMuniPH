@@ -88,7 +88,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: _navigatorKey,
-      title: 'Mi Padre Hurtado',
+      title: 'MiPH',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
       home: const InicioPage(),
