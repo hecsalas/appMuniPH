@@ -2,6 +2,8 @@ name: app369
 description: "A new Flutter project."
 publish_to: 'none'
 
+version: 1.0.0+1
+
 environment:
   sdk: ^3.12.2
 
@@ -40,7 +42,7 @@ flutter:
     - assets/xd.png
     - assets/logo-ios.png
     - assets/padrehurtado.png
-    - assets/logo-ios1.png
+    - assets/logo-ios-fixed.png
 
 
 flutter_launcher_icons:
