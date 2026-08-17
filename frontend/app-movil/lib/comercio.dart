@@ -185,6 +185,7 @@ class _ComercioPageState extends State<ComercioPage> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
+      elevation: 0,
       builder: (context) {
         return Container(
           padding: const EdgeInsets.all(24),

@@ -76,7 +76,7 @@ export default function MonitorCanjesPage() {
     <div className="p-8 space-y-8">
       <header>
         <h2 className="text-3xl font-black text-slate-900 tracking-tight">Monitor de Canjes</h2>
-        <p className="text-slate-500 font-medium">Visualiza y gestiona las solicitudes de tus clientes en tiempo real</p>
+        <p className="text-slate-600 font-medium">Visualiza y gestiona las solicitudes de tus clientes en tiempo real</p>
       </header>
 
       <div className="grid grid-cols-1 gap-6">
@@ -86,8 +86,8 @@ export default function MonitorCanjesPage() {
           </div>
         ) : solicitudes.length === 0 ? (
           <div className="py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
-             <Clock size={48} className="mx-auto text-slate-200 mb-4" />
-             <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Esperando solicitudes entrantes...</p>
+             <Clock size={48} className="mx-auto text-slate-300 mb-4" />
+             <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Esperando solicitudes entrantes...</p>
           </div>
         ) : (
           solicitudes.map((sol) => (
@@ -95,11 +95,11 @@ export default function MonitorCanjesPage() {
               <div className="flex flex-col md:flex-row justify-between gap-8">
                 <div className="flex-1 space-y-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-slate-100 rounded-2xl text-slate-600">
+                    <div className="p-3 bg-slate-100 rounded-2xl text-slate-700">
                       <User size={24} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Vecino Solicitante</p>
+                      <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Vecino Solicitante</p>
                       <h4 className="text-xl font-bold text-slate-900">{sol.vecino_nombre}</h4>
                     </div>
                   </div>
@@ -143,7 +143,7 @@ export default function MonitorCanjesPage() {
                       {sol.estado}
                     </div>
                   )}
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-tighter">
                     {new Date(sol.fecha_solicitud).toLocaleString()}
                   </p>
                 </div>

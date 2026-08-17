@@ -9,7 +9,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class BeneficiosPage extends StatefulWidget {
   final String? initialBenefitTitle;
   final String? initialSucursal;
-  const BeneficiosPage({super.key, this.initialBenefitTitle, this.initialSucursal});
+
+  const BeneficiosPage({
+    super.key,
+    this.initialBenefitTitle,
+    this.initialSucursal,
+  });
 
   @override
   State<BeneficiosPage> createState() => _BeneficiosPageState();
@@ -42,7 +47,10 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       // 2. Si viene de un QR, abrir modal automáticamente
       if (widget.initialBenefitTitle != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _abrirModalPorTitulo(widget.initialBenefitTitle!, sucursal: widget.initialSucursal);
+          _abrirModalPorTitulo(
+            widget.initialBenefitTitle!,
+            sucursal: widget.initialSucursal,
+          );
         });
       }
     } catch (e) {
@@ -54,7 +62,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
   void _abrirModalPorTitulo(String titulo, {String? sucursal}) {
     // Buscar en la lista real de Supabase
     final item = _comerciosReal.firstWhere(
-      (element) => element['nombre_fantasia'].toString().toLowerCase() == titulo.toLowerCase(),
+      (element) =>
+          element['nombre_fantasia'].toString().toLowerCase() ==
+          titulo.toLowerCase(),
       orElse: () => {},
     );
 
@@ -75,7 +85,12 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       'color': Colors.blue,
       'telefono': '+56 2 2810 1600',
       'beneficios': [
-        {'titulo': 'Apoyo compra de materiales', 'dias': 'Lunes a Viernes', 'horario': '09:00 a 14:00', 'condiciones': 'Residencia en PH, Certificado de notas'},
+        {
+          'titulo': 'Apoyo compra de materiales',
+          'dias': 'Lunes a Viernes',
+          'horario': '09:00 a 14:00',
+          'condiciones': 'Residencia en PH, Certificado de notas',
+        },
       ],
       'direccion': 'DIDECO - San Alberto Hurtado 3295',
     },
@@ -93,8 +108,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
   bool _isAvailableNow(String dias, String horario) {
     final normalizedDias = _normalizeText(dias);
-    if (normalizedDias == 'todos los dias' || 
-        normalizedDias == 'lunes a domingo' || 
+    if (normalizedDias == 'todos los dias' ||
+        normalizedDias == 'lunes a domingo' ||
         normalizedDias.isEmpty) {
       return _isWithinHorario(horario);
     }
@@ -119,15 +134,24 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     if (normalizedDias.contains(hoy)) return _isWithinHorario(horario);
 
     // Verificación de rangos comunes
-    if (normalizedDias.contains('lunes a viernes') && weekday >= 1 && weekday <= 5) return _isWithinHorario(horario);
-    if (normalizedDias.contains('lunes a sabado') && weekday >= 1 && weekday <= 6) return _isWithinHorario(horario);
+    if (normalizedDias.contains('lunes a viernes') &&
+        weekday >= 1 &&
+        weekday <= 5)
+      return _isWithinHorario(horario);
+    if (normalizedDias.contains('lunes a sabado') &&
+        weekday >= 1 &&
+        weekday <= 6)
+      return _isWithinHorario(horario);
 
     return false;
   }
 
   bool _isWithinHorario(String horario) {
     final lowerHorario = horario.toLowerCase();
-    if (lowerHorario == 'horario de atención' || lowerHorario == 'todo el día' || lowerHorario.isEmpty) return true;
+    if (lowerHorario == 'horario de atención' ||
+        lowerHorario == 'todo el día' ||
+        lowerHorario.isEmpty)
+      return true;
 
     try {
       final now = DateTime.now();
@@ -158,16 +182,25 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           surfaceTintColor: Colors.transparent,
-          title: const Text('BENEFICIOS', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          title: const Text(
+            'BENEFICIOS',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
           centerTitle: true,
           actions: [
             IconButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ComercioPage())),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ComercioPage()),
+              ),
               icon: const Icon(Icons.storefront_outlined),
               color: Colors.white,
             ),
             IconButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HistorialPage())),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HistorialPage()),
+              ),
               icon: const Icon(Icons.local_offer_rounded),
               color: Colors.white,
             ),
@@ -177,26 +210,42 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             labelColor: Colors.white,
             unselectedLabelColor: Colors.white70,
             tabs: [
-              Tab(icon: Icon(Icons.account_balance_rounded), text: "Municipales"),
+              Tab(
+                icon: Icon(Icons.account_balance_rounded),
+                text: "Municipales",
+              ),
               Tab(icon: Icon(Icons.storefront_rounded), text: "Comercios"),
             ],
           ),
         ),
-        body: _isLoading 
-          ? const Center(child: CircularProgressIndicator(color: Colors.white))
-          : TabBarView(
-              children: [
-                _buildListaBeneficios(_beneficiosMunicipales, isMunicipal: true),
-                _buildListaBeneficios(_comerciosReal, isMunicipal: false),
-              ],
-            ),
+        body: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              )
+            : TabBarView(
+                children: [
+                  _buildListaBeneficios(
+                    _beneficiosMunicipales,
+                    isMunicipal: true,
+                  ),
+                  _buildListaBeneficios(_comerciosReal, isMunicipal: false),
+                ],
+              ),
       ),
     );
   }
 
-  Widget _buildListaBeneficios(List<Map<String, dynamic>> lista, {required bool isMunicipal}) {
+  Widget _buildListaBeneficios(
+    List<Map<String, dynamic>> lista, {
+    required bool isMunicipal,
+  }) {
     if (lista.isEmpty) {
-      return const Center(child: Text("No hay beneficios disponibles", style: TextStyle(color: Colors.white70)));
+      return const Center(
+        child: Text(
+          "No hay beneficios disponibles",
+          style: TextStyle(color: Colors.white70),
+        ),
+      );
     }
 
     return ListView.separated(
@@ -212,13 +261,22 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
         return Card(
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: color.withOpacity(0.1),
-              child: _buildIcon(isMunicipal ? item['icono'] : _getIconForCategory(categoria), color: color, size: 20),
+              child: _buildIcon(
+                isMunicipal ? item['icono'] : _getIconForCategory(categoria),
+                color: color,
+                size: 20,
+              ),
             ),
-            title: Text(nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
+            title: Text(
+              nombre,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             subtitle: Text("${beneficios.length} beneficios disponibles"),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _mostrarDetallesBeneficio(item, context),
@@ -230,27 +288,42 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
   Color _getCategoryColor(String cat) {
     switch (cat.toLowerCase()) {
-      case 'mascotas': return Colors.brown;
-      case 'salud': return Colors.blue;
-      case 'educación': return Colors.red;
-      case 'alimentos': return Colors.orange;
-      case 'entretenimiento': return Colors.cyan;
-      default: return Colors.green;
+      case 'mascotas':
+        return Colors.brown;
+      case 'salud':
+        return Colors.blue;
+      case 'educación':
+        return Colors.red;
+      case 'alimentos':
+        return Colors.orange;
+      case 'entretenimiento':
+        return Colors.cyan;
+      default:
+        return Colors.green;
     }
   }
 
   dynamic _getIconForCategory(String cat) {
     switch (cat.toLowerCase()) {
-      case 'mascotas': return Icons.pets_rounded;
-      case 'salud': return FontAwesomeIcons.heartPulse;
-      case 'educación': return Icons.school_rounded;
-      case 'alimentos': return Icons.restaurant_rounded;
-      case 'entretenimiento': return Icons.local_activity_rounded;
-      default: return Icons.storefront_rounded;
+      case 'mascotas':
+        return Icons.pets_rounded;
+      case 'salud':
+        return FontAwesomeIcons.heartPulse;
+      case 'educación':
+        return Icons.school_rounded;
+      case 'alimentos':
+        return Icons.restaurant_rounded;
+      case 'entretenimiento':
+        return Icons.local_activity_rounded;
+      default:
+        return Icons.storefront_rounded;
     }
   }
 
-  void _mostrarDetallesBeneficio(Map<String, dynamic> item, BuildContext context) {
+  void _mostrarDetallesBeneficio(
+    Map<String, dynamic> item,
+    BuildContext context,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -283,10 +356,16 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: color.withOpacity(0.8),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(35),
+                        ),
                       ),
                       child: Center(
-                        child: _buildIcon(icono, size: 80, color: Colors.white24),
+                        child: _buildIcon(
+                          icono,
+                          size: 80,
+                          color: Colors.white24,
+                        ),
                       ),
                     ),
                     Positioned(
@@ -294,7 +373,10 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                       left: 20,
                       child: CircleAvatar(
                         backgroundColor: Colors.white.withOpacity(0.3),
-                        child: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () => Navigator.pop(context)),
+                        child: IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
                       ),
                     ),
                     Positioned(
@@ -305,12 +387,21 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 15, offset: const Offset(0, 8))],
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
                         ),
                         child: Container(
                           width: 90,
                           height: 90,
-                          decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(16)),
+                          decoration: BoxDecoration(
+                            color: color.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           child: _buildIcon(icono, size: 45, color: color),
                         ),
                       ),
@@ -326,13 +417,38 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        (item['nombre_fantasia'] ?? item['titulo']) + (sucursalEscaneada.isNotEmpty ? " - $sucursalEscaneada" : ""),
-                        style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, letterSpacing: -0.5),
+                        (item['nombre_fantasia'] ?? item['titulo']) +
+                            (sucursalEscaneada.isNotEmpty
+                                ? " - $sucursalEscaneada"
+                                : ""),
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.5,
+                        ),
                       ),
                       const SizedBox(height: 5),
-                      Text(categoria, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(
+                        categoria,
+                        style: TextStyle(
+                          color: color,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                       const SizedBox(height: 15),
-                      Row(children: List.generate(5, (index) => Icon(Icons.star, color: index < 4 ? Colors.amber : Colors.grey.shade300, size: 20))),
+                      Row(
+                        children: List.generate(
+                          5,
+                          (index) => Icon(
+                            Icons.star,
+                            color: index < 4
+                                ? Colors.amber
+                                : Colors.grey.shade300,
+                            size: 20,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -343,14 +459,27 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(color: Colors.grey.shade50, borderRadius: BorderRadius.circular(25), border: Border.all(color: Colors.grey.shade100)),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(color: Colors.grey.shade100),
+                  ),
                   child: Column(
                     children: [
-                      _buildPremiumInfoRow(Icons.location_on, item['direccion_matriz'] ?? item['direccion'] ?? ""),
+                      _buildPremiumInfoRow(
+                        Icons.location_on,
+                        item['direccion_matriz'] ?? item['direccion'] ?? "",
+                      ),
                       const Divider(height: 30),
-                      _buildPremiumInfoRow(Icons.access_time_filled, "Horario Municipal Vigente"),
+                      _buildPremiumInfoRow(
+                        Icons.access_time_filled,
+                        "Horario Municipal Vigente",
+                      ),
                       const Divider(height: 30),
-                      _buildPremiumInfoRow(Icons.phone, item['telefono'] ?? "Sin teléfono"),
+                      _buildPremiumInfoRow(
+                        Icons.phone,
+                        item['telefono'] ?? "Sin teléfono",
+                      ),
                     ],
                   ),
                 ),
@@ -360,7 +489,10 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                 // 4. BENEFICIOS DISPONIBLES
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: Text("Beneficios disponibles para ti", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  child: Text(
+                    "Beneficios disponibles para ti",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 15),
 
@@ -369,38 +501,87 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   itemCount: beneficios.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final b = beneficios[index];
-                    final available = _isAvailableNow(b['dias_uso'] ?? b['dias'] ?? "", b['horario_uso'] ?? b['horario'] ?? "");
+                    final available = _isAvailableNow(
+                      b['dias_uso'] ?? b['dias'] ?? "",
+                      b['horario_uso'] ?? b['horario'] ?? "",
+                    );
                     return Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: available ? Colors.white : Colors.grey.shade50,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: available ? Colors.grey.shade200 : Colors.grey.shade100),
+                        border: Border.all(
+                          color: available
+                              ? Colors.grey.shade200
+                              : Colors.grey.shade100,
+                        ),
                       ),
                       child: Row(
                         children: [
                           Container(
                             padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(color: available ? Colors.green.shade50 : Colors.grey.shade100, shape: BoxShape.circle),
-                            child: Icon(Icons.local_offer, color: available ? Colors.green : Colors.grey, size: 20),
+                            decoration: BoxDecoration(
+                              color: available
+                                  ? Colors.green.shade50
+                                  : Colors.grey.shade100,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.local_offer,
+                              color: available ? Colors.green : Colors.grey,
+                              size: 20,
+                            ),
                           ),
                           const SizedBox(width: 15),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(b['titulo'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: available ? Colors.black87 : Colors.grey)),
-                                Text(b['dias_uso'] ?? b['dias'] ?? "", style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                Text(
+                                  b['titulo'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: available
+                                        ? Colors.black87
+                                        : Colors.grey,
+                                  ),
+                                ),
+                                Text(
+                                  b['dias_uso'] ?? b['dias'] ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(color: available ? Colors.green.shade50 : Colors.grey.shade200, borderRadius: BorderRadius.circular(10)),
-                            child: Text(available ? "Disponible" : "Cerrado", style: TextStyle(color: available ? Colors.green : Colors.grey.shade600, fontSize: 10, fontWeight: FontWeight.bold)),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: available
+                                  ? Colors.green.shade50
+                                  : Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              available ? "Disponible" : "Cerrado",
+                              style: TextStyle(
+                                color: available
+                                    ? Colors.green
+                                    : Colors.grey.shade600,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -416,11 +597,14 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   child: Column(
                     children: [
                       ElevatedButton(
-                        onPressed: () => _mostrarSolicitudBeneficio(item, context),
+                        onPressed: () =>
+                            _mostrarSolicitudBeneficio(item, context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green.shade700,
                           minimumSize: const Size(double.infinity, 60),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           elevation: 5,
                           shadowColor: Colors.green.withOpacity(0.3),
                         ),
@@ -429,7 +613,14 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                           children: [
                             Icon(Icons.local_offer, color: Colors.white),
                             SizedBox(width: 10),
-                            Text("SOLICITAR BENEFICIO", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(
+                              "SOLICITAR BENEFICIO",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -439,9 +630,24 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                           Navigator.pop(context);
                           // Lógica de mapa (coordenadas si existen)
                         },
-                        icon: const Icon(Icons.map_rounded, color: Colors.black87),
-                        label: const Text("VER UBICACIÓN EN MAPA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade200, minimumSize: const Size(double.infinity, 55), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                        icon: const Icon(
+                          Icons.map_rounded,
+                          color: Colors.black87,
+                        ),
+                        label: const Text(
+                          "VER UBICACIÓN EN MAPA",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey.shade200,
+                          minimumSize: const Size(double.infinity, 55),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -455,56 +661,107 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     );
   }
 
-  void _mostrarSolicitudBeneficio(Map<String, dynamic> item, BuildContext context) {
+  void _mostrarSolicitudBeneficio(
+    Map<String, dynamic> item,
+    BuildContext context,
+  ) {
     final beneficios = item['beneficios'] as List;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       showDragHandle: true,
       barrierColor: Colors.black54,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
       builder: (context) {
         return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          ),
           padding: const EdgeInsets.all(24.0),
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Selecciona tu beneficio", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const Text(
+                "Selecciona tu beneficio",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 20),
               Flexible(
                 child: ListView.separated(
                   shrinkWrap: true,
                   itemCount: beneficios.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final b = beneficios[index];
-                    final available = _isAvailableNow(b['dias_uso'] ?? b['dias'] ?? "", b['horario_uso'] ?? b['horario'] ?? "");
+                    final available = _isAvailableNow(
+                      b['dias_uso'] ?? b['dias'] ?? "",
+                      b['horario_uso'] ?? b['horario'] ?? "",
+                    );
                     return InkWell(
-                      onTap: available ? () => _iniciarProcesoCanje(context, item, b) : null,
+                      onTap: available
+                          ? () => _iniciarProcesoCanje(context, item, b)
+                          : null,
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: available ? Colors.white : Colors.grey.shade50,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: available ? Colors.green.shade200 : Colors.grey.shade200),
+                          border: Border.all(
+                            color: available
+                                ? Colors.green.shade200
+                                : Colors.grey.shade200,
+                          ),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.local_offer_rounded, color: available ? Colors.green : Colors.grey),
+                            Icon(
+                              Icons.local_offer_rounded,
+                              color: available ? Colors.green : Colors.grey,
+                            ),
                             const SizedBox(width: 15),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(b['titulo'], style: TextStyle(fontWeight: FontWeight.bold, color: available ? Colors.black87 : Colors.grey)),
-                                  Text(available ? "✓ Disponible ahora" : "× Fuera de horario", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: available ? Colors.green : Colors.grey)),
+                                  Text(
+                                    b['titulo'],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: available
+                                          ? Colors.black87
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                  Text(
+                                    available
+                                        ? "✓ Disponible ahora"
+                                        : "× Fuera de horario",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: available
+                                          ? Colors.green
+                                          : Colors.grey,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            if (available) const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.green),
+                            if (available)
+                              const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 14,
+                                color: Colors.green,
+                              ),
                           ],
                         ),
                       ),
@@ -520,7 +777,11 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     );
   }
 
-  Future<void> _iniciarProcesoCanje(BuildContext context, Map<String, dynamic> comercio, Map<String, dynamic> beneficio) async {
+  Future<void> _iniciarProcesoCanje(
+    BuildContext context,
+    Map<String, dynamic> comercio,
+    Map<String, dynamic> beneficio,
+  ) async {
     // 1. Confirmación Inicial
     final bool? confirm = await showDialog<bool>(
       context: context,
@@ -532,18 +793,38 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("¿Deseas activar el beneficio de:"),
-            Text("${beneficio['titulo']}?", style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              "${beneficio['titulo']}?",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 15),
-            const Text("Condiciones:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-            Text(beneficio['condiciones'] ?? "Sin condiciones adicionales", style: const TextStyle(fontSize: 12, color: Colors.black54)),
+            const Text(
+              "Condiciones:",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            ),
+            Text(
+              beneficio['condiciones'] ?? "Sin condiciones adicionales",
+              style: const TextStyle(fontSize: 12, color: Colors.black54),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("CANCELAR")),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("CANCELAR"),
+          ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green.shade700, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-            child: const Text("CONFIRMAR", style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green.shade700,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              "CONFIRMAR",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -561,20 +842,25 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const CircularProgressIndicator(),
               const SizedBox(height: 20),
-              const Text("Esperando aprobación del comercio...",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                "Esperando aprobación del comercio...",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 10),
               const Text(
-                  "Por favor, informe al cajero que ha solicitado el beneficio.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Colors.grey)),
+                "Por favor, informe al cajero que ha solicitado el beneficio.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
             ],
           ),
           actions: [
@@ -603,10 +889,14 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   foregroundColor: Colors.red,
                   side: const BorderSide(color: Colors.red),
                   minimumSize: const Size(double.infinity, 45),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                child: const Text("CANCELAR OPERACIÓN",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                child: const Text(
+                  "CANCELAR OPERACIÓN",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
@@ -614,12 +904,16 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       );
 
       // Insertar solicitud
-      final response = await _supabase.from('solicitudes_canje').insert({
-        'comercio_id': comercio['id'],
-        'beneficio_id': beneficio['id'],
-        'vecino_nombre': 'Miguel Ángel (Vecino PH)', // Simulado por ahora
-        'estado': 'Pendiente',
-      }).select().single();
+      final response = await _supabase
+          .from('solicitudes_canje')
+          .insert({
+            'comercio_id': comercio['id'],
+            'beneficio_id': beneficio['id'],
+            'vecino_nombre': 'Miguel Ángel (Vecino PH)', // Simulado por ahora
+            'estado': 'Pendiente',
+          })
+          .select()
+          .single();
 
       solicitudId = response['id'];
 
@@ -634,7 +928,11 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           final estado = data.first['estado'];
           if (estado != 'Pendiente' && estado != 'Cancelado') {
             Navigator.pop(context); // Cerrar diálogo de espera
-            _mostrarResultadoCanje(context, estado, data.first['motivo_rechazo']);
+            _mostrarResultadoCanje(
+              context,
+              estado,
+              data.first['motivo_rechazo'],
+            );
             subscription?.cancel();
           }
         }
@@ -650,11 +948,19 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     } catch (e) {
       if (Navigator.canPop(context)) Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error al conectar: $e"), backgroundColor: Colors.red));
+        SnackBar(
+          content: Text("Error al conectar: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  void _mostrarResultadoCanje(BuildContext context, String estado, String? motivo) {
+  void _mostrarResultadoCanje(
+    BuildContext context,
+    String estado,
+    String? motivo,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -662,20 +968,40 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(estado == 'Aprobado' ? Icons.check_circle : Icons.error, color: estado == 'Aprobado' ? Colors.green : Colors.red, size: 80),
+            Icon(
+              estado == 'Aprobado' ? Icons.check_circle : Icons.error,
+              color: estado == 'Aprobado' ? Colors.green : Colors.red,
+              size: 80,
+            ),
             const SizedBox(height: 20),
-            Text(estado == 'Aprobado' ? "¡BENEFICIO ACTIVADO!" : "SOLICITUD RECHAZADA", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text(
+              estado == 'Aprobado'
+                  ? "¡BENEFICIO ACTIVADO!"
+                  : "SOLICITUD RECHAZADA",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 10),
-            Text(estado == 'Aprobado' ? "Ya puedes utilizar tu descuento en caja." : "Motivo: ${motivo ?? 'No especificado'}", textAlign: TextAlign.center),
+            Text(
+              estado == 'Aprobado'
+                  ? "Ya puedes utilizar tu descuento en caja."
+                  : "Motivo: ${motivo ?? 'No especificado'}",
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context); // Cerrar resultado
                 Navigator.pop(context); // Cerrar selector de beneficios
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue.shade900, minimumSize: const Size(double.infinity, 50)),
-              child: const Text("ENTENDIDO", style: TextStyle(color: Colors.white)),
-            )
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue.shade900,
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              child: const Text(
+                "ENTENDIDO",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ],
         ),
       ),
@@ -697,7 +1023,16 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       children: [
         _buildIcon(icon, color: Colors.blue.shade900, size: 22),
         const SizedBox(width: 15),
-        Expanded(child: Text(text, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87))),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -1,14 +1,8 @@
-# Tareas: Mejoras MiPH
+# Tareas: Mejora de Contraste Portal Proveedor
 
-- [x] Renombrar la aplicación a "MiPH"
-    - [x] Actualizar AndroidManifest.xml
-    - [x] Actualizar Info.plist (iOS)
-    - [x] Actualizar main.dart (MaterialApp title)
-- [x] Mejorar Operación de Canje
-    - [x] Rediseñar botón de cancelación en diálogo de espera en `beneficios.dart`
-- [x] Mejorar Historial de Beneficios
-    - [x] Implementar consulta real a Supabase en `historialBeneficios.dart`
-    - [x] Mejorar diseño de tarjetas e indicadores de estado
-    - [x] Agregar RefreshIndicator
-- [x] Corregir error visual en modales
-    - [x] Agregar `showDragHandle` y ajustar `barrierColor` en `beneficios.dart`
+- [x] Mejorar legibilidad en Sidebar
+- [x] Mejorar contraste en Dashboard (Inicio)
+- [x] Mejorar contraste en Monitor de Canjes
+- [x] Mejorar contraste en Mis Convenios
+- [x] Mejorar contraste en Estadísticas
+- [x] Rediseñar página de Login (Contraste)

@@ -51,7 +51,7 @@ export default function EstadisticasPage() {
     <div className="p-8 space-y-10">
       <header>
         <h2 className="text-3xl font-black text-slate-900 tracking-tight">Estadísticas Propias</h2>
-        <p className="text-slate-500 font-medium">Analiza el impacto de tus beneficios en la comunidad</p>
+        <p className="text-slate-600 font-medium">Analiza el impacto de tus beneficios en la comunidad</p>
       </header>
 
       {/* Resumen Superior */}
@@ -69,23 +69,23 @@ export default function EstadisticasPage() {
 
         <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
            <div className="flex justify-between items-start">
-              <Users size={32} className="text-slate-200" />
-              <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full text-slate-400">Alcance</span>
+              <Users size={32} className="text-slate-300" />
+              <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full text-slate-500">Alcance</span>
            </div>
            <div>
               <p className="text-4xl font-black text-slate-900">{stats?.vecinosUnicos}</p>
-              <p className="text-xs font-bold text-slate-400 uppercase mt-1">Vecinos Distintos Atendidos</p>
+              <p className="text-xs font-bold text-slate-500 uppercase mt-1">Vecinos Distintos Atendidos</p>
            </div>
         </div>
 
         <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-4">
            <div className="flex justify-between items-start">
-              <BarChart3 size={32} className="text-slate-200" />
-              <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full text-slate-400">Total</span>
+              <BarChart3 size={32} className="text-slate-300" />
+              <span className="text-[10px] font-black uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full text-slate-500">Total</span>
            </div>
            <div>
               <p className="text-4xl font-black text-slate-900">{stats?.total}</p>
-              <p className="text-xs font-bold text-slate-400 uppercase mt-1">Solicitudes Totales Recibidas</p>
+              <p className="text-xs font-bold text-slate-500 uppercase mt-1">Solicitudes Totales Recibidas</p>
            </div>
         </div>
       </div>

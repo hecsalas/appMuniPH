@@ -1,61 +1,31 @@
-# Mejoras en Aplicación Móvil MiPH
+# Corrección de Modales en iOS (Gap Blanco al Arrastrar)
 
-Este plan detalla las mejoras solicitadas para la aplicación móvil, incluyendo el cambio de nombre, mejoras en la interfaz de beneficios y la corrección de errores visuales en los modales.
-
-## User Review Required
-
-> [!IMPORTANT]
-> El cambio de nombre de la aplicación a **MiPH** afectará cómo se muestra en el menú de aplicaciones del dispositivo (Android/iOS).
+Este plan detalla las correcciones necesarias para evitar que aparezca un fondo blanco indeseado cuando se arrastran los modales (bottom sheets) hacia abajo en dispositivos iOS (iPhone).
 
 ## Proposed Changes
 
-### 1. Renombrar la Aplicación a "MiPH"
+### 1. Estandarización de `showModalBottomSheet`
 
-#### [MODIFY] [AndroidManifest.xml](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/android/app/src/main/AndroidManifest.xml)
-- Cambiar `android:label` de "app369" a "MiPH".
-
-#### [MODIFY] [Info.plist](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/ios/Runner/Info.plist)
-- Cambiar `CFBundleDisplayName` a "MiPH".
-- Cambiar `CFBundleName` a "MiPH".
-
-#### [MODIFY] [main.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/main.dart)
-- Cambiar el título del `MaterialApp` a "MiPH".
-
----
-
-### 2. Mejorar Botón de Cancelar en Operación de Beneficio
+El problema principal en iOS ocurre cuando el `backgroundColor` del modal no es transparente, lo que hace que el fondo propio del modal se quede "atrapado" o sea visible durante el efecto de rebote (rubber-banding) de iOS.
 
 #### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
-- En `_iniciarProcesoCanje`, mejorar el diseño del botón "CANCELAR SOLICITUD" dentro del diálogo de espera (cuando se aguarda la confirmación del comercio).
-- El botón será más prominente (usando `OutlinedButton` o `ElevatedButton` con estilo de advertencia) para que sea claramente identificable como la acción de cancelar la operación en curso.
-- Se elimina la propuesta anterior de agregar una (X) de cierre en el modal de selección, manteniendo el flujo actual pero con el botón de cancelación de operación mejorado.
+- Cambiar `backgroundColor: Colors.white` por `Colors.transparent` en `_mostrarSolicitudBeneficio`.
+- Asegurar que `elevation: 0` esté presente para evitar sombras extrañas durante el arrastre.
+- Envolver el contenido de `_mostrarSolicitudBeneficio` en un `Container` con fondo blanco y bordes redondeados para que el diseño se mantenga igual pero el "lienzo" del modal sea invisible.
+
+#### [MODIFY] [comercio.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/comercio.dart)
+- Asegurar que el modal de detalles de comercio también use `backgroundColor: Colors.transparent` y tenga una estructura limpia.
 
 ---
 
-### 3. Mejorar Historial de Uso de Beneficios
+### 2. Mejora del Drag Handle (Opcional pero recomendado)
 
-#### [MODIFY] [historialBeneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/historialBeneficios.dart)
-- Reemplazar los datos estáticos por una consulta real a Supabase (tabla `solicitudes_canje`).
-- Implementar `RefreshIndicator` para permitir actualizar el historial.
-- Mejorar el diseño de las tarjetas de historial:
-    - Mostrar el nombre real del comercio y beneficio.
-    - Formatear mejor la fecha.
-    - Usar colores de estado más vibrantes.
-
----
-
-### 4. Corregir Error Visual en Modal de Beneficio
-
-#### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
-- En `_mostrarDetallesBeneficio` y `_mostrarSolicitudBeneficio`:
-    - Agregar `showDragHandle: true` para que el usuario sepa que puede arrastrar.
-    - Ajustar el `barrierColor` para que el fondo se oscurezca correctamente.
-    - Asegurar que el contenido del modal respete los bordes redondeados y no deje espacios en blanco al ser arrastrado parcialmente.
+Si el `showDragHandle: true` de Material 3 sigue causando problemas visuales en iOS al estar sobre un fondo transparente, se reemplazará por un indicador manual dentro del contenedor blanco. Por ahora, intentaremos primero con la transparencia total del modal.
 
 ## Verification Plan
 
-### Manual Verification
-1. **Renombrado**: Verificar que el nombre "MiPH" aparezca bajo el ícono de la app en Android e iOS.
-2. **Botón Cancelar**: Iniciar el proceso de canje de un beneficio y verificar que los botones de cancelación sean claros y funcionales.
-3. **Historial**: Abrir la página de historial y verificar que cargue datos reales de Supabase con el nuevo diseño.
-4. **Modal**: Abrir el detalle de un beneficio, arrastrarlo hacia abajo y verificar que no se vea una franja blanca extraña en la parte superior.
+### Manual Verification (iPhone/iOS)
+1. Abrir el detalle de un beneficio.
+2. Arrastrar el modal hacia abajo con un gesto rápido.
+3. Verificar que el fondo que se revela arriba sea el color de la barrera (oscurecido) y no una franja blanca.
+4. Repetir para el selector de beneficios y el mapa de comercios.

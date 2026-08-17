@@ -30,7 +30,7 @@ const Sidebar = () => {
           </div>
           <div>
             <h1 className="text-lg font-black tracking-tighter uppercase leading-none">MiPH</h1>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Socio Adherido</p>
+            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest mt-1">Socio Adherido</p>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@ const Sidebar = () => {
               className={`flex items-center gap-3 p-4 rounded-2xl transition-all ${
                 isActive
                 ? 'bg-primary text-white shadow-lg shadow-blue-900/40'
-                : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                : 'text-slate-300 hover:bg-white/5 hover:text-white'
               }`}
             >
               {item.icon}

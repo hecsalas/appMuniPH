@@ -47,7 +47,7 @@ export default function DashboardPage() {
       <header className="flex justify-between items-end">
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">¡Hola, {session?.nombre}!</h2>
-          <p className="text-slate-500 font-medium">Panel de control para {session?.comercios?.nombre_fantasia}</p>
+          <p className="text-slate-600 font-medium">Panel de control para {session?.comercios?.nombre_fantasia}</p>
         </div>
         <div className="bg-primary text-white px-6 py-3 rounded-2xl font-black text-sm shadow-xl shadow-blue-900/20 flex items-center gap-2">
            ESTADO: ACTIVO <Zap size={16} fill="currentColor" />
@@ -66,7 +66,7 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
            <h3 className="text-xl font-black text-slate-900">Actividad Reciente</h3>
            <div className="py-20 text-center">
-              <p className="text-slate-400 italic">No hay canjes registrados en las últimas 24 horas.</p>
+              <p className="text-slate-500 italic">No hay canjes registrados en las últimas 24 horas.</p>
            </div>
         </div>
 
@@ -74,7 +74,7 @@ export default function DashboardPage() {
            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -mr-10 -mt-10 group-hover:bg-primary/40 transition-all duration-500" />
            <div className="relative z-10 space-y-6">
               <h3 className="text-xl font-black">Mis Convenios</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
+              <p className="text-slate-300 text-sm leading-relaxed">
                 Recuerda que los términos legales de tus beneficios son administrados por la Municipalidad de Padre Hurtado.
               </p>
               <button className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs hover:gap-3 transition-all">
@@ -101,7 +101,7 @@ function StatCard({ icon, label, value, color }: any) {
         {icon}
       </div>
       <div>
-        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{label}</p>
+        <p className="text-xs font-black text-slate-500 uppercase tracking-widest">{label}</p>
         <p className="text-3xl font-black text-slate-900">{value}</p>
       </div>
     </div>

@@ -41,7 +41,7 @@ export default function MisConveniosPage() {
       <header className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Mis Convenios</h2>
-          <p className="text-slate-500 font-medium">Información oficial y beneficios activos en la Municipalidad</p>
+          <p className="text-slate-600 font-medium">Información oficial y beneficios activos en la Municipalidad</p>
         </div>
         <div className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-full font-bold text-xs border border-green-100">
            <CheckCircle2 size={16} /> CONVENIO VIGENTE
@@ -52,27 +52,27 @@ export default function MisConveniosPage() {
         {/* Ficha Contractual */}
         <div className="lg:col-span-1 space-y-6">
           <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-            <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
               <ShieldCheck size={18} className="text-primary" />
               Datos Legales
             </h3>
 
             <div className="space-y-6">
                <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Razón Social</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase">Razón Social</p>
                   <p className="font-bold text-slate-800">{main?.razon_social}</p>
                </div>
                <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">RUT Empresa</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase">RUT Empresa</p>
                   <p className="font-bold text-slate-800">{main?.rut}</p>
                </div>
                <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">N° Decreto</p>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase">N° Decreto</p>
                   <p className="font-bold text-primary font-mono">{main?.decreto_numero}</p>
                </div>
                <div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase">Vigencia</p>
-                  <p className="text-sm font-bold text-slate-600 flex items-center gap-2 mt-1">
+                  <p className="text-[10px] font-bold text-slate-500 uppercase">Vigencia</p>
+                  <p className="text-sm font-bold text-slate-700 flex items-center gap-2 mt-1">
                     <Calendar size={14} /> {main?.fecha_inicio} al {main?.fecha_termino}
                   </p>
                </div>
@@ -91,7 +91,7 @@ export default function MisConveniosPage() {
         <div className="lg:col-span-2 space-y-6">
            <div className="flex justify-between items-center">
               <h3 className="text-xl font-black text-slate-900">Beneficios Publicados</h3>
-              <span className="text-xs font-bold text-slate-400 uppercase">{beneficios.length} Items</span>
+              <span className="text-xs font-bold text-slate-500 uppercase">{beneficios.length} Items</span>
            </div>
 
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -105,13 +105,13 @@ export default function MisConveniosPage() {
                    </div>
                    <div>
                       <h4 className="font-bold text-slate-900 text-lg leading-tight">{ben.titulo}</h4>
-                      <p className="text-xs text-slate-500 mt-2 line-clamp-2">{ben.descripcion}</p>
+                      <p className="text-xs text-slate-600 mt-2 line-clamp-2">{ben.descripcion}</p>
                    </div>
                    <div className="pt-4 border-t border-slate-50 grid grid-cols-1 gap-2">
-                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
+                      <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase">
                          <Calendar size={12} /> {ben.dias_uso}
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
+                      <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase">
                          <Clock size={12} /> {ben.horario_uso}
                       </div>
                    </div>
