@@ -329,7 +329,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      showDragHandle: true,
+      showDragHandle: false,
       barrierColor: Colors.black54,
       builder: (context) {
         final sucursalEscaneada = item['sucursal_escaneada_nombre'] ?? "";
@@ -340,14 +340,28 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
         return Container(
           height: MediaQuery.of(context).size.height * 0.9,
+          clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(35)),
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          child: Column(
+            children: [
+              // Handle manual
+              Container(
+                margin: const EdgeInsets.only(top: 12, bottom: 0),
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(2.5),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                 // 1. HEADER CON FONDO DE COLOR Y ICONO
                 Stack(
                   clipBehavior: Clip.none,
@@ -672,15 +686,16 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      showDragHandle: true,
+      showDragHandle: false,
       barrierColor: Colors.black54,
       builder: (context) {
         return Container(
+          clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.8,
           ),
@@ -688,6 +703,18 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Handle manual
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 12, bottom: 16),
+                  width: 40,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(2.5),
+                  ),
+                ),
+              ),
               const Text(
                 "Selecciona tu beneficio",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

@@ -188,7 +188,8 @@ class _ComercioPageState extends State<ComercioPage> {
       elevation: 0,
       builder: (context) {
         return Container(
-          padding: const EdgeInsets.all(24),
+          clipBehavior: Clip.antiAlias,
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
@@ -197,6 +198,18 @@ class _ComercioPageState extends State<ComercioPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Handle manual
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  width: 40,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(2.5),
+                  ),
+                ),
+              ),
               Row(
                 children: [
                   CircleAvatar(
