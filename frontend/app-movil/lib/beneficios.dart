@@ -347,14 +347,22 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           ),
           child: Column(
             children: [
-              // Handle manual
+              // Handle manual - Color matched to header to avoid white strip
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 0),
-                width: 40,
-                height: 5,
+                width: double.infinity,
+                padding: const EdgeInsets.only(top: 12, bottom: 8),
                 decoration: BoxDecoration(
-                  color: Colors.black12,
-                  borderRadius: BorderRadius.circular(2.5),
+                  color: color.withOpacity(0.8),
+                ),
+                child: Center(
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.white30,
+                      borderRadius: BorderRadius.circular(2.5),
+                    ),
+                  ),
                 ),
               ),
               Expanded(
@@ -362,314 +370,314 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                // 1. HEADER CON FONDO DE COLOR Y ICONO
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.8),
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(35),
-                        ),
-                      ),
-                      child: Center(
-                        child: _buildIcon(
-                          icono,
-                          size: 80,
-                          color: Colors.white24,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 20,
-                      left: 20,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white.withOpacity(0.3),
-                        child: IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: -40,
-                      left: 25,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 15,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: color.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: _buildIcon(icono, size: 45, color: color),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 50),
-
-                // 2. TÍTULO Y INFO BÁSICA
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        (item['nombre_fantasia'] ?? item['titulo']) +
-                            (sucursalEscaneada.isNotEmpty
-                                ? " - $sucursalEscaneada"
-                                : ""),
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        categoria,
-                        style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      Row(
-                        children: List.generate(
-                          5,
-                          (index) => Icon(
-                            Icons.star,
-                            color: index < 4
-                                ? Colors.amber
-                                : Colors.grey.shade300,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 25),
-
-                // 3. BLOQUE DE INFORMACIÓN
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(color: Colors.grey.shade100),
-                  ),
-                  child: Column(
-                    children: [
-                      _buildPremiumInfoRow(
-                        Icons.location_on,
-                        item['direccion_matriz'] ?? item['direccion'] ?? "",
-                      ),
-                      const Divider(height: 30),
-                      _buildPremiumInfoRow(
-                        Icons.access_time_filled,
-                        "Horario Municipal Vigente",
-                      ),
-                      const Divider(height: 30),
-                      _buildPremiumInfoRow(
-                        Icons.phone,
-                        item['telefono'] ?? "Sin teléfono",
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                // 4. BENEFICIOS DISPONIBLES
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: Text(
-                    "Beneficios disponibles para ti",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 15),
-
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: beneficios.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final b = beneficios[index];
-                    final available = _isAvailableNow(
-                      b['dias_uso'] ?? b['dias'] ?? "",
-                      b['horario_uso'] ?? b['horario'] ?? "",
-                    );
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: available ? Colors.white : Colors.grey.shade50,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: available
-                              ? Colors.grey.shade200
-                              : Colors.grey.shade100,
-                        ),
-                      ),
-                      child: Row(
+                      // 1. HEADER CON FONDO DE COLOR Y ICONO
+                      Stack(
+                        clipBehavior: Clip.none,
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(10),
+                            height: 200,
+                            width: double.infinity,
                             decoration: BoxDecoration(
-                              color: available
-                                  ? Colors.green.shade50
-                                  : Colors.grey.shade100,
-                              shape: BoxShape.circle,
+                              color: color.withOpacity(0.8),
                             ),
-                            child: Icon(
-                              Icons.local_offer,
-                              color: available ? Colors.green : Colors.grey,
-                              size: 20,
+                            child: Center(
+                              child: _buildIcon(
+                                icono,
+                                size: 80,
+                                color: Colors.white24,
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 15),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  b['titulo'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: available
-                                        ? Colors.black87
-                                        : Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  b['dias_uso'] ?? b['dias'] ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
+                          Positioned(
+                            top: 20,
+                            left: 20,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white.withOpacity(0.3),
+                              child: IconButton(
+                                icon: const Icon(Icons.close, color: Colors.white),
+                                onPressed: () => Navigator.pop(context),
+                              ),
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: available
-                                  ? Colors.green.shade50
-                                  : Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              available ? "Disponible" : "Cerrado",
-                              style: TextStyle(
-                                color: available
-                                    ? Colors.green
-                                    : Colors.grey.shade600,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
+                          Positioned(
+                            bottom: -40,
+                            left: 25,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: Container(
+                                width: 90,
+                                height: 90,
+                                decoration: BoxDecoration(
+                                  color: color.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: _buildIcon(icono, size: 45, color: color),
                               ),
                             ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                ),
+                      const SizedBox(height: 50),
 
-                const SizedBox(height: 30),
-
-                // 5. BOTÓN PRINCIPAL
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () =>
-                            _mostrarSolicitudBeneficio(item, context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade700,
-                          minimumSize: const Size(double.infinity, 60),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 5,
-                          shadowColor: Colors.green.withOpacity(0.3),
-                        ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                      // 2. TÍTULO Y INFO BÁSICA
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.local_offer, color: Colors.white),
-                            SizedBox(width: 10),
                             Text(
-                              "SOLICITAR BENEFICIO",
+                              (item['nombre_fantasia'] ?? item['titulo']) +
+                                  (sucursalEscaneada.isNotEmpty
+                                      ? " - $sucursalEscaneada"
+                                      : ""),
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              categoria,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: color,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              children: List.generate(
+                                5,
+                                (index) => Icon(
+                                  Icons.star,
+                                  color: index < 4
+                                      ? Colors.amber
+                                      : Colors.grey.shade300,
+                                  size: 20,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Lógica de mapa (coordenadas si existen)
-                        },
-                        icon: const Icon(
-                          Icons.map_rounded,
-                          color: Colors.black87,
+
+                      const SizedBox(height: 25),
+
+                      // 3. BLOQUE DE INFORMACIÓN
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(color: Colors.grey.shade100),
                         ),
-                        label: const Text(
-                          "VER UBICACIÓN EN MAPA",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade200,
-                          minimumSize: const Size(double.infinity, 55),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
+                        child: Column(
+                          children: [
+                            _buildPremiumInfoRow(
+                              Icons.location_on,
+                              item['direccion_matriz'] ?? item['direccion'] ?? "",
+                            ),
+                            const Divider(height: 30),
+                            _buildPremiumInfoRow(
+                              Icons.access_time_filled,
+                              "Horario Municipal Vigente",
+                            ),
+                            const Divider(height: 30),
+                            _buildPremiumInfoRow(
+                              Icons.phone,
+                              item['telefono'] ?? "Sin teléfono",
+                            ),
+                          ],
                         ),
                       ),
+
+                      const SizedBox(height: 30),
+
+                      // 4. BENEFICIOS DISPONIBLES
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 25),
+                        child: Text(
+                          "Beneficios disponibles para ti",
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: beneficios.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final b = beneficios[index];
+                          final available = _isAvailableNow(
+                            b['dias_uso'] ?? b['dias'] ?? "",
+                            b['horario_uso'] ?? b['horario'] ?? "",
+                          );
+                          return Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: available ? Colors.white : Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: available
+                                    ? Colors.grey.shade200
+                                    : Colors.grey.shade100,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: available
+                                        ? Colors.green.shade50
+                                        : Colors.grey.shade100,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.local_offer,
+                                    color: available ? Colors.green : Colors.grey,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        b['titulo'],
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: available
+                                              ? Colors.black87
+                                              : Colors.grey,
+                                        ),
+                                      ),
+                                      Text(
+                                        b['dias_uso'] ?? b['dias'] ?? "",
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: available
+                                        ? Colors.green.shade50
+                                        : Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    available ? "Disponible" : "Cerrado",
+                                    style: TextStyle(
+                                      color: available
+                                          ? Colors.green
+                                          : Colors.grey.shade600,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // 5. BOTÓN PRINCIPAL
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () =>
+                                  _mostrarSolicitudBeneficio(item, context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green.shade700,
+                                minimumSize: const Size(double.infinity, 60),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                elevation: 5,
+                                shadowColor: Colors.green.withOpacity(0.3),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.local_offer, color: Colors.white),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    "SOLICITAR BENEFICIO",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                // Lógica de mapa (coordenadas si existen)
+                              },
+                              icon: const Icon(
+                                Icons.map_rounded,
+                                color: Colors.black87,
+                              ),
+                              label: const Text(
+                                "VER UBICACIÓN EN MAPA",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.grey.shade200,
+                                minimumSize: const Size(double.infinity, 55),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 50),
                     ],
                   ),
                 ),
-                const SizedBox(height: 50),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
