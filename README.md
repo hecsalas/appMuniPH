@@ -1,17 +1,48 @@
-# app369
+# MiPH - Mi Padre Hurtado
 
-A new Flutter project.
+## 🏗️ Arquitectura del Sistema
 
-## Getting Started
+### 1. Aplicación Móvil (`/app-movil`)
+Desarrollada en **Flutter**, es la interfaz principal para los vecinos de la comuna.
+- **Beneficios**: Visualización de catálogo dinámico de descuentos y convenios.
+- **Canje Digital**: Solicitud de beneficios mediante escaneo de códigos QR.
+- **SOS**: Acceso rápido a servicios de emergencia.
+- **Historial**: Seguimiento personal de beneficios utilizados.
 
-This project is a starting point for a Flutter application.
+### 2. Portal Municipal (`/portal-municipal`)
+Plataforma web desarrollada en **Next.js** para funcionarios municipales.
+- **Gestión de Convenios**: Administración completa de comercios y beneficios.
+- **Reportes**: Tablero de control con estadísticas reales sobre el impacto económico y social en la comuna.
+- **Auditoría**: Monitorización de solicitudes de canje y actividad de socios.
 
-A few resources to get you started if this is your first Flutter project:
+### 3. Portal Socio / Proveedor (`/portal-proveedor`)
+Portal web en **Next.js** exclusivo para los dueños de comercios.
+- **Monitor de Canjes**: Recepción y validación en tiempo real de solicitudes de vecinos.
+- **Estadísticas Propias**: Visualización del alcance de sus beneficios en la comunidad.
+- **Gestión de Sucursales**: Información de contacto y horarios de atención.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## ⚙️ Instrucciones de Ejecución
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Requisitos Previos
+- Flutter SDK (v3.12+)
+- Node.js (v18+)
+- Cuenta de Supabase con las tablas configuradas.
+
+### Ejecución Local
+
+**App Móvil:**
+```bash
+cd app-movil
+flutter pub get
+flutter run
+```
+
+**Portales Web:**
+```bash
+cd portal-municipal # o portal-proveedor
+npm install
+npm run dev
+```
+
+---
+Desarrollado para la comunidad de Padre Hurtado. 🇨🇱
