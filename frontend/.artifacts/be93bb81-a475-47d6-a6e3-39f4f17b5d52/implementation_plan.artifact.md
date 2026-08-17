@@ -1,31 +1,37 @@
-# Solución Definitiva al Fondo Blanco en iOS (Modales)
+# Solución Definitiva iOS y Mejora de Flujo QR
 
-Este plan aborda el persistente problema de la franja blanca al arrastrar modales en iPhone, eliminando la dependencia de componentes de sistema que se comportan de forma inconsistente en iOS con fondos transparentes.
+Este plan aborda el error visual en iPhone y restringe la solicitud de beneficios exclusivamente al flujo de escaneo QR.
+
+## User Review Required
+
+> [!IMPORTANT]
+> A partir de este cambio, los vecinos ya no verán el botón "SOLICITAR BENEFICIO" al navegar manualmente por el catálogo. Solo podrán activarlo si llegan a la pantalla mediante un escaneo de código QR.
 
 ## Proposed Changes
 
-### 1. Refactorización de Modales en Beneficios
+### 1. Solución Definitiva Fondo Blanco iOS
 
-El problema parece originarse en la combinación de `showDragHandle: true` y `backgroundColor: Colors.transparent` en iOS, donde el área del "handle" puede pintar un fondo blanco por defecto del tema.
+El problema del fondo blanco en iPhone ocurre porque el contenido (scrollable) se desliza, pero el "lienzo" del modal se queda estático o rebota de forma distinta.
 
 #### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
-- Desactivar `showDragHandle: false` en todos los `showModalBottomSheet`.
-- Agregar un indicador de arrastre manual (una pequeña barra gris) dentro del contenedor blanco para mantener la guía visual.
-- Asegurar que el contenedor blanco sea el elemento raíz del modal, con bordes redondeados explícitos.
-- Ajustar `clipBehavior: Clip.antiAlias` para asegurar que nada sobresalga de los bordes redondeados.
-- Eliminar la propiedad `shape` del `showModalBottomSheet` para evitar conflictos con la transparencia.
+- Modificar `_mostrarDetallesBeneficio`:
+    - Quitar el `Column` que separaba el handle del contenido.
+    - Poner el **indicador de arrastre manual** directamente como el primer elemento de la lista scrolleable o dentro de un `Stack` que cubra todo el modal.
+    - La mejor solución para iOS es que **todo** (incluyendo el color de fondo superior) esté dentro de un solo contenedor que se desplace unido.
 
 ---
 
-### 2. Sincronización en Comercio
+### 2. Restricción de Solicitud (Solo QR)
 
-#### [MODIFY] [comercio.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/comercio.dart)
-- Aplicar la misma lógica de contenedor raíz con bordes redondeados y fondo transparente en la base.
+#### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
+- Añadir un parámetro booleano `isFromQR` a `_mostrarDetallesBeneficio`.
+- En el `onTap` de la lista normal de beneficios, pasar `isFromQR: false`.
+- En `_abrirModalPorTitulo` (cuando se viene de un QR), pasar `isFromQR: true`.
+- En el diseño del modal, envolver el botón "SOLICITAR BENEFICIO" en un condicional `if (isFromQR)`.
 
 ## Verification Plan
 
-### Manual Verification (iPhone)
-1. Abrir cualquier modal de beneficio o comercio.
-2. Deslizar hacia abajo lentamente y luego rápido.
-3. Verificar que el área que queda expuesta arriba sea el fondo oscurecido de la aplicación (`barrierColor`) y **nunca** una franja blanca.
-4. Confirmar que el nuevo indicador de arrastre manual sea visible y estéticamente agradable.
+### Manual Verification
+1. **iPhone**: Abrir detalle de beneficio, deslizar hacia abajo y confirmar que no existe separación visual entre el handle y el resto del contenido.
+2. **Browsing**: Entrar a la app, ir a beneficios, abrir cualquier comercio y verificar que **NO** aparezca el botón de solicitar.
+3. **QR**: Simular un escaneo (usando un deep link o el scanner), verificar que el modal se abra automáticamente y que **SÍ** aparezca el botón de solicitar.

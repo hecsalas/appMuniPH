@@ -72,7 +72,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       if (sucursal != null) {
         item['sucursal_escaneada_nombre'] = sucursal;
       }
-      _mostrarDetallesBeneficio(item, context);
+      _mostrarDetallesBeneficio(item, context, isFromQR: true);
     }
   }
 
@@ -279,7 +279,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             ),
             subtitle: Text("${beneficios.length} beneficios disponibles"),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _mostrarDetallesBeneficio(item, context),
+            onTap: () => _mostrarDetallesBeneficio(item, context, isFromQR: false),
           ),
         );
       },
@@ -322,8 +322,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
   void _mostrarDetallesBeneficio(
     Map<String, dynamic> item,
-    BuildContext context,
-  ) {
+    BuildContext context, {
+    required bool isFromQR,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -347,7 +348,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           ),
           child: Column(
             children: [
-              // Handle manual - Color matched to header to avoid white strip
+              // 1. Handle area - Merged with color to avoid white gap on iOS bounce
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.only(top: 12, bottom: 8),
@@ -365,17 +366,19 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   ),
                 ),
               ),
+              // 2. Scrollable Content
               Expanded(
                 child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(), // Prevents internal white gaps
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 1. HEADER CON FONDO DE COLOR Y ICONO
+                      // Header Background (Matches handle color)
                       Stack(
                         clipBehavior: Clip.none,
                         children: [
                           Container(
-                            height: 200,
+                            height: 180, // Slightly reduced to compensate for handle
                             width: double.infinity,
                             decoration: BoxDecoration(
                               color: color.withOpacity(0.8),
@@ -389,7 +392,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                             ),
                           ),
                           Positioned(
-                            top: 20,
+                            top: 10,
                             left: 20,
                             child: CircleAvatar(
                               backgroundColor: Colors.white.withOpacity(0.3),
@@ -611,68 +614,74 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
                       const SizedBox(height: 30),
 
-                      // 5. BOTÓN PRINCIPAL
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 25),
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () =>
-                                  _mostrarSolicitudBeneficio(item, context),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green.shade700,
-                                minimumSize: const Size(double.infinity, 60),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                elevation: 5,
-                                shadowColor: Colors.green.withOpacity(0.3),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.local_offer, color: Colors.white),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "SOLICITAR BENEFICIO",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                // 5. BOTÓN PRINCIPAL (Solo si viene de QR)
+                if (isFromQR)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () =>
+                              _mostrarSolicitudBeneficio(item, context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green.shade700,
+                            minimumSize: const Size(double.infinity, 60),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            const SizedBox(height: 12),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                // Lógica de mapa (coordenadas si existen)
-                              },
-                              icon: const Icon(
-                                Icons.map_rounded,
-                                color: Colors.black87,
-                              ),
-                              label: const Text(
-                                "VER UBICACIÓN EN MAPA",
+                            elevation: 5,
+                            shadowColor: Colors.green.withOpacity(0.3),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.local_offer, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text(
+                                "SOLICITAR BENEFICIO",
                                 style: TextStyle(
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                                  fontSize: 16,
                                 ),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey.shade200,
-                                minimumSize: const Size(double.infinity, 55),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        const SizedBox(height: 12),
+                      ],
+                    ),
+                  ),
+
+                // Botón de mapa siempre visible
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      // Lógica de mapa (coordenadas si existen)
+                    },
+                    icon: const Icon(
+                      Icons.map_rounded,
+                      color: Colors.black87,
+                    ),
+                    label: const Text(
+                      "VER UBICACIÓN EN MAPA",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
-                      const SizedBox(height: 50),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey.shade200,
+                      minimumSize: const Size(double.infinity, 55),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
                     ],
                   ),
                 ),
@@ -731,6 +740,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
               Flexible(
                 child: ListView.separated(
                   shrinkWrap: true,
+                  physics: const ClampingScrollPhysics(), // Prevents white gaps on scroll bounce
                   itemCount: beneficios.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 12),

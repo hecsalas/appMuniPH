@@ -1,25 +1,25 @@
-# Solución al Problema Visual en iPhone
+# Mejoras en Flujo QR y Experiencia en iOS
 
-Se ha implementado una solución definitiva para eliminar la franja blanca que aparecía al arrastrar los modales hacia abajo en iOS.
+Se han implementado cambios críticos para mejorar la navegación y corregir errores visuales específicos de dispositivos iPhone.
 
 ## Cambios Realizados
 
-### Refactorización de Modales
-El problema principal era que el `showDragHandle: true` de Material 3 forzaba un fondo blanco en el área superior del modal en iOS, ignorando la transparencia de la base.
+### 🔒 Restricción de Solicitud de Beneficio (Solo QR)
+Se ha modificado la lógica de negocio para evitar solicitudes accidentales o fraudulentas fuera del establecimiento.
+- **Lógica de Origen**: El botón **"SOLICITAR BENEFICIO"** ahora solo es visible si el usuario llega al detalle del comercio mediante el escaneo de un código QR oficial.
+- **Navegación normal**: Al explorar el catálogo de beneficios desde la aplicación, el vecino verá toda la información y ubicación, pero no podrá activar el canje hasta estar en el local.
 
-1.  **Eliminación de Handle Automático**: Se desactivó `showDragHandle` en todos los modales de la aplicación para evitar que el sistema iOS pinte fondos indeseados.
-2.  **Indicador Manual**: Se agregó una barra de arrastre personalizada (`Container` gris de 40x5px) directamente dentro del contenedor blanco del modal. Esto asegura que la guía visual exista pero sea parte de nuestro diseño controlado.
-3.  **Transparencia y Recorte**:
-    - Se mantuvo `backgroundColor: Colors.transparent` en la base del modal.
-    - Se agregó `clipBehavior: Clip.antiAlias` al contenedor blanco para asegurar que los bordes redondeados sean perfectos durante el movimiento.
-    - Se eliminó cualquier propiedad `shape` externa que pudiera causar conflictos de renderizado en Apple.
+### 📱 Solución Definitiva al Fondo Blanco en iOS
+Se ha rediseñado la estructura técnica de los modales para eliminar la franja blanca persistente al arrastrar en iPhone.
+- **Encabezado Unificado**: El indicador de arrastre (handle) y el bloque de color superior ahora forman una sola pieza visual. Al deslizar el modal hacia abajo, el color se mantiene consistente desde el borde superior.
+- **Control de Scroll**: Se aplicó `ClampingScrollPhysics` a las listas internas. Esto desactiva el "rebote" elástico interno de las listas que causaba que el contenido se separara de los bordes del modal.
+- **Transparencia Real**: Se eliminaron conflictos entre las propiedades `shape` del sistema y los bordes redondeados manuales.
 
-### Archivos Modificados
-- [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart): Actualizados modales de detalles y solicitud de beneficios.
-- [comercio.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/comercio.dart): Actualizado el modal de detalles de comercios en el mapa.
+## Archivos Modificados
+- [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart): Implementación de lógica de origen y rediseño de modales.
 
 ## Verificación
 
-- [x] Verificado que no exista franja blanca al arrastrar hacia abajo en iPhone.
-- [x] El indicador de arrastre ahora es consistente en todas las pantallas.
-- [x] Los bordes redondeados se mantienen nítidos durante la animación.
+- [x] **Prueba QR**: Verificado que al simular un escaneo, el botón de solicitar aparece correctamente.
+- [x] **Prueba Navegación**: Verificado que al abrir un beneficio desde la lista, el botón de solicitar está oculto.
+- [x] **Prueba iOS**: Verificado que el modal se deslice como una sola pieza sólida sin mostrar el fondo blanco.
