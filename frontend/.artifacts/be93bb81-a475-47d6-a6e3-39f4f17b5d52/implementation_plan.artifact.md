@@ -1,31 +1,29 @@
-# Corrección de Modales en iOS (Gap Blanco al Arrastrar)
+# Implementación de Reportes Reales en Portal Municipal
 
-Este plan detalla las correcciones necesarias para evitar que aparezca un fondo blanco indeseado cuando se arrastran los modales (bottom sheets) hacia abajo en dispositivos iOS (iPhone).
+Este plan detalla la transición de la sección de Reportes de datos estáticos a una integración real con Supabase, permitiendo a los funcionarios municipales ver el impacto real del programa de beneficios.
 
 ## Proposed Changes
 
-### 1. Estandarización de `showModalBottomSheet`
+### [Portal Municipal]
 
-El problema principal en iOS ocurre cuando el `backgroundColor` del modal no es transparente, lo que hace que el fondo propio del modal se quede "atrapado" o sea visible durante el efecto de rebote (rubber-banding) de iOS.
-
-#### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
-- Cambiar `backgroundColor: Colors.white` por `Colors.transparent` en `_mostrarSolicitudBeneficio`.
-- Asegurar que `elevation: 0` esté presente para evitar sombras extrañas durante el arrastre.
-- Envolver el contenido de `_mostrarSolicitudBeneficio` en un `Container` con fondo blanco y bordes redondeados para que el diseño se mantenga igual pero el "lienzo" del modal sea invisible.
-
-#### [MODIFY] [comercio.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/comercio.dart)
-- Asegurar que el modal de detalles de comercio también use `backgroundColor: Colors.transparent` y tenga una estructura limpia.
-
----
-
-### 2. Mejora del Drag Handle (Opcional pero recomendado)
-
-Si el `showDragHandle: true` de Material 3 sigue causando problemas visuales en iOS al estar sobre un fondo transparente, se reemplazará por un indicador manual dentro del contenedor blanco. Por ahora, intentaremos primero con la transparencia total del modal.
+#### [MODIFY] [ReportesPage (src/app/reportes/page.tsx)](file:///C:/Users/2266/StudioProjects/App369/frontend/portal-municipal/src/app/reportes/page.tsx)
+- Implementar hooks `useState` y `useEffect` para gestionar el estado de los reportes.
+- Crear una función `fetchReportData` que:
+    - Consulte `solicitudes_canje` con joins a `comercios` (nombre, categoría) y `beneficios` (título).
+    - Calcule dinámicamente los KPIs:
+        - **Total Canjes**: Conteo total de registros.
+        - **Ahorro Comunal**: Estimación basada en un promedio por canje (ya que la DB no tiene montos exactos aún).
+        - **Vecinos Activos**: Conteo de nombres únicos en las solicitudes.
+        - **Nuevos Comercios**: Conteo de comercios registrados recientemente.
+    - Agrupe las solicitudes por categoría para el gráfico de barras.
+    - Obtenga las últimas 5-10 solicitudes para la tabla de actividad reciente.
+- Integrar un `Loader2` para los estados de carga.
+- Mejorar la visualización de tendencias comparando con periodos anteriores (opcional/simulado según disponibilidad de fechas).
 
 ## Verification Plan
 
-### Manual Verification (iPhone/iOS)
-1. Abrir el detalle de un beneficio.
-2. Arrastrar el modal hacia abajo con un gesto rápido.
-3. Verificar que el fondo que se revela arriba sea el color de la barrera (oscurecido) y no una franja blanca.
-4. Repetir para el selector de beneficios y el mapa de comercios.
+### Manual Verification
+1. Navegar a la sección de **Reportes** en el portal municipal.
+2. Verificar que aparezca el spinner de carga.
+3. Confirmar que los números coincidan con la realidad de la base de datos (puedes verificar en el Monitor de Canjes del proveedor o directamente en Supabase).
+4. Comprobar que la tabla "Últimos Canjes Realizados" muestre nombres de vecinos y comercios reales que han interactuado con la app móvil.

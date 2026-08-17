@@ -1,6 +1,7 @@
 "use client";
 
-import React from 'react';
+import React, {useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 import {
   TrendingUp,
   TrendingDown,
@@ -11,60 +12,110 @@ import {
   Calendar,
   Download,
   Filter,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from 'lucide-react';
 
 export default function ReportesPage() {
-  // Datos simulados para el reporte
-  const stats = [
-    {
-      title: "Total Canjes",
-      value: "4,285",
-      trend: "+12.5%",
-      isUp: true,
-      icon: <CreditCard className="text-blue-600" />,
-      color: "bg-blue-50"
-    },
-    {
-      title: "Ahorro Comunal",
-      value: "$12.4M",
-      trend: "+8.2%",
-      isUp: true,
-      icon: <Award className="text-green-600" />,
-      color: "bg-green-50"
-    },
-    {
-      title: "Vecinos Activos",
-      value: "12,840",
-      trend: "+24.3%",
-      isUp: true,
-      icon: <Users className="text-purple-600" />,
-      color: "bg-purple-50"
-    },
-    {
-      title: "Nuevos Comercios",
-      value: "8",
-      trend: "-2.1%",
-      isUp: false,
-      icon: <Store className="text-orange-600" />,
-      color: "bg-orange-50"
-    },
-  ];
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [recentActivity, setRecentActivity] = useState<any[]>([]);
+    const [impacto, setImpacto] = useState({ logrado: 0, meta: 15000000 });
 
-  const topCategories = [
-    { name: "Alimentos", percentage: 45, color: "bg-blue-500" },
-    { name: "Salud", percentage: 30, color: "bg-green-500" },
-    { name: "Mascotas", percentage: 15, color: "bg-orange-500" },
-    { name: "Educación", percentage: 10, color: "bg-purple-500" },
-  ];
+    useEffect(() => {
+        fetchReportData();
+        }, []);
 
-  const recentActivity = [
-    { id: 1, vecino: "Juan Perez", comercio: "Casa Guau", ahorro: "$2,500", fecha: "Hoy, 14:30" },
-    { id: 2, vecino: "Maria Soto", comercio: "Clínica del Sol", ahorro: "$12,000", fecha: "Hoy, 12:15" },
-    { id: 3, vecino: "Pedro Jara", comercio: "Panadería El Sol", ahorro: "$800", fecha: "Hoy, 09:45" },
-    { id: 4, vecino: "Ana Lopez", comercio: "Otto Fritz", ahorro: "$5,400", fecha: "Ayer, 21:20" },
-    { id: 5, vecino: "Carlos Ruiz", comercio: "Farmacia Ibiza", ahorro: "$3,200", fecha: "Ayer, 18:10" },
-  ];
+    const fetchReportData = async () => {
+    setLoading(true);
+    try {
+        const { data, error } = await supabase
+        .from('solicitudes_canje')
+        .select(`
+            *,
+            comercios(nombre_fantasia, categoria),
+            beneficios(titulo)
+            `)
+            .order('fecha_solicitud', { ascending: false});
+
+            if (error) throw error;
+
+            const totalCanjes = data.length;
+            const aprobados = data.filter(d => d.estado === 'Aprobado').length;
+            const vecinosUnicos = new Set(data.map(d => d.vecino_nombre)).size;
+
+            const ahorroEstimado = aprobados * 3000;
+
+            const catMap: any = {};
+            data.forEach(d => {
+                const cat = d.comercios?.categoria || 'Otros';
+                catMap[cat] = (catMap[cat] || 0) + 1;
+                });
+
+            const processedCats = Object.keys(catMap).map(key => ({
+                name: key,
+                percentage: totalCanjes > 0 ? Math.round((catMap[key] / totalCanjes) * 100) : 0,
+                color: getColorForCategory(key)
+                })).sort((a, b) => b.percentage - a.percentage);
+
+            setStats([
+                { title: "Total Canjes", value: totalCanjes.toLocaleString(), trend: "+10%", isUp: true, icon: <CreditCard className="text-blue-600" />, color:"bg-blue-50"},
+                { title: "Ahorro Comunal", value: `$${(ahorroEstimado / 1000000).toFixed(1)}M`, trend: "+5%", isUp: true, icon: <Award className="text-green-600" />, color: "bg-green-50" },
+                { title: "Vecinos Activos", value: vecinosUnicos.toLocaleString(), trend: "+15%", isUp: true, icon: <Users className="text-purple-600" />, color: "bg-purple-50" },
+                { title: "Canjes Aprobados", value: aprobados.toLocaleString(), trend: "Real", isUp: true, icon: <Store className="text-orange-600" />, color: "bg-orange-50" },
+              ]);
+
+            setCategories(processedCats);
+            setRecentActivity(data.slice(0, 6).map(d=> ({
+                id:d.id,
+                vecino: d.vecino_nombre,
+                comercio: d.comercios?.nombre_fantasia,
+                ahorro: d.estado === 'Aprobado' ? "$3.000*" : "---",
+                fecha: new Date(d.fecha_solicitud).toLocaleDateString('es-CL', {day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
+                estado: d.estado
+                })));
+            setImpacto(prev => ({ ...prev, logrado: ahorroEstimado }));
+
+            } catch (e) {
+                console.error("Error en reportes:", e);
+                } finally {
+                    setLoading(false);
+                    }
+                };
+
+                        const exportToCSV = () => {
+                            const headers = ["Vecino,Comercio,Ahorro,Fecha,Estado\n"];
+                            const rows = recentActivity.map(act =>
+                                `${act.vecino},${act.comercio},${act.ahorro},${act.fecha},${act.estado}\n`
+                                );
+                            const blob = new Blob([headers + rows.join("")], { type: 'text/csv'});
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.setAttribute('hidden', '');
+                            a.setAttribute('href', url);
+                            a.setAttribute('download', 'reporte_canjes.csv');
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            };
+
+
+            const getColorForCategory = (cat: string) => {
+                const colors: any = {
+                    'Alimentos': 'bg-blue-500',
+                    'Salud': 'bg-green-500',
+                    'Mascotas': 'bg-orange-500',
+                    'Educación': 'bg-purple-500',
+                    };
+                return colors[cat] || 'bg-slate-400';
+                };
+
+            if(loading) return (
+                <div className="h-screen flex items-center justify-center">
+                <Loader2 className="animate-spin text-primary" size={48} />
+                </div>
+                );
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
@@ -75,12 +126,12 @@ export default function ReportesPage() {
           <p className="text-slate-500 text-sm">Análisis del impacto social y económico en Padre Hurtado</p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
-            <Calendar size={16} /> Últimos 30 días
+          <button onClick={fetchReportData} className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+            <Calendar size={16} /> Actualizar
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/10">
+            <button onClick={exportToCSV} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/10">
             <Download size={16} /> Exportar Excel
-          </button>
+            </button>
         </div>
       </div>
 
@@ -113,7 +164,7 @@ export default function ReportesPage() {
             <Filter size={18} className="text-slate-300" />
           </div>
           <div className="space-y-5">
-            {topCategories.map((cat, i) => (
+            {categories.map((cat, i) => (
               <div key={i} className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="font-bold text-slate-700">{cat.name}</span>
@@ -172,18 +223,21 @@ export default function ReportesPage() {
       {/* Banner de Impacto */}
       <div className="bg-gradient-to-r from-primary to-blue-600 p-8 rounded-3xl text-white flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl shadow-blue-900/20">
         <div>
-          <h4 className="text-xl font-bold">Meta de Impacto Mensual</h4>
-          <p className="text-blue-100 text-sm mt-1">Estamos al 85% del objetivo de ahorro vecinal para Agosto</p>
+          <h4 className="text-xl font-bold">Impacto Comunal Real</h4>
+          <p className="text-blue-100 text-sm mt-1">
+          Meta del mes: ${(impacto.meta / 1000000).toFixed(1)}M
+          </p>
         </div>
         <div className="flex gap-8">
           <div className="text-center">
-            <p className="text-3xl font-black">$12.4M</p>
+            <p className="text-3xl font-black">${(impacto.logrado / 1000000).toFixed(1)}M</p>
             <p className="text-[10px] uppercase font-bold text-blue-200">Logrado</p>
           </div>
           <div className="h-12 w-px bg-white/20 hidden md:block" />
           <div className="text-center">
-            <p className="text-3xl font-black text-white/50">$15.0M</p>
-            <p className="text-[10px] uppercase font-bold text-blue-200">Objetivo</p>
+          {/* Cálculo de porcentaje dinámico */}
+            <p className="text-3xl font-black text-white/50">{Math.round((impacto.logrado / impacto.meta) * 100)}%</p>
+            <p className="text-[10px] uppercase font-bold text-blue-200">Progreso</p>
           </div>
         </div>
       </div>

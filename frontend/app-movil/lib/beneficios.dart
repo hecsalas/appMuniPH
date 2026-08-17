@@ -909,7 +909,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           .insert({
             'comercio_id': comercio['id'],
             'beneficio_id': beneficio['id'],
-            'vecino_nombre': 'Miguel Ángel (Vecino PH)', // Simulado por ahora
+            'vecino_nombre': 'Miguel Tapia (Vecino PH)', // Simulado por ahora
             'estado': 'Pendiente',
           })
           .select()
