@@ -328,6 +328,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      elevation: 0,
       showDragHandle: true,
       barrierColor: Colors.black54,
       builder: (context) {
@@ -670,11 +671,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      elevation: 0,
       showDragHandle: true,
       barrierColor: Colors.black54,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
       builder: (context) {
         return Container(
           decoration: const BoxDecoration(
