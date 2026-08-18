@@ -147,9 +147,12 @@ class InicioContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final double topPadding = MediaQuery.of(context).padding.top + 110.0;
+
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20.0, 120.0, 20.0, 100.0),
+      padding: EdgeInsets.fromLTRB(20.0, topPadding, 20.0, 100.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
