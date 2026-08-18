@@ -15,14 +15,23 @@ class PerfilPage extends StatefulWidget {
 class _PerfilPageState extends State<PerfilPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text(
+            "MI PERFIL",
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+        ),
+      body: SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            const SizedBox(height: 10),
-            _buildCredentialCard(),
-            const SizedBox(height: 8),
             _buildMenuOpciones(
               icon: Icons.person_outline,
               titulo: "Datos Personales",
@@ -93,98 +102,9 @@ class _PerfilPageState extends State<PerfilPage> {
           ],
         ),
       ),
+      ),
     );
   }
-}
-
-Widget _buildCredentialCard() {
-  return Card(
-    elevation: 8,
-    shadowColor: Colors.black26,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-    child: Container(
-      padding: const EdgeInsets.all(24.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Colors.white, Colors.blue.shade50],
-        ),
-      ),
-      child: Column(
-        children: [
-          Column(
-            children: [
-              Text(
-                "TARJETA VECINO DIGITAL",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.blue.shade800,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Miguel Tapia Troncoso',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'ID VECINAL: PH-2026-45821',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.grey.shade400,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.check_circle_outline_rounded,
-                    color: Colors.green.shade600,
-                  ),
-                  Text(
-                    'Vecino Activo',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.green.shade600,
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                'VIGENTE HASTA 31/12/2026',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.grey.shade400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.black, width: 1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: QrImageView(
-              data: "https://cl.linkedin.com/",
-              /*"ID:${_user?.uid}|Email:${_user?.email}",*/
-              version: QrVersions.auto,
-              size: 160.0,
-              backgroundColor: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
-      ),
-    ),
-  );
 }
 
 Widget _buildMenuOpciones({

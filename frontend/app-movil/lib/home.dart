@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-
 class HomePage extends StatefulWidget {
   final int initialIndex;
   final String? initialBenefitTitle;
@@ -33,15 +32,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> get _paginas => [
-        const InicioContent(),
-        BeneficiosPage(
-          initialBenefitTitle: widget.initialBenefitTitle,
-          initialSucursal: widget.initialSucursal,
-        ),
-        const SosPage(),
-        const NewsPage(),
-        const PerfilPage(),
-      ];
+    const InicioContent(),
+    BeneficiosPage(
+      initialBenefitTitle: widget.initialBenefitTitle,
+      initialSucursal: widget.initialSucursal,
+    ),
+    const SosPage(),
+    const NewsPage(),
+    const PerfilPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +56,26 @@ class _HomePageState extends State<HomePage> {
               surfaceTintColor: Colors.transparent,
               foregroundColor: Colors.white,
               toolbarHeight: 100,
-
               title: Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'MI PADRE HURTADO',
+                      'Hola, Miguel',
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Bienvenido a Mi Padre Hurtado',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withAlpha(200),
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
@@ -87,7 +94,9 @@ class _HomePageState extends State<HomePage> {
             colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
-        child: SafeArea(child: _paginas[_currentIndex]),
+        child: SafeArea(
+            top: false,
+            child: _paginas[_currentIndex]),
       ),
 
       bottomNavigationBar: SnakeNavigationBar.color(
@@ -139,15 +148,76 @@ class InicioContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(20.0, 80.0, 20.0, 100.0),
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(20.0, 120.0, 20.0, 100.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildDigitalCard(),
+          const SizedBox(height: 25),
+          _buildQuickActions(),
+          const Divider(color: Colors.white24, height: 30),
+          Text(
+            'Beneficios',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade400,
+            ),
+          ),
+          const SizedBox(height: 6),
+          _buildBeneficiosPreview(),
         ],
       ),
     );
   }
+}
+
+Widget _buildQuickActions() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      _buildCircularButton(Icons.receipt_long_rounded, "Trámites"),
+      _buildCircularButton(Icons.map_rounded, "Lugares"),
+      _buildCircularButton(Icons.campaign_rounded, "Avisos"),
+      _buildCircularButton(Icons.help_outline_rounded, "Ayuda"),
+    ],
+  );
+}
+
+Widget _buildCircularButton(IconData icon, String label) {
+  return Column(
+    children: [
+      Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: IconButton(
+          onPressed: () {},
+          icon: Icon(icon, color: Colors.blue.shade900, size: 28),
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        label,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    ],
+  );
 }
 
 Widget _buildDigitalCard() {
@@ -205,16 +275,21 @@ Widget _buildDigitalCard() {
                     color: Colors.black87,
                   ),
                 ),
-                Text('Vigente hasta 2030',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.grey.shade400,
+                const SizedBox(height: 8),
+                Text(
+                  'VIGENTE HASTA 31/12/2026',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.grey.shade400,
+                  ),
                 ),
-                ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.green.shade50,
                     borderRadius: BorderRadius.circular(10),
@@ -265,6 +340,143 @@ Widget _buildDigitalCard() {
           ),
         ],
       ),
+    ),
+  );
+}
+
+Widget _buildBeneficiosPreview() {
+  final items = [
+    {
+      'titulo': 'Escuela del Valle',
+      'descuento': 'Licencias de\n conducir',
+      'valor': '30%\nDescuento',
+      'color': Colors.red,
+      'img':
+          'https://images.unsplash.com/photo-1532974297617-c0f05fe48bff?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    },
+    {
+      'titulo': 'Clínica del Sol',
+      'descuento': 'Tratamientos\ndentales',
+      'valor': '17%\nDescuento',
+      'color': Colors.blue,
+      'img':
+          'https://images.unsplash.com/photo-1512678080530-7760d81faba6?w=500&q=80',
+    },
+    {
+      'titulo': 'Casa Guau',
+      'descuento': 'Sacos de \nAlimento',
+      'valor': '5%\nDescuento',
+      'color': Colors.brown,
+      'img':
+          'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&q=80',
+    },
+  ];
+
+  return SizedBox(
+    height: 230,
+    child: ListView.separated(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      itemCount: items.length,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      separatorBuilder: (context, index) => const SizedBox(width: 16),
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return _buildVerticalCard(
+          item['titulo'] as String,
+          item['descuento'] as String,
+          item['valor'] as String,
+          item['img'] as String,
+          item['color'] as Color,
+        );
+      },
+    ),
+  );
+}
+
+Widget _buildVerticalCard(
+  String title,
+  String desc,
+  String val,
+  String imgUrl,
+  Color color,
+) {
+  return Container(
+    width: 180,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(25),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 10,
+          offset: const Offset(0, 5),
+        ),
+      ],
+    ),
+    child: Column(
+      children: [
+        // 1. Imagen Superior
+        ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
+          child: Image.network(
+            imgUrl,
+            height: 110,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+        // 2. Cuerpo (Título al centro)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 5),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+
+        const Spacer(),
+
+        // 3. Footer (Dato a izquierda y derecha)
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.08),
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(25),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                desc.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+              Text(
+                val,
+textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     ),
   );
 }

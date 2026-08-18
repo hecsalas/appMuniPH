@@ -1,7 +1,8 @@
-# Tareas: Nueva Vista Home - Tarjeta Digital
+# Tareas: Rediseño de Tarjeta Vertical
 
-- [x] Implementar Tarjeta de Vecino Digital en `home.dart`
-    - [x] Agregar importación de `qr_flutter`
-    - [x] Crear método `_buildDigitalCard` con QR a la derecha
-    - [x] Integrar la tarjeta en la vista de inicio
-- [x] Ajustar estilos y espaciados
+- [x] Actualizar datos de ejemplo en `_buildBeneficiosPreview`
+- [x] Implementar nueva estructura en `_buildVerticalCard`
+    - [x] Imagen con `ClipRRect`
+    - [x] Título centrado con `Expanded` y `Center`
+    - [x] Footer con `Row` (Nombre de descuento vs Valor)
+- [x] Verificar alineación y sombras
