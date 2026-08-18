@@ -1,8 +1,10 @@
-# Tareas: Rediseño de Tarjeta Vertical
+# Tareas: Ajustes Responsivos iPhone
 
-- [x] Actualizar datos de ejemplo en `_buildBeneficiosPreview`
-- [x] Implementar nueva estructura en `_buildVerticalCard`
-    - [x] Imagen con `ClipRRect`
-    - [x] Título centrado con `Expanded` y `Center`
-    - [x] Footer con `Row` (Nombre de descuento vs Valor)
-- [x] Verificar alineación y sombras
+- [x] Ajustar Título en Tarjeta Digital (`FittedBox`)
+- [x] Aumentar altura del Carrusel de Beneficios a 260
+- [x] Optimizar Footer de Tarjeta Vertical
+    - [x] Usar `Expanded` en descripción (izquierda)
+    - [x] Ajustar tamaño de fuente de valor (derecha) a 15
+    - [x] Aumentar intensidad de color y relleno en Footer
+    - [x] Reducir márgenes blancos del Título
+- [x] Verificar espaciados generales

@@ -94,9 +94,7 @@ class _HomePageState extends State<HomePage> {
             colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
-        child: SafeArea(
-            top: false,
-            child: _paginas[_currentIndex]),
+        child: SafeArea(top: false, child: _paginas[_currentIndex]),
       ),
 
       bottomNavigationBar: SnakeNavigationBar.color(
@@ -147,19 +145,18 @@ class InicioContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final double topPadding = MediaQuery.of(context).padding.top + 20.0;
 
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20.0, topPadding, 20.0, 100.0),
+      padding: EdgeInsets.fromLTRB(20.0, topPadding, 20.0, 80.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildDigitalCard(),
-          const SizedBox(height: 25),
+          const SizedBox(height: 12),
           _buildQuickActions(),
-          const Divider(color: Colors.white24, height: 30),
+          const Divider(color: Colors.white24, height: 16),
           Text(
             'Beneficios',
             style: TextStyle(
@@ -244,13 +241,16 @@ Widget _buildDigitalCard() {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "TARJETA VECINO DIGITAL",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.blue.shade800,
-                    letterSpacing: 0.5,
+                const FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    "TARJETA VECINO DIGITAL",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      color: Color(0xFF1565C0),
+                      letterSpacing: 0.5,
+                    ),
                   ),
                 ),
                 Text(
@@ -367,7 +367,7 @@ Widget _buildBeneficiosPreview() {
     },
     {
       'titulo': 'Casa Guau',
-      'descuento': 'Sacos de \nAlimento',
+      'descuento': 'Sacos de\nAlimento',
       'valor': '5%\nDescuento',
       'color': Colors.brown,
       'img':
@@ -376,7 +376,7 @@ Widget _buildBeneficiosPreview() {
   ];
 
   return SizedBox(
-    height: 230,
+    height: 240,
     child: ListView.separated(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
@@ -424,14 +424,14 @@ Widget _buildVerticalCard(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
           child: Image.network(
             imgUrl,
-            height: 110,
+            height: 90,
             width: double.infinity,
             fit: BoxFit.cover,
           ),
         ),
         // 2. Cuerpo (Título al centro)
         Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 5),
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
           child: Text(
             title,
             textAlign: TextAlign.center,
@@ -441,39 +441,44 @@ Widget _buildVerticalCard(
               fontWeight: FontWeight.bold,
               fontSize: 16,
               color: Colors.black87,
+              height: 1.1,
             ),
           ),
         ),
 
         const Spacer(),
 
-        // 3. Footer (Dato a izquierda y derecha)
+        // 3. Footer
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.08),
+            color: color.withOpacity(0.12),
             borderRadius: const BorderRadius.vertical(
               bottom: Radius.circular(25),
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 desc.toUpperCase(),
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 9,
                   fontWeight: FontWeight.bold,
                   color: color,
                 ),
               ),
-              Text(
-                val,
-textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  color: color,
+              const SizedBox(height: 2),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  val,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: color,
+                  ),
                 ),
               ),
             ],
