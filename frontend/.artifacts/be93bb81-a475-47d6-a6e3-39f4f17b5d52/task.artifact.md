@@ -1,12 +1,7 @@
-# Tareas: Solución iOS y Lógica QR
+# Tareas: Nueva Vista Home - Tarjeta Digital
 
-- [x] Modificar `_mostrarDetallesBeneficio` en `beneficios.dart`
-    - [x] Agregar parámetro `isFromQR`
-    - [x] Refactorizar estructura visual para iOS (Handle integrado en Header)
-    - [x] Implementar visibilidad condicional del botón "Solicitar"
-- [x] Actualizar llamadas a `_mostrarDetallesBeneficio`
-    - [x] En `_abrirModalPorTitulo` (pasar `isFromQR: true`)
-    - [x] En la lista de beneficios (pasar `isFromQR: false`)
-- [/] Mejorar `_mostrarSolicitudBeneficio` para iOS
-    - [ ] Agregar `ClampingScrollPhysics` a la lista
-- [ ] Verificar consistencia visual en Android e iOS
+- [x] Implementar Tarjeta de Vecino Digital en `home.dart`
+    - [x] Agregar importación de `qr_flutter`
+    - [x] Crear método `_buildDigitalCard` con QR a la derecha
+    - [x] Integrar la tarjeta en la vista de inicio
+- [x] Ajustar estilos y espaciados

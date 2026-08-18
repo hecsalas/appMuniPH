@@ -1,37 +1,35 @@
-# Solución Definitiva iOS y Mejora de Flujo QR
+# Configuración de Ejecución en Android Studio
 
-Este plan aborda el error visual en iPhone y restringe la solicitud de beneficios exclusivamente al flujo de escaneo QR.
+Este plan detalla los pasos para configurar correctamente el proyecto en Android Studio, permitiendo que reconozca la aplicación Flutter que se encuentra en la subcarpeta `app-movil`.
 
-## User Review Required
+## Problema detectado
+Android Studio muestra "Add Configuration" porque el proyecto principal se abrió desde la raíz (`frontend`), pero la aplicación Flutter está un nivel más abajo en `app-movil`. El IDE no ha detectado automáticamente el punto de entrada `main.dart`.
 
-> [!IMPORTANT]
-> A partir de este cambio, los vecinos ya no verán el botón "SOLICITAR BENEFICIO" al navegar manualmente por el catálogo. Solo podrán activarlo si llegan a la pantalla mediante un escaneo de código QR.
+## Instrucciones para el Usuario
+
+Para solucionar esto manualmente en la interfaz de Android Studio, siga estos pasos:
+
+1. Haga clic en el desplegable que dice **"Add Configuration..."** en la barra de herramientas superior (junto al botón de Play).
+2. En la ventana que aparece, haga clic en el botón **"+"** (arriba a la izquierda) y seleccione **"Flutter"**.
+3. En el campo **Name**, escriba: `App MiPH`.
+4. En el campo **Dart entrypoint**, haga clic en la carpeta y busque la ruta:
+   `C:\Users\2266\StudioProjects\App369\frontend\app-movil\lib\main.dart`
+5. Asegúrese de que el **Working directory** apunte a:
+   `C:\Users\2266\StudioProjects\App369\frontend\app-movil`
+6. Haga clic en **OK**.
+
+> [!TIP]
+> Una vez configurado, el icono del rayo (Hot Reload) y el botón de Play funcionarán cada vez que guarde con **Ctrl + S**.
 
 ## Proposed Changes
 
-### 1. Solución Definitiva Fondo Blanco iOS
+### [Configuración del IDE]
 
-El problema del fondo blanco en iPhone ocurre porque el contenido (scrollable) se desliza, pero el "lienzo" del modal se queda estático o rebota de forma distinta.
-
-#### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
-- Modificar `_mostrarDetallesBeneficio`:
-    - Quitar el `Column` que separaba el handle del contenido.
-    - Poner el **indicador de arrastre manual** directamente como el primer elemento de la lista scrolleable o dentro de un `Stack` que cubra todo el modal.
-    - La mejor solución para iOS es que **todo** (incluyendo el color de fondo superior) esté dentro de un solo contenedor que se desplace unido.
-
----
-
-### 2. Restricción de Solicitud (Solo QR)
-
-#### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
-- Añadir un parámetro booleano `isFromQR` a `_mostrarDetallesBeneficio`.
-- En el `onTap` de la lista normal de beneficios, pasar `isFromQR: false`.
-- En `_abrirModalPorTitulo` (cuando se viene de un QR), pasar `isFromQR: true`.
-- En el diseño del modal, envolver el botón "SOLICITAR BENEFICIO" en un condicional `if (isFromQR)`.
+No se realizarán cambios directos en los archivos de código fuente, ya que las configuraciones de ejecución (`runConfigurations`) en Android Studio suelen guardarse en archivos locales del usuario (`workspace.xml`) o requieren interacción con la interfaz para que el plugin de Flutter se active correctamente.
 
 ## Verification Plan
 
 ### Manual Verification
-1. **iPhone**: Abrir detalle de beneficio, deslizar hacia abajo y confirmar que no existe separación visual entre el handle y el resto del contenido.
-2. **Browsing**: Entrar a la app, ir a beneficios, abrir cualquier comercio y verificar que **NO** aparezca el botón de solicitar.
-3. **QR**: Simular un escaneo (usando un deep link o el scanner), verificar que el modal se abra automáticamente y que **SÍ** aparezca el botón de solicitar.
+1. Verificar que el botón de Play esté habilitado.
+2. Ejecutar la aplicación en el emulador.
+3. Realizar un cambio pequeño en un texto y presionar **Ctrl + S** para confirmar que el Hot Reload funciona.
