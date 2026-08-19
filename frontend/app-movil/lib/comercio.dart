@@ -127,12 +127,16 @@ class _ComercioPageState extends State<ComercioPage> {
         return Colors.blue.shade300;
       case 'Educación':
         return Colors.red;
-      case 'Bebidas Alcohólicas':
-        return Colors.blueGrey;
-      case 'Entretenimiento y Comida':
+      case 'Bebidas':
+        return Colors.purple;
+      case 'Entretenimiento':
         return Colors.cyan;
-      case 'Comida y Bebida':
+      case 'Alimentos':
         return Colors.deepOrange;
+      case 'Deporte':
+        return Colors.teal;
+      case 'Servicios':
+        return Colors.blueGrey;
       default:
         return Colors.orange;
     }
@@ -146,10 +150,16 @@ class _ComercioPageState extends State<ComercioPage> {
         return BitmapDescriptor.hueAzure;
       case 'Educación':
         return BitmapDescriptor.hueRed;
-      case 'Entretenimiento y Comida':
+      case 'Entretenimiento':
         return BitmapDescriptor.hueCyan;
-      case 'Comida y Bebida':
+      case 'Alimentos':
         return BitmapDescriptor.hueOrange;
+      case 'Deporte':
+        return BitmapDescriptor.hueGreen;
+      case 'Bebidas':
+        return BitmapDescriptor.hueViolet;
+      case 'Servicios':
+        return BitmapDescriptor.hueBlue;
       default:
         return BitmapDescriptor.hueOrange;
     }
@@ -352,9 +362,12 @@ class _ComercioPageState extends State<ComercioPage> {
       'Todos',
       'Salud',
       'Mascotas',
-      'Comida y Bebida',
+      'Alimentos',
       'Educación',
-      'Bebidas Alcohólicas',
+      'Bebidas',
+      'Deporte',
+      'Entretenimiento',
+      'Servicios',
     ];
 
     return Scaffold(

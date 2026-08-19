@@ -4,6 +4,7 @@ import 'package:app369/inicio.dart';
 import 'package:app369/notificaciones.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PerfilPage extends StatefulWidget {
   const PerfilPage({super.key});
@@ -13,6 +14,27 @@ class PerfilPage extends StatefulWidget {
 }
 
 class _PerfilPageState extends State<PerfilPage> {
+  Future<void> _cerrarSesion() async {
+    final url = Uri.parse("http://mph-web.mph/claveunica/logout");
+
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      debugPrint("Error al abrir logout: $e");
+    }
+
+    // Independientemente de si se abre la URL, limpiamos la sesión local y redirigimos
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const InicioPage()),
+        (route) => false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,13 +88,7 @@ class _PerfilPageState extends State<PerfilPage> {
 
             Center(
               child: TextButton.icon(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const InicioPage()),
-                    (route) => false,
-                  );
-                },
+                onPressed: _cerrarSesion,
                 icon: const Icon(
                   Icons.logout_rounded,
                   color: Colors.white70,

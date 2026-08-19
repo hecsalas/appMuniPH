@@ -35,12 +35,17 @@ flutter:
 
   uses-material-design: true
   assets:
+    - assets/casa-guau.png
+    - assets/clinica-del-sol.png
+    - assets/escuela-del-valle.png
+    - assets/farmacia-trebol.png
+    - assets/fratello.png
+    - assets/mr-lucas.png
+    - assets/odfjell.png
+    - assets/rompecorreas.png
+    - assets/sukatza.png
+    - assets/zxtreme.png
     - assets/logo_ph.png
-    - assets/logo_app.png
-    - assets/logo_montana.png
-    - assets/logo_verde_montana.png
-    - assets/xd.png
-    - assets/logo-ios.png
     - assets/padrehurtado.png
     - assets/logo-ios-fixed.png
 

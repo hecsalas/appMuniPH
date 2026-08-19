@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 15),
                   const Text(
                     'Esta aplicación utiliza el sistema de autenticación del Estado de Chile '
-                    'para proteger tu privacidad y asegurar que solo tú accedas a tus trámites.',
+                        'para proteger tu privacidad y asegurar que solo tú accedas a tus trámites.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,

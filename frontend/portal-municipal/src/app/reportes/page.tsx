@@ -102,14 +102,18 @@ export default function ReportesPage() {
 
 
             const getColorForCategory = (cat: string) => {
-                const colors: any = {
-                    'Alimentos': 'bg-blue-500',
-                    'Salud': 'bg-green-500',
-                    'Mascotas': 'bg-orange-500',
-                    'Educación': 'bg-purple-500',
-                    };
-                return colors[cat] || 'bg-slate-400';
-                };
+    const colors: any = {
+      'Alimentos': 'bg-blue-500',
+      'Salud': 'bg-green-500',
+      'Mascotas': 'bg-orange-500',
+      'Educación': 'bg-purple-500',
+      'Deporte': 'bg-teal-500',
+      'Entretenimiento': 'bg-cyan-500',
+      'Bebidas': 'bg-indigo-500',
+      'Servicios': 'bg-slate-500',
+    };
+    return colors[cat] || 'bg-slate-400';
+  };
 
             if(loading) return (
                 <div className="h-screen flex items-center justify-center">

@@ -350,12 +350,20 @@ Widget _buildDigitalCard() {
 Widget _buildBeneficiosPreview() {
   final items = [
     {
+      'titulo': 'Heladería MiPH',
+      'descuento': '3er Sabor o\nTopping',
+      'valor': 'GRATIS',
+      'color': Colors.pinkAccent,
+      'img':
+          'https://images.unsplash.com/photo-1501443762994-82bd5dabb892?q=80&w=500&auto=format&fit=crop',
+    },
+    {
       'titulo': 'Escuela del Valle',
       'descuento': 'Licencias de\n conducir',
       'valor': '30%\nDescuento',
       'color': Colors.red,
       'img':
-          'https://images.unsplash.com/photo-1532974297617-c0f05fe48bff?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+          'https://images.unsplash.com/photo-1532974297617-c0f05fe48bff?q=80&w=764&auto=format&fit=crop',
     },
     {
       'titulo': 'Clínica del Sol',

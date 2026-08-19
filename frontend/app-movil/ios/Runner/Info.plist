@@ -83,6 +83,8 @@
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>comgooglemaps</string>
+        <string>https</string>
+        <string>http</string>
     </array>
 	<key>CFBundleURLTypes</key>
 	<array>

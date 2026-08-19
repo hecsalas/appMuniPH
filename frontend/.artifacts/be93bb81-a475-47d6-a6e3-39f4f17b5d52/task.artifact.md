@@ -1,10 +1,8 @@
-# Tareas: Ajustes Responsivos iPhone
+# Tareas: Refinamiento de Handle y Promociones
 
-- [x] Ajustar Título en Tarjeta Digital (`FittedBox`)
-- [x] Aumentar altura del Carrusel de Beneficios a 260
-- [x] Optimizar Footer de Tarjeta Vertical
-    - [x] Usar `Expanded` en descripción (izquierda)
-    - [x] Ajustar tamaño de fuente de valor (derecha) a 15
-    - [x] Aumentar intensidad de color y relleno en Footer
-    - [x] Reducir márgenes blancos del Título
-- [x] Verificar espaciados generales
+- [x] Tareas: Refinamiento de Handle Flotante
+    - [x] Actualizar Plan de Implementación
+    - [x] Refactorizar `_mostrarDetallesBeneficio` en `lib/beneficios.dart`
+- [x] Tareas: Integración de Promoción de Heladería
+    - [x] Agregar nuevo comercio a la lista de vitrineo en `home.dart`
+    - [x] Definir textos y valores para la promoción del barquillo doble

@@ -289,6 +289,8 @@ export default function ComerciosPage() {
                   <option value="Educación">Educación</option>
                   <option value="Entretenimiento">Entretenimiento</option>
                   <option value="Bebidas">Bebidas</option>
+                  <option value="Deporte">Deporte</option>
+                  <option value="Servicios">Servicios</option>
                 </select>
               </div>
 
