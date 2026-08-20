@@ -116,7 +116,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   // 3. Widgets de soporte (Ahora todos dentro de la clase)
   Widget _buildListaNotificaciones() {
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 120, 16, 100),
+      padding: const EdgeInsets.fromLTRB(16, 150, 16, 100),
       itemCount: _notificaciones.length,
       itemBuilder: (context, index) {
         final item = _notificaciones[index];

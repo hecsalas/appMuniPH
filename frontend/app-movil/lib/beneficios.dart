@@ -374,7 +374,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                   children: [
                     // Header Background (Imagen o Color)
                     Container(
-                      height: 200,
+                      height: 250,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: color.withOpacity(0.8),
@@ -397,7 +397,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                               child: _buildIcon(icono, size: 80, color: Colors.white24),
                             ),
                           Positioned(
-                            top: 35, // Adjusted to avoid handle
+                            top: 45, // Adjusted to avoid handle
                             left: 20,
                             child: CircleAvatar(
                               backgroundColor: Colors.white.withOpacity(0.3),

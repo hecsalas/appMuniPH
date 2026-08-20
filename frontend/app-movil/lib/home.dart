@@ -166,7 +166,6 @@ class InicioContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double topPadding = MediaQuery.of(context).padding.top + 20.0;
-
     return SingleChildScrollView(
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.fromLTRB(20.0, topPadding, 20.0, 80.0),
@@ -175,7 +174,6 @@ class InicioContent extends StatelessWidget {
         children: [
           _buildDigitalCard(),
           const SizedBox(height: 12),
-          // _buildQuickActions(),
           const Divider(color: Colors.white24, height: 16),
           Text(
             'Beneficios',
@@ -191,41 +189,6 @@ class InicioContent extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget _buildCircularButton(IconData icon, String label) {
-  return Column(
-    children: [
-      Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: IconButton(
-          onPressed: () {},
-          icon: Icon(icon, color: Colors.blue.shade900, size: 28),
-        ),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        label,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    ],
-  );
 }
 
 Widget _buildDigitalCard() {
@@ -381,7 +344,7 @@ Widget _buildBeneficiosPreview() {
   ];
 
   return SizedBox(
-    height: 240,
+    height: 275,
     child: ListView.separated(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
@@ -430,13 +393,13 @@ Widget _buildVerticalCard(
           child: imgPath.startsWith('http')
               ? Image.network(
                   imgPath,
-                  height: 90,
+                  height: 125,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 )
               : Image.asset(
                   imgPath,
-                  height: 90,
+                  height: 125,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
