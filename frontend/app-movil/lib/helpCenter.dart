@@ -49,7 +49,7 @@ class _HelpcenterPageState extends State<HelpcenterPage> {
         ),
         child: SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(20.0, 120.0, 20.0, 20.0),
+          padding: EdgeInsets.fromLTRB(20.0, 150.0, 20.0, 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
