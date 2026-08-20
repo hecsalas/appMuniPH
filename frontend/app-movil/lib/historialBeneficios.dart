@@ -25,7 +25,9 @@ class _HistorialPageState extends State<HistorialPage> {
     try {
       final List<dynamic> data = await _supabase
           .from('solicitudes_canje')
-          .select('*, comercios(nombre_fantasia, categoria), beneficios(titulo)')
+          .select(
+            '*, comercios(nombre_fantasia, categoria), beneficios(titulo)',
+          )
           .order('created_at', ascending: false);
 
       setState(() {
@@ -41,42 +43,58 @@ class _HistorialPageState extends State<HistorialPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
-          "MI HISTORIAL",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        backgroundColor: Colors.blue.shade900,
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: Colors.white,
         centerTitle: true,
+        foregroundColor: Colors.white,
+        title: const Padding(
+          padding: EdgeInsets.only(top: 20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'HISTORIAL DE BENEFICIOS',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightGreen],
+            colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
         child: RefreshIndicator(
           onRefresh: _fetchHistorial,
           color: Colors.blue.shade900,
           child: _isLoading
-              ? const Center(child: CircularProgressIndicator(color: Colors.white))
+              ? const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                )
               : _historial.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(20),
-                      itemCount: _historial.length,
-                      itemBuilder: (context, index) {
-                        final item = _historial[index];
-                        return _buildHistoryItem(item);
-                      },
-                    ),
+              ? _buildEmptyState()
+              : ListView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: _historial.length,
+                  itemBuilder: (context, index) {
+                    final item = _historial[index];
+                    return _buildHistoryItem(item);
+                  },
+                ),
         ),
       ),
     );
@@ -91,11 +109,19 @@ class _HistorialPageState extends State<HistorialPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.history_rounded, size: 80, color: Colors.white.withOpacity(0.5)),
+            Icon(
+              Icons.history_rounded,
+              size: 80,
+              color: Colors.white.withOpacity(0.5),
+            ),
             const SizedBox(height: 16),
             const Text(
               "Aún no tienes canjes registrados",
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const Text(
               "Tus beneficios usados aparecerán aquí",
@@ -113,7 +139,7 @@ class _HistorialPageState extends State<HistorialPage> {
     final beneficio = item['beneficios']?['titulo'] ?? 'Beneficio';
     final categoria = item['comercios']?['categoria'] ?? 'General';
     final fechaRaw = item['created_at'];
-    
+
     String fecha = "Reciente";
     if (fechaRaw != null) {
       try {
@@ -131,10 +157,7 @@ class _HistorialPageState extends State<HistorialPage> {
         child: Container(
           decoration: BoxDecoration(
             border: Border(
-              left: BorderSide(
-                color: _getStatusColor(estado),
-                width: 6,
-              ),
+              left: BorderSide(color: _getStatusColor(estado), width: 6),
             ),
           ),
           child: Padding(
@@ -179,7 +202,11 @@ class _HistorialPageState extends State<HistorialPage> {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.calendar_today, size: 12, color: Colors.grey.shade600),
+                          Icon(
+                            Icons.calendar_today,
+                            size: 12,
+                            color: Colors.grey.shade600,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             fecha,
@@ -241,12 +268,18 @@ class _HistorialPageState extends State<HistorialPage> {
 
   IconData _getCategoryIcon(String cat) {
     switch (cat.toLowerCase()) {
-      case 'mascotas': return Icons.pets_rounded;
-      case 'salud': return Icons.medical_services_rounded;
-      case 'educación': return Icons.school_rounded;
-      case 'alimentos': return Icons.restaurant_rounded;
-      case 'entretenimiento': return Icons.local_activity_rounded;
-      default: return Icons.local_offer_rounded;
+      case 'mascotas':
+        return Icons.pets_rounded;
+      case 'salud':
+        return Icons.medical_services_rounded;
+      case 'educación':
+        return Icons.school_rounded;
+      case 'alimentos':
+        return Icons.restaurant_rounded;
+      case 'entretenimiento':
+        return Icons.local_activity_rounded;
+      default:
+        return Icons.local_offer_rounded;
     }
   }
 }

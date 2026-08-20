@@ -1,7 +1,8 @@
 import 'package:app369/beneficios.dart';
 import 'package:app369/noticias.dart';
+import 'package:app369/notificaciones.dart';
 import 'package:app369/perfil.dart';
-import 'package:app369/sos.dart';
+import 'package:app369/scanner_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       initialBenefitTitle: widget.initialBenefitTitle,
       initialSucursal: widget.initialSucursal,
     ),
-    const SosPage(),
+    const ScannerPage(),
     const NewsPage(),
     const PerfilPage(),
   ];
@@ -81,6 +82,25 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.notifications_none_rounded,
+                      size: 32,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NotificationsPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             )
           : null,
 
@@ -123,8 +143,8 @@ class _HomePageState extends State<HomePage> {
             label: 'Beneficios',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.emergency_rounded),
-            label: 'SOS',
+            icon: Icon(Icons.qr_code_scanner_rounded),
+            label: 'Scanner',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.newspaper_rounded),
@@ -155,7 +175,7 @@ class InicioContent extends StatelessWidget {
         children: [
           _buildDigitalCard(),
           const SizedBox(height: 12),
-          _buildQuickActions(),
+          // _buildQuickActions(),
           const Divider(color: Colors.white24, height: 16),
           Text(
             'Beneficios',
@@ -165,24 +185,12 @@ class InicioContent extends StatelessWidget {
               color: Colors.grey.shade400,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           _buildBeneficiosPreview(),
         ],
       ),
     );
   }
-}
-
-Widget _buildQuickActions() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      _buildCircularButton(Icons.receipt_long_rounded, "Trámites"),
-      _buildCircularButton(Icons.map_rounded, "Lugares"),
-      _buildCircularButton(Icons.campaign_rounded, "Avisos"),
-      _buildCircularButton(Icons.help_outline_rounded, "Ayuda"),
-    ],
-  );
 }
 
 Widget _buildCircularButton(IconData icon, String label) {
@@ -350,36 +358,25 @@ Widget _buildDigitalCard() {
 Widget _buildBeneficiosPreview() {
   final items = [
     {
-      'titulo': 'Heladería MiPH',
-      'descuento': '3er Sabor o\nTopping',
-      'valor': 'GRATIS',
-      'color': Colors.pinkAccent,
-      'img':
-          'https://images.unsplash.com/photo-1501443762994-82bd5dabb892?q=80&w=500&auto=format&fit=crop',
-    },
-    {
       'titulo': 'Escuela del Valle',
       'descuento': 'Licencias de\n conducir',
       'valor': '30%\nDescuento',
       'color': Colors.red,
-      'img':
-          'https://images.unsplash.com/photo-1532974297617-c0f05fe48bff?q=80&w=764&auto=format&fit=crop',
+      'img': 'assets/escuela-del-valle.png',
     },
     {
       'titulo': 'Clínica del Sol',
       'descuento': 'Tratamientos\ndentales',
       'valor': '17%\nDescuento',
       'color': Colors.blue,
-      'img':
-          'https://images.unsplash.com/photo-1512678080530-7760d81faba6?w=500&q=80',
+      'img': 'assets/clinica-del-sol.png',
     },
     {
       'titulo': 'Casa Guau',
       'descuento': 'Sacos de\nAlimento',
       'valor': '5%\nDescuento',
       'color': Colors.brown,
-      'img':
-          'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&q=80',
+      'img': 'assets/casa-guau.png',
     },
   ];
 
@@ -409,7 +406,7 @@ Widget _buildVerticalCard(
   String title,
   String desc,
   String val,
-  String imgUrl,
+  String imgPath,
   Color color,
 ) {
   return Container(
@@ -430,12 +427,19 @@ Widget _buildVerticalCard(
         // 1. Imagen Superior
         ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
-          child: Image.network(
-            imgUrl,
-            height: 90,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
+          child: imgPath.startsWith('http')
+              ? Image.network(
+                  imgPath,
+                  height: 90,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                )
+              : Image.asset(
+                  imgPath,
+                  height: 90,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
         ),
         // 2. Cuerpo (Título al centro)
         Padding(

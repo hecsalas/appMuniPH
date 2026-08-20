@@ -1,11 +1,8 @@
 import 'dart:async';
-import 'package:app369/comercio.dart';
 import 'package:app369/historialBeneficios.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class BeneficiosPage extends StatefulWidget {
   final String? initialBenefitTitle;
@@ -189,14 +186,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           ),
           centerTitle: true,
           actions: [
-            IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ComercioPage()),
-              ),
-              icon: const Icon(Icons.storefront_outlined),
-              color: Colors.white,
-            ),
             IconButton(
               onPressed: () => Navigator.push(
                 context,
@@ -669,41 +658,11 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                           ],
                         ),
                       ),
-
-                    // Botón de mapa siempre visible
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Lógica de mapa (coordenadas si existen)
-                        },
-                        icon: const Icon(
-                          Icons.map_rounded,
-                          color: Colors.black87,
-                        ),
-                        label: const Text(
-                          "VER UBICACIÓN EN MAPA",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade200,
-                          minimumSize: const Size(double.infinity, 55),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
                   ],
                 ),
               ),
 
-              // 2. Floating Handle - Positioned on top of content
+              // 2. Floating Handle
               Positioned(
                 top: 12,
                 left: 0,

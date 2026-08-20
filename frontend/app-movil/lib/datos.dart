@@ -29,25 +29,39 @@ class _DatosPageState extends State<DatosPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade900,
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
-          "Mis Datos",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
         centerTitle: true,
         foregroundColor: Colors.white,
+        title: const Padding(
+          padding: EdgeInsets.only(top: 20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+            Text(
+            "MIS DATOS",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              letterSpacing: -0.5,
+            ),
+          ),
+          ],
+          ),
+      ),
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration:  BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightGreen],
+            colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
         child: SafeArea(

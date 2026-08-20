@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:app369/home.dart';
 import 'package:app369/inicio.dart';
-import 'package:app369/comercio.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:app_links/app_links.dart';
@@ -59,29 +58,6 @@ class _MyAppState extends State<MyApp> {
 
   void _handleDeepLink(Uri uri) {
     debugPrint('Deep Link recibido: $uri');
-
-    // miph-app://beneficios?target=Escuela del Valle&sucursal=Padre Hurtado
-    if (uri.scheme == 'miph-app' && uri.host == 'beneficios') {
-      final target = uri.queryParameters['target'];
-      final sucursal = uri.queryParameters['sucursal'];
-      _navigatorKey.currentState?.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => HomePage(
-            initialIndex: 1,
-            initialBenefitTitle: target,
-            initialSucursal: sucursal,
-          ),
-        ),
-        (route) => false,
-      );
-    }
-
-    // Compatibilidad con la ruta anterior de comercio
-    if (uri.scheme == 'miph-app' && uri.host == 'comercio') {
-      _navigatorKey.currentState?.push(
-        MaterialPageRoute(builder: (context) => const ComercioPage()),
-      );
-    }
   }
 
   @override

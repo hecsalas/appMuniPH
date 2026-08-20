@@ -1,25 +1,21 @@
-# Refinamiento Estético del Handle en Modales de Beneficios
+# Carga de Imágenes desde Assets en Beneficios
 
-Este plan detalla la reestructuración visual del modal de detalles para que el indicador de arrastre (handle) sea semitransparente y flote directamente sobre la imagen de cabecera, logrando un diseño más moderno y fluido.
+Este plan detalla cómo modificar el carrusel de beneficios en el Home para que soporte imágenes guardadas localmente en la carpeta de `assets`, además de las imágenes de internet.
 
 ## Proposed Changes
 
 ### [App Móvil]
 
-#### [MODIFY] [beneficios.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/beneficios.dart)
-- **Refactorización de `_mostrarDetallesBeneficio`**:
-    - Cambiar la estructura de `Column` (que separaba el handle del contenido) por un `Stack`.
-    - El primer hijo del `Stack` será el `SingleChildScrollView` con todo el contenido, permitiendo que la imagen llegue hasta el borde superior del modal.
-    - El segundo hijo será el **Handle Manual** posicionado de forma absoluta en la parte superior central.
-- **Ajustes Visuales**:
-    - Configurar el handle con `Colors.white.withOpacity(0.5)` para que sea traslúcido.
-    - Ajustar la posición del botón "Cerrar" (X) para que no interfiera con el área táctil del handle.
-    - Asegurar que la imagen de cabecera mantenga el `colorFilter` para garantizar la visibilidad del handle blanco.
+#### [MODIFY] [home.dart](file:///C:/Users/2266/StudioProjects/App369/frontend/app-movil/lib/home.dart)
+- Modificar el método `_buildVerticalCard`:
+    - Cambiar `Image.network` por una lógica condicional.
+    - Si la URL comienza con "http", usar `Image.network`.
+    - En caso contrario, usar `Image.asset`.
+- Actualizar la lista de beneficios en `_buildBeneficiosPreview` para usar las rutas locales (ej: `assets/casa-guau.png`).
 
 ## Verification Plan
 
 ### Manual Verification
-1. Abrir el detalle de un beneficio con imagen (ej: Casa Guau).
-2. Verificar que la imagen comience desde el borde superior curvo del modal.
-3. Confirmar que el handle gris/blanco semitransparente sea visible sobre la imagen.
-4. Deslizar el modal hacia abajo y verificar que el movimiento sea fluido y no existan franjas blancas en la parte superior.
+1. Abrir el Home.
+2. Verificar que las imágenes de los comercios (Casa Guau, Clínica del Sol, etc.) se carguen correctamente usando los archivos locales.
+3. Confirmar que no hay errores de "asset not found" en la consola.

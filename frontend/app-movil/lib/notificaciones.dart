@@ -52,32 +52,58 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text(
-          "NOTIFICACIONES",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        backgroundColor: Colors.blue.shade900,
+        toolbarHeight: 100,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
         foregroundColor: Colors.white,
+        title: const Padding(
+          padding: EdgeInsets.only(top: 20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "NOTIFICACIONES",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              Text(
+                'Mantente informado sobre tu comuna',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ),
         actions: [
           if (_notificaciones.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.delete_sweep_rounded),
-              onPressed: _borrarTodo,
-              tooltip: "Borrar todo",
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0, right: 10),
+              child: IconButton(
+                icon: const Icon(Icons.delete_sweep_rounded),
+                onPressed: _borrarTodo,
+                tooltip: "Borrar todo",
+              ),
             ),
         ],
       ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.blue, Colors.lightGreen],
+            colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
         child: _notificaciones.isEmpty
@@ -90,7 +116,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   // 3. Widgets de soporte (Ahora todos dentro de la clase)
   Widget _buildListaNotificaciones() {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 120, 16, 100),
       itemCount: _notificaciones.length,
       itemBuilder: (context, index) {
         final item = _notificaciones[index];
