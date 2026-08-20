@@ -344,7 +344,7 @@ Widget _buildBeneficiosPreview() {
   ];
 
   return SizedBox(
-    height: 275,
+    height: 280,
     child: ListView.separated(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
@@ -393,13 +393,13 @@ Widget _buildVerticalCard(
           child: imgPath.startsWith('http')
               ? Image.network(
                   imgPath,
-                  height: 125,
+                  height: 115,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 )
               : Image.asset(
                   imgPath,
-                  height: 125,
+                  height: 115,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
@@ -446,13 +446,21 @@ Widget _buildVerticalCard(
               const SizedBox(height: 2),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Text(
-                  val,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                    color: color,
+                child: SizedBox(
+                  height: 40,
+                  width: 90,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      val,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: color,
+                      ),
+                    ),
                   ),
                 ),
               ),

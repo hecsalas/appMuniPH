@@ -9,11 +9,8 @@ class HelpcenterPage extends StatefulWidget {
 }
 
 class _HelpcenterPageState extends State<HelpcenterPage> {
-
   @override
   Widget build(BuildContext context) {
-    final double topPadding = MediaQuery.of(context).padding.top + 10.0;
-
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -28,17 +25,17 @@ class _HelpcenterPageState extends State<HelpcenterPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-            Text(
-            "CENTRO DE AYUDA",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-              letterSpacing: -0.5,
-            ),
+              Text(
+                "CENTRO DE AYUDA",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ],
           ),
-          ],
         ),
-      ),
       ),
       body: Container(
         width: double.infinity,
@@ -50,86 +47,83 @@ class _HelpcenterPageState extends State<HelpcenterPage> {
             colors: [Colors.green.shade800, Colors.blue.shade800],
           ),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(20.0, topPadding, 20.0, 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Contáctanos",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.fromLTRB(20.0, 120.0, 20.0, 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Contáctanos",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 15),
+              ),
+              const SizedBox(height: 15),
 
-                _buildContactCard(
-                  icon: Icons.phone_rounded,
-                  title: "Llamar a la Municipalidad",
-                  subtitle: "+56 2 2430 6000",
-                  onTap: () => launchUrl(Uri.parse("tel:56224306000")),
-                ),
-                _buildContactCard(
-                  icon: Icons.email_rounded,
-                  title: "Escribir un correo",
-                  subtitle: "contacto@mph.cl",
-                  onTap: () => launchUrl(Uri.parse("mailto:contacto@mph.cl")),
-                ),
-                _buildContactCard(
-                  icon: Icons.chat_bubble_rounded,
-                  title: "Chat de soporte (WhatsApp)",
-                  subtitle: "Lun a Vie, 9:00 - 14:00 hrs.",
-                  onTap: () =>
-                      launchUrl(Uri.parse("https://wa.me/56962296332")),
-                ),
-                _buildContactCard(
-                  icon: Icons.location_on_rounded,
-                  title: "Oficinas municipales",
-                  subtitle: "San Alberto Hurtado 3295",
-                  onTap: () {}, // Aquí podrías abrir el mapa
-                ),
+              _buildContactCard(
+                icon: Icons.phone_rounded,
+                title: "Llamar a la Municipalidad",
+                subtitle: "+56 2 2430 6000",
+                onTap: () => launchUrl(Uri.parse("tel:56224306000")),
+              ),
+              _buildContactCard(
+                icon: Icons.email_rounded,
+                title: "Escribir un correo",
+                subtitle: "contacto@mph.cl",
+                onTap: () => launchUrl(Uri.parse("mailto:contacto@mph.cl")),
+              ),
+              _buildContactCard(
+                icon: Icons.chat_bubble_rounded,
+                title: "Chat de soporte (WhatsApp)",
+                subtitle: "Lun a Vie, 9:00 - 14:00 hrs.",
+                onTap: () => launchUrl(Uri.parse("https://wa.me/56962296332")),
+              ),
+              _buildContactCard(
+                icon: Icons.location_on_rounded,
+                title: "Oficinas municipales",
+                subtitle: "San Alberto Hurtado 3295",
+                onTap: () {}, // Aquí podrías abrir el mapa
+              ),
 
-                const SizedBox(height: 8),
-                const Text(
-                  "Preguntas frecuentes",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const SizedBox(height: 8),
+              const Text(
+                "Preguntas frecuentes",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 10),
+              ),
+              const SizedBox(height: 10),
 
-                // CAJA BLANCA PARA LAS PREGUNTAS (FAQ)
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    children: [
-                      _buildFaqItem(
-                        "¿Cómo obtengo mi Tarjeta Vecino Digital?",
-                        "Tu tarjeta se genera automáticamente al iniciar sesión. La encuentras en la pestaña Perfil.",
-                      ),
-                      _buildFaqItem(
-                        "¿Cómo reporto un problema en mi barrio?",
-                        "Ve a la pestaña SOS y presiona el botón 'Reportar Incidencia' para enviar una foto del problema.",
-                      ),
-                      _buildFaqItem(
-                        "¿Cómo accedo a los beneficios?",
-                        "Debes tener tu Tarjeta Vecino activa y presentar el código QR en los locales asociados.",
-                      ),
-                    ],
-                  ),
+              // CAJA BLANCA PARA LAS PREGUNTAS (FAQ)
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                const SizedBox(height: 100),
-                // Espacio para que el SnakeBar no tape nada
-              ],
-            ),
+                child: Column(
+                  children: [
+                    _buildFaqItem(
+                      "¿Cómo obtengo mi Tarjeta Vecino Digital?",
+                      "Tu tarjeta se genera automáticamente al iniciar sesión. La encuentras en la pestaña Perfil.",
+                    ),
+                    _buildFaqItem(
+                      "¿Cómo reporto un problema en mi barrio?",
+                      "Ve a la pestaña SOS y presiona el botón 'Reportar Incidencia' para enviar una foto del problema.",
+                    ),
+                    _buildFaqItem(
+                      "¿Cómo accedo a los beneficios?",
+                      "Debes tener tu Tarjeta Vecino activa y presentar el código QR en los locales asociados.",
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 100),
+              // Espacio para que el SnakeBar no tape nada
+            ],
           ),
         ),
       ),
