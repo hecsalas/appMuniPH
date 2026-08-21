@@ -11,6 +11,8 @@ class HelpcenterPage extends StatefulWidget {
 class _HelpcenterPageState extends State<HelpcenterPage> {
   @override
   Widget build(BuildContext context) {
+    final double topPadding = MediaQuery.of(context).padding.top + 110.0;
+
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -49,7 +51,7 @@ class _HelpcenterPageState extends State<HelpcenterPage> {
         ),
         child: SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.fromLTRB(20.0, 150.0, 20.0, 20.0),
+          padding: EdgeInsets.fromLTRB(20.0, topPadding, 20.0, 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
