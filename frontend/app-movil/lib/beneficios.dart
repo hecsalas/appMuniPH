@@ -269,7 +269,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             ),
             subtitle: Text("${beneficios.length} beneficios disponibles"),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _mostrarDetallesBeneficio(item, context, isFromQR: false),
+            onTap: () =>
+                _mostrarDetallesBeneficio(item, context, isFromQR: false),
           ),
         );
       },
@@ -327,12 +328,14 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     if (n.contains('casa guau')) return 'assets/casa-guau.png';
     if (n.contains('clinica del sol')) return 'assets/clinica-del-sol.png';
     if (n.contains('escuela del valle')) return 'assets/escuela-del-valle.png';
-    if (n.contains('farmacia trebol') || n.contains('farmacia trébol')) return 'assets/farmacia-trebol.png';
+    if (n.contains('farmacia trebol') || n.contains('farmacia trébol'))
+      return 'assets/farmacia-trebol.png';
     if (n.contains('rompecorreas')) return 'assets/rompecorreas.png';
     if (n.contains('sukatza')) return 'assets/sukatza.png';
     if (n.contains('zxtreme')) return 'assets/zxtreme.png';
     if (n.contains('fratello')) return 'assets/fratello.png';
-    if (n.contains('mr. lucas') || n.contains('mr lucas')) return 'assets/mr-lucas.png';
+    if (n.contains('mr. lucas') || n.contains('mr lucas'))
+      return 'assets/mr-lucas.png';
     if (n.contains('odfjell')) return 'assets/odfjell.png';
     return null;
   }
@@ -355,7 +358,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         final categoria = item['categoria'] ?? "General";
         final color = _getCategoryColor(categoria);
         final icono = _getIconForCategory(categoria);
-        final assetPath = _getAssetPath(item['nombre_fantasia'] ?? item['titulo'] ?? "");
+        final assetPath = _getAssetPath(
+          item['nombre_fantasia'] ?? item['titulo'] ?? "",
+        );
 
         return Container(
           height: MediaQuery.of(context).size.height * 0.9,
@@ -368,7 +373,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             children: [
               // 1. Scrollable Content (Content stays behind the handle)
               SingleChildScrollView(
-                physics: const ClampingScrollPhysics(), // Prevents internal white gaps
+                physics: const ClampingScrollPhysics(),
+                // Prevents internal white gaps
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -378,23 +384,27 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: color.withOpacity(0.8),
-                        image: assetPath != null 
-                          ? DecorationImage(
-                              image: AssetImage(assetPath),
-                              fit: BoxFit.cover,
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.25), 
-                                BlendMode.darken
-                              ),
-                            )
-                          : null,
+                        image: assetPath != null
+                            ? DecorationImage(
+                                image: AssetImage(assetPath),
+                                fit: BoxFit.cover,
+                                colorFilter: ColorFilter.mode(
+                                  Colors.black.withOpacity(0.25),
+                                  BlendMode.darken,
+                                ),
+                              )
+                            : null,
                       ),
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
                           if (assetPath == null)
                             Center(
-                              child: _buildIcon(icono, size: 80, color: Colors.white24),
+                              child: _buildIcon(
+                                icono,
+                                size: 80,
+                                color: Colors.white24,
+                              ),
                             ),
                           Positioned(
                             top: 45, // Adjusted to avoid handle
@@ -402,7 +412,10 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                             child: CircleAvatar(
                               backgroundColor: Colors.white.withOpacity(0.3),
                               child: IconButton(
-                                icon: const Icon(Icons.close, color: Colors.white),
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                ),
                                 onPressed: () => Navigator.pop(context),
                               ),
                             ),
@@ -430,7 +443,11 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                                   color: color.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
-                                child: _buildIcon(icono, size: 45, color: color),
+                                child: _buildIcon(
+                                  icono,
+                                  size: 45,
+                                  color: color,
+                                ),
                               ),
                             ),
                           ),
@@ -520,7 +537,10 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                       padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Text(
                         "Beneficios disponibles para ti",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -541,7 +561,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         return Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: available ? Colors.white : Colors.grey.shade50,
+                            color: available
+                                ? Colors.white
+                                : Colors.grey.shade50,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: available
@@ -732,7 +754,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
               Flexible(
                 child: ListView.separated(
                   shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(), // Prevents white gaps on scroll bounce
+                  physics: const ClampingScrollPhysics(),
+                  // Prevents white gaps on scroll bounce
                   itemCount: beneficios.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 12),
@@ -818,6 +841,22 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     Map<String, dynamic> comercio,
     Map<String, dynamic> beneficio,
   ) async {
+    final existingResponse = await _supabase
+        .from('solicitudes_canje')
+        .select()
+        .eq('beneficio_id', beneficio['id'])
+        .eq('vecino_nombre', 'Miguel Tapia Troncoso')
+        .eq('estado', 'Aprobado');
+
+    if (existingResponse.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Este beneficio ya ha sido utilizado."),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
     // 1. Confirmación Inicial
     final bool? confirm = await showDialog<bool>(
       context: context,
@@ -945,8 +984,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           .insert({
             'comercio_id': comercio['id'],
             'beneficio_id': beneficio['id'],
-            'vecino_nombre': 'Miguel Tapia (Vecino PH)', // Simulado por ahora
+            'vecino_nombre': 'Miguel Tapia Troncoso',
             'estado': 'Pendiente',
+            'fecha_solicitud': DateTime.now().toIso8601String(),
           })
           .select()
           .single();
