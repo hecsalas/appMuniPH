@@ -15,6 +15,7 @@ import {
   ArrowRight,
   Loader2
 } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 export default function ReportesPage() {
     const [loading, setLoading] = useState(true);
@@ -84,21 +85,36 @@ export default function ReportesPage() {
                     }
                 };
 
-                        const exportToCSV = () => {
-                            const headers = ["Vecino,Comercio,Ahorro,Fecha,Estado\n"];
-                            const rows = recentActivity.map(act =>
-                                `${act.vecino},${act.comercio},${act.ahorro},${act.fecha},${act.estado}\n`
-                                );
-                            const blob = new Blob([headers + rows.join("")], { type: 'text/csv'});
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.setAttribute('hidden', '');
-                            a.setAttribute('href', url);
-                            a.setAttribute('download', 'reporte_canjes.csv');
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            };
+    const exportToExcel = () => {
+        // 1. Preparar los datos (Mapeo limpio para Excel)
+        const dataToExport = recentActivity.map(act => ({
+            'Vecino': act.vecino,
+            'Comercio': act.comercio,
+            'Ahorro': act.ahorro,
+            'Fecha': act.fecha,
+            'Estado': act.estado
+        }));
+
+        // 2. Crear una hoja de trabajo (Worksheet)
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+
+        // 3. Crear un libro de trabajo (Workbook)
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Reporte Canjes");
+
+        // 4. Ajustar anchos de columna (Opcional pero recomendado)
+        const columnWidths = [
+            { wch: 30 }, // Vecino
+            { wch: 30 }, // Comercio
+            { wch: 15 }, // Ahorro
+            { wch: 25 }, // Fecha
+            { wch: 15 }, // Estado
+        ];
+        worksheet['!cols'] = columnWidths;
+
+        // 5. Generar archivo y disparar descarga
+        XLSX.writeFile(workbook, "reporte_canjes_miph.xlsx");
+    };
 
 
             const getColorForCategory = (cat: string) => {
@@ -133,7 +149,7 @@ export default function ReportesPage() {
           <button onClick={fetchReportData} className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
             <Calendar size={16} /> Actualizar
           </button>
-            <button onClick={exportToCSV} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/10">
+            <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/10">
             <Download size={16} /> Exportar Excel
             </button>
         </div>

@@ -1,8 +1,7 @@
-# Tareas: Refinamiento de Handle y Promociones
+# Tareas: Dashboard Real-Time
 
-- [x] Tareas: Refinamiento de Handle Flotante
-    - [x] Actualizar Plan de Implementación
-    - [x] Refactorizar `_mostrarDetallesBeneficio` en `lib/beneficios.dart`
-- [x] Tareas: Integración de Promoción de Heladería
-    - [x] Agregar nuevo comercio a la lista de vitrineo en `home.dart`
-    - [x] Definir textos y valores para la promoción del barquillo doble
+- [x] Preparar estructura de datos y estados en `page.tsx`
+- [x] Implementar carga de datos inicial desde Supabase
+- [x] Configurar suscripciones Real-Time
+- [x] Refactorizar componentes visuales con datos reales
+- [x] Verificar sincronización con App Móvil

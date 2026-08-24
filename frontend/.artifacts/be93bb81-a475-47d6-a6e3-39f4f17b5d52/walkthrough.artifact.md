@@ -1,24 +1,25 @@
-# Ajustes Finales de UI y Espaciado
+# Dashboard Real-Time: Portal Municipal
 
-Se han aplicado correcciones críticas de espaciado y dimensiones para asegurar una visualización perfecta en dispositivos iPhone.
+Se ha transformado el Dashboard estático en un centro de control dinámico que refleja la actividad de la comuna de Padre Hurtado en tiempo real.
 
-## Cambios Realizados
+## Cambios Implementados
 
-### 🛍️ Carrusel de Beneficios (Home)
-Se optimizaron las tarjetas verticales para evitar el desbordamiento de texto:
-- **Altura Total**: Se aumentó a `280` para dar más aire al contenido inferior.
-- **Imagen**: Se redujo ligeramente a `115` de altura, permitiendo que el área de texto crezca.
-- **Tipografía**: El valor del descuento se ajustó a `16` para una mejor contención dentro del footer escalonado.
+### ⚡ Conectividad Supabase
+- El Dashboard ahora consulta directamente las tablas `comercios` y `solicitudes_canje`.
+- Se implementó una lógica de carga inicial (`Skeleton/Loader`) para mejorar la percepción de velocidad.
 
-### 🔔 Pantalla de Notificaciones
-- **Despeje de Cabecera**: Se aumentó el padding superior de la lista a `170`. Esto garantiza que la primera notificación no tape el subtítulo descriptivo ni el botón de borrado masivo, considerando el área del notch de iOS.
+### 🔄 Actualización Instantánea (Real-Time)
+- **Comercios**: El contador de "Comercios Vigentes" y la lista de "Solicitudes Recientes" se actualizan automáticamente cuando se crea o edita un comercio en la base de datos.
+- **Canjes**: El contador de "Canjes de Beneficios" reacciona instantáneamente cada vez que un vecino utiliza su App MiPH para canjear una oferta.
+- **Vecinos**: Se calcula dinámicamente el número de vecinos activos basado en la actividad real registrada.
 
-### 🖼️ Modal de Detalles
-- **Proporción de Imagen**: Se redujo la altura de la imagen de cabecera a `200` para que la información del comercio sea visible más arriba en la pantalla.
-- **Ajuste de Botones**: El botón de cerrar (X) se reposicionó a `35` píxeles desde el borde superior para armonizar con el nuevo tamaño.
+### 🎨 Refinamiento de Interfaz
+- Se agregó un indicador de "ESTADO DEL SISTEMA: CONECTADO" con una animación de pulso verde para dar confianza al funcionario.
+- Los estados de los comercios se unificaron visualmente (`Vigente` -> "Aprobado").
+- Se preparó el área de "Alertas SOS" para la futura integración con el módulo de incidencias.
 
-## Verificación
-
-- [x] "Escuela del Valle" ahora muestra el texto "Descuento" completo.
-- [x] El subtítulo de Notificaciones es 100% legible.
-- [x] El modal de beneficios presenta una jerarquía de información más equilibrada.
+## Cómo probarlo
+1. Abre el Dashboard en tu navegador.
+2. Abre la App MiPH en un emulador o dispositivo real.
+3. Realiza un canje de beneficio en la App.
+4. **Observa el Dashboard**: Verás cómo el número de canjes aumenta automáticamente sin que tengas que refrescar la página.

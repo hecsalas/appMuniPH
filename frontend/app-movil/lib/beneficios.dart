@@ -23,6 +23,21 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
   List<Map<String, dynamic>> _comerciosReal = [];
   bool _isLoading = true;
 
+  // Estado de filtros
+  String _selectedCategory = "Todas";
+  bool _showOnlyAvailable = false;
+  final List<String> _categories = [
+    "Todas",
+    "Salud",
+    "Mascotas",
+    "Alimentos",
+    "Educación",
+    "Deporte",
+    "Bebidas",
+    "Servicios",
+    "Entretenimiento"
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -211,9 +226,100 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                     _beneficiosMunicipales,
                     isMunicipal: true,
                   ),
-                  _buildListaBeneficios(_comerciosReal, isMunicipal: false),
+                  _buildComerciosTab(),
                 ],
               ),
+      ),
+    );
+  }
+
+  Widget _buildComerciosTab() {
+    final filteredList = _comerciosReal.where((comercio) {
+      // 1. Filtro de Categoría
+      final matchesCategory = _selectedCategory == "Todas" ||
+          comercio['categoria'].toString().toLowerCase() ==
+              _selectedCategory.toLowerCase();
+
+      // 2. Filtro de Disponibilidad Real-Time
+      bool hasAvailableBenefit = true;
+      if (_showOnlyAvailable) {
+        final benefits = comercio['beneficios'] as List? ?? [];
+        hasAvailableBenefit = benefits.any((b) => _isAvailableNow(
+              b['dias_uso'] ?? b['dias'] ?? "",
+              b['horario_uso'] ?? b['horario'] ?? "",
+            ));
+      }
+
+      return matchesCategory && hasAvailableBenefit;
+    }).toList();
+
+    return Column(
+      children: [
+        _buildFilterBar(),
+        Expanded(
+          child: _buildListaBeneficios(filteredList, isMunicipal: false),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterBar() {
+    return Container(
+      height: 60,
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          // Filtro "Disponible Ahora" con icono de pulso
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: FilterChip(
+              avatar: Icon(
+                Icons.access_time_filled_rounded,
+                size: 16,
+                color: _showOnlyAvailable ? Colors.white : Colors.green,
+              ),
+              label: const Text("Disponible Ahora"),
+              selected: _showOnlyAvailable,
+              selectedColor: Colors.green,
+              checkmarkColor: Colors.white,
+              labelStyle: TextStyle(
+                color: _showOnlyAvailable ? Colors.white : Colors.black87,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+              onSelected: (val) => setState(() => _showOnlyAvailable = val),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
+          const VerticalDivider(width: 20, indent: 10, endIndent: 10),
+          // Chips de Categorías
+          ..._categories.map((cat) {
+            final isSelected = _selectedCategory == cat;
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                label: Text(cat),
+                selected: isSelected,
+                selectedColor: Colors.blue.shade900,
+                labelStyle: TextStyle(
+                  color: isSelected ? Colors.white : Colors.black87,
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                onSelected: (val) {
+                  if (val) setState(() => _selectedCategory = cat);
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            );
+          }),
+        ],
       ),
     );
   }
@@ -330,6 +436,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     if (n.contains('mr. lucas') || n.contains('mr lucas'))
       return 'assets/mr-lucas.png';
     if (n.contains('odfjell')) return 'assets/odfjell.png';
+    if (n.contains('gonzalez')) return 'assets/funeraria-gonzalez.png';
     return null;
   }
 

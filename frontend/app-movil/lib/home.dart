@@ -321,44 +321,72 @@ Widget _buildDigitalCard() {
 Widget _buildBeneficiosPreview() {
   final items = [
     {
+      'titulo': 'Viña Odfjell',
+      'subtitulo': 'Venta Directa',
+      'valor': '10%',
+      'categoria': 'Bebidas',
+      'color': Colors.purple,
+      'img': 'assets/odfjell.png',
+    },
+    {
+      'titulo': 'Zxtreme',
+      'subtitulo': 'Mantención Pro',
+      'valor': '15%',
+      'categoria': 'Deporte',
+      'color': Colors.teal,
+      'img': 'assets/zxtreme.png',
+    },
+    {
+      'titulo': 'Fratello',
+      'subtitulo': 'Heladería',
+      'valor': '3x2',
+      'categoria': 'Alimentos',
+      'color': Colors.pinkAccent,
+      'img': 'assets/fratello.png',
+    },
+    {
       'titulo': 'Escuela del Valle',
-      'descuento': 'Licencias de\n conducir',
-      'valor': '30%\nDescuento',
+      'subtitulo': 'Conductores',
+      'valor': '30%',
+      'categoria': 'Educación',
       'color': Colors.red,
       'img': 'assets/escuela-del-valle.png',
     },
     {
       'titulo': 'Clínica del Sol',
-      'descuento': 'Tratamientos\ndentales',
-      'valor': '17%\nDescuento',
+      'subtitulo': 'Dental',
+      'valor': '17%',
+      'categoria': 'Salud',
       'color': Colors.blue,
       'img': 'assets/clinica-del-sol.png',
     },
     {
       'titulo': 'Casa Guau',
-      'descuento': 'Sacos de\nAlimento',
-      'valor': '5%\nDescuento',
+      'subtitulo': 'Veterinaria',
+      'valor': '5%',
+      'categoria': 'Mascotas',
       'color': Colors.brown,
       'img': 'assets/casa-guau.png',
     },
   ];
 
   return SizedBox(
-    height: 280,
+    height: 335,
     child: ListView.separated(
       scrollDirection: Axis.horizontal,
       physics: const BouncingScrollPhysics(),
       itemCount: items.length,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
       separatorBuilder: (context, index) => const SizedBox(width: 16),
       itemBuilder: (context, index) {
         final item = items[index];
         return _buildVerticalCard(
           item['titulo'] as String,
-          item['descuento'] as String,
-          item['valor'] as String,
+          item['subtitulo'] as String,
           item['img'] as String,
+          item['valor'] as String,
           item['color'] as Color,
+          item['categoria'] as String,
         );
       },
     ),
@@ -367,107 +395,115 @@ Widget _buildBeneficiosPreview() {
 
 Widget _buildVerticalCard(
   String title,
-  String desc,
-  String val,
+  String subtitle,
   String imgPath,
+  String val,
   Color color,
+  String category,
 ) {
   return Container(
-    width: 180,
+    width: 210,
     decoration: BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(25),
+      borderRadius: BorderRadius.circular(35),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 10,
-          offset: const Offset(0, 5),
+          color: Colors.black.withOpacity(0.08),
+          blurRadius: 15,
+          offset: const Offset(0, 8),
         ),
       ],
     ),
-    child: Column(
-      children: [
-        // 1. Imagen Superior
-        ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
-          child: imgPath.startsWith('http')
-              ? Image.network(
-                  imgPath,
-                  height: 115,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                )
-              : Image.asset(
-                  imgPath,
-                  height: 115,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-        ),
-        // 2. Cuerpo (Título al centro)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 2),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: Colors.black87,
-              height: 1.1,
-            ),
-          ),
-        ),
-
-        const Spacer(),
-
-        // 3. Footer
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.12),
-            borderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(25),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(35),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. Área de Imagen (Proporcional y Completa)
+          Stack(
             children: [
-              Text(
-                desc.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
+              Container(
+                height: 160,
+                width: double.infinity,
+                color: Colors.grey.shade50,
+                padding: const EdgeInsets.all(15),
+                child: imgPath.startsWith('http')
+                    ? Image.network(imgPath, fit: BoxFit.contain)
+                    : Image.asset(imgPath, fit: BoxFit.contain),
               ),
-              const SizedBox(height: 2),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: SizedBox(
-                  height: 40,
-                  width: 90,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.bottomRight,
-                    child: Text(
-                      val,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w900,
-                        color: color,
+              // Badge de Descuento
+              Positioned(
+                top: 12,
+                right: 12,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withOpacity(0.3),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
                       ),
+                    ],
+                  ),
+                  child: Text(
+                    val.contains('%') ? val : "$val OFF",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 12,
                     ),
                   ),
                 ),
               ),
             ],
           ),
-        ),
-      ],
+
+          // 2. Información del Comercio (Sobre fondo blanco)
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  category.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    color: color,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 18,
+                    color: Color(0xFF1A237E),
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    color: Colors.grey.shade500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

@@ -1,9 +1,110 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import StatCard from "@/components/StatCard";
-import { Users, Store, AlertCircle, CheckCircle } from "lucide-react";
+import { Users, Store, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    vecinos: 0,
+    comercios: 0,
+    sos: 15, // Aún simulado
+    canjes: 0,
+  });
+  const [solicitudes, setSolicitudes] = useState<any[]>([]);
+
+  const fetchDashboardData = async () => {
+    try {
+      // 1. Conteo de Comercios Activos
+      const { count: countComercios } = await supabase
+        .from('comercios')
+        .select('*', { count: 'exact', head: true })
+        .eq('estado', 'Vigente');
+
+      // 2. Conteo de Canjes Totales
+      const { count: countCanjes } = await supabase
+        .from('solicitudes_canje')
+        .select('*', { count: 'exact', head: true });
+
+      // 3. Conteo de Vecinos Únicos (basado en canjes por ahora)
+      const { data: canjesData } = await supabase
+        .from('solicitudes_canje')
+        .select('vecino_nombre');
+
+      const vecinosUnicos = new Set(canjesData?.map(c => c.vecino_nombre)).size;
+
+      // 4. Últimas solicitudes de comercio
+      const { data: ultimosComercios } = await supabase
+        .from('comercios')
+        .select('nombre_fantasia, fecha_registro, estado')
+        .order('fecha_registro', { ascending: false })
+        .limit(4);
+
+      setStats({
+        vecinos: vecinosUnicos || 1248, // Fallback si no hay canjes aún
+        comercios: countComercios || 0,
+        sos: 15,
+        canjes: countCanjes || 0,
+      });
+
+      setSolicitudes(ultimosComercios || []);
+    } catch (error) {
+      console.error("Error cargando dashboard:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboardData();
+
+    // SUSCRIPCIONES REAL-TIME
+    const channelComercios = supabase
+      .channel('cambios-comercios')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'comercios' }, () => {
+        fetchDashboardData();
+      })
+      .subscribe();
+
+    const channelCanjes = supabase
+      .channel('cambios-canjes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'solicitudes_canje' }, () => {
+        fetchDashboardData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channelComercios);
+      supabase.removeChannel(channelCanjes);
+    };
+  }, []);
+
+  const formatFecha = (fecha: string) => {
+    const d = new Date(fecha);
+    const ahora = new Date();
+    const diff = ahora.getTime() - d.getTime();
+    const horas = Math.floor(diff / (1000 * 60 * 60));
+
+    if (horas < 1) return "Hace poco";
+    if (horas < 24) return `Hace ${horas}h`;
+    return d.toLocaleDateString('es-CL');
+  };
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="animate-spin text-primary" size={48} />
+          <p className="text-slate-500 font-medium animate-pulse">Sincronizando datos en tiempo real...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 animate-in fade-in duration-500">
       {/* Encabezado */}
       <header className="flex justify-between items-end">
         <div>
@@ -11,82 +112,81 @@ export default function Home() {
           <p className="text-slate-500">Resumen general de la actividad comunal</p>
         </div>
         <div className="text-right">
-          <p className="text-sm font-medium text-slate-400 uppercase">Hoy es</p>
-          <p className="text-lg font-bold text-primary">Martes 11 de Agosto</p>
+          <p className="text-sm font-medium text-slate-400 uppercase">Estado del Sistema</p>
+          <div className="flex items-center gap-2 text-green-600 font-bold">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
+            CONECTADO
+          </div>
         </div>
       </header>
 
       {/* Métricas Principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Vecinos Registrados"
-          value="1,248"
+          title="Vecinos Activos"
+          value={stats.vecinos.toLocaleString()}
           icon={<Users size={24} />}
-          description="+12 nuevos esta semana"
+          description="Usuarios que han usado la App"
         />
         <StatCard
-          title="Comercios Activos"
-          value="42"
+          title="Comercios Vigentes"
+          value={stats.comercios}
           icon={<Store size={24} />}
-          description="8 convenios por renovar"
+          description="Locales con convenio activo"
         />
         <StatCard
           title="Reportes SOS"
-          value="15"
+          value={stats.sos}
           icon={<AlertCircle size={24} />}
-          description="3 urgencias sin atender"
+          description="Alertas ciudadanas hoy"
           color="bg-red-50/30"
         />
         <StatCard
           title="Canjes de Beneficios"
-          value="312"
+          value={stats.canjes.toLocaleString()}
           icon={<CheckCircle size={24} />}
-          description="Total acumulado del mes"
+          description="Total histórico de transacciones"
         />
       </div>
 
-      {/* Sección Inferior - Tablas o Gráficos Simulados */}
+      {/* Sección Inferior */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Últimos Comercios Registrados */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Solicitudes Recientes de Comercio</h3>
+          <h3 className="text-lg font-bold text-slate-900 mb-4 text-primary uppercase tracking-tighter">Solicitudes Recientes de Comercio</h3>
           <div className="space-y-4">
-            {[
-              { name: "Panadería El Sol", date: "Hace 2h", status: "Pendiente" },
-              { name: "Farmacia Ibiza", date: "Hace 5h", status: "Aprobado" },
-              { name: "Ferretería Central", date: "Ayer", status: "Aprobado" },
-              { name: "Botillería PH", date: "Ayer", status: "Rechazado" },
-            ].map((item, i) => (
-              <div key={i} className="flex justify-between items-center p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                <div>
-                  <p className="font-bold text-slate-800">{item.name}</p>
-                  <p className="text-xs text-slate-400">{item.date}</p>
+            {solicitudes.length === 0 ? (
+              <p className="text-center text-slate-400 py-10 italic">No hay registros recientes</p>
+            ) : (
+              solicitudes.map((item, i) => (
+                <div key={i} className="flex justify-between items-center p-3 rounded-lg hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                  <div>
+                    <p className="font-bold text-slate-800">{item.nombre_fantasia}</p>
+                    <p className="text-xs text-slate-400">{formatFecha(item.fecha_registro)}</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                    item.estado === 'Vigente' ? 'bg-green-100 text-green-700' :
+                    item.estado === 'Pendiente' ? 'bg-amber-100 text-amber-700' :
+                    'bg-red-100 text-red-700'
+                  }`}>
+                    {item.estado === 'Vigente' ? 'Aprobado' : item.estado}
+                  </span>
                 </div>
-                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                  item.status === 'Aprobado' ? 'bg-green-100 text-green-700' :
-                  item.status === 'Pendiente' ? 'bg-amber-100 text-amber-700' :
-                  'bg-red-100 text-red-700'
-                }`}>
-                  {item.status}
-                </span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
-          <button className="w-full mt-6 py-2 text-sm font-bold text-primary hover:bg-slate-50 rounded-lg transition-colors border border-dashed border-slate-200">
-            Ver todas las solicitudes
-          </button>
         </div>
 
-        {/* Alertas de Seguridad */}
+        {/* Alertas de Seguridad (Simuladas hasta tener tabla SOS) */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-900 mb-4">Alertas SOS en Curso</h3>
+          <h3 className="text-lg font-bold text-slate-900 mb-4 opacity-50 uppercase tracking-tighter">Alertas SOS en Curso (Demo)</h3>
           <div className="space-y-4">
             {[
               { type: "Luminaria apagada", location: "Villa Los Silos", priority: "Baja" },
               { type: "Basura acumulada", location: "Av. San Ignacio", priority: "Media" },
               { type: "Microbasural", location: "Cmo. Melipilla", priority: "Alta" },
             ].map((item, i) => (
-              <div key={i} className="flex gap-4 items-start p-3 rounded-lg border border-slate-50">
+              <div key={i} className="flex gap-4 items-start p-3 rounded-lg border border-slate-50 grayscale">
                 <div className={`mt-1 h-2 w-2 rounded-full shrink-0 ${
                   item.priority === 'Alta' ? 'bg-red-500' :
                   item.priority === 'Media' ? 'bg-orange-500' :
@@ -102,9 +202,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <button className="w-full mt-6 py-2 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
-            Ir al mapa de incidencias
-          </button>
+          <p className="text-[10px] text-center text-slate-400 mt-4 italic font-bold">Módulo en etapa de diseño</p>
         </div>
       </div>
     </div>

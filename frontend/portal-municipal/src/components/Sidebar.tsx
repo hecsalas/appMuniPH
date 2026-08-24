@@ -1,8 +1,18 @@
+"use client";
 import React from 'react';
-import { Home, Store, FileText, Handshake, Gift, MapPin, ChartColumn, Settings, LogOut, CheckCircle2, UserCog } from 'lucide-react';
+import { Home, Store, FileText, Handshake, MapPin, ChartColumn, Settings, LogOut, CheckCircle2, UserCog } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Sidebar = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // Limpiamos los datos de sesión (ajusta el nombre del key si usas otro)
+    localStorage.removeItem('miph_municipal_session');
+    router.push('/login');
+  };
+
   const menuItems = [
     { icon: <Home size={20} />, label: 'Dashboard', href: '/' },
     { icon: <Store size={20} />, label: 'Comercios', href: '/comercios' },
@@ -23,11 +33,7 @@ const Sidebar = () => {
 
       <nav className="flex-1 p-4 space-y-2 mt-4">
         {menuItems.map((item, index) => (
-          <Link
-            key={index}
-            href={item.href}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors"
-          >
+          <Link key={index} href={item.href} className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition-colors">
             {item.icon}
             <span className="font-medium">{item.label}</span>
           </Link>
@@ -35,11 +41,11 @@ const Sidebar = () => {
       </nav>
 
       <div className="p-4 border-t border-white/10 space-y-2">
-        <button className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-white/10 transition-colors text-white/80">
+        <Link href="/configuracion" className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-white/10 transition-colors text-white/80 text-left">
           <Settings size={20} />
           <span className="font-medium">Configuración</span>
-        </button>
-        <button className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-red-500/20 text-red-300 transition-colors">
+        </Link>
+        <button onClick={handleLogout} className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-red-500/20 text-red-300 transition-colors text-left">
           <LogOut size={20} />
           <span className="font-medium">Cerrar Sesión</span>
         </button>
