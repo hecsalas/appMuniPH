@@ -32,7 +32,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
   Future<void> _fetchData() async {
     setState(() => _isLoading = true);
     try {
-      // 1. Obtener comercios reales de Supabase
       final List<dynamic> data = await _supabase
           .from('comercios')
           .select('*, sucursales(*), beneficios(*)');
@@ -42,7 +41,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         _isLoading = false;
       });
 
-      // 2. Si viene de un QR, abrir modal automáticamente
       if (widget.initialBenefitTitle != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _abrirModalPorTitulo(
@@ -58,7 +56,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
   }
 
   void _abrirModalPorTitulo(String titulo, {String? sucursal}) {
-    // Buscar en la lista real de Supabase
     final item = _comerciosReal.firstWhere(
       (element) =>
           element['nombre_fantasia'].toString().toLowerCase() ==
@@ -74,7 +71,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     }
   }
 
-  // Mantenemos los beneficios municipales como lista fija o podemos traerlos también
   final List<Map<String, dynamic>> _beneficiosMunicipales = [
     {
       'titulo': 'Bono por Logro Escolar Municipal',
@@ -113,9 +109,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
     }
 
     final now = DateTime.now();
-    final weekday = now.weekday; // 1 = Monday, 7 = Sunday
+    final weekday = now.weekday;
 
-    // Mapeo de días para búsqueda flexible
     final mapDias = {
       1: 'lunes',
       2: 'martes',
@@ -128,10 +123,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
     final hoy = mapDias[weekday]!;
 
-    // Verificación por palabra clave (flexible)
     if (normalizedDias.contains(hoy)) return _isWithinHorario(horario);
 
-    // Verificación de rangos comunes
     if (normalizedDias.contains('lunes a viernes') &&
         weekday >= 1 &&
         weekday <= 5)
@@ -371,14 +364,11 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           ),
           child: Stack(
             children: [
-              // 1. Scrollable Content (Content stays behind the handle)
               SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
-                // Prevents internal white gaps
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Header Background (Imagen o Color)
                     Container(
                       height: 250,
                       width: double.infinity,
@@ -407,7 +397,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                               ),
                             ),
                           Positioned(
-                            top: 45, // Adjusted to avoid handle
+                            top: 45,
                             left: 20,
                             child: CircleAvatar(
                               backgroundColor: Colors.white.withOpacity(0.3),
@@ -455,8 +445,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                       ),
                     ),
                     const SizedBox(height: 50),
-
-                    // 2. TÍTULO Y INFO BÁSICA
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25),
                       child: Column(
@@ -498,10 +486,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 25),
-
-                    // 3. BLOQUE DE INFORMACIÓN
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       padding: const EdgeInsets.all(20),
@@ -529,10 +514,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 30),
-
-                    // 4. BENEFICIOS DISPONIBLES
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Text(
@@ -544,7 +526,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                       ),
                     ),
                     const SizedBox(height: 15),
-
                     ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -639,10 +620,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                         );
                       },
                     ),
-
                     const SizedBox(height: 30),
-
-                    // 5. BOTÓN PRINCIPAL (Solo si viene de QR)
                     if (isFromQR)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -680,11 +658,10 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                           ],
                         ),
                       ),
+                    const SizedBox(height: 50),
                   ],
                 ),
               ),
-
-              // 2. Floating Handle
               Positioned(
                 top: 12,
                 left: 0,
@@ -734,7 +711,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Handle manual
               Center(
                 child: Container(
                   margin: const EdgeInsets.only(top: 12, bottom: 16),
@@ -755,7 +731,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                 child: ListView.separated(
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
-                  // Prevents white gaps on scroll bounce
                   itemCount: beneficios.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 12),
@@ -849,15 +824,17 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         .eq('estado', 'Aprobado');
 
     if (existingResponse.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Este beneficio ya ha sido utilizado."),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Este beneficio ya ha sido utilizado."),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
       return;
     }
-    // 1. Confirmación Inicial
+
     final bool? confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -867,7 +844,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("¿Deseas activar el beneficio de:"),
+            const Text("¿Deseas activar el beneficio de:"),
             Text(
               "${beneficio['titulo']}?",
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -907,9 +884,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
     if (confirm != true) return;
 
-    // 2. Transacción Real en Supabase
     try {
-      // Definimos la suscripción fuera para poder cancelarla desde el diálogo
       StreamSubscription? subscription;
       String? solicitudId;
 
@@ -948,17 +923,9 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
                     await _supabase
                         .from('solicitudes_canje')
                         .update({'estado': 'Cancelado'})
-                        .eq('id', solicitudId!);
+                        .eq('id', solicitudId);
                   }
                   if (context.mounted) Navigator.pop(dialogContext);
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Operación cancelada"),
-                        backgroundColor: Colors.redAccent,
-                      ),
-                    );
-                  }
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.red,
@@ -978,7 +945,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         ),
       );
 
-      // Insertar solicitud
       final response = await _supabase
           .from('solicitudes_canje')
           .insert({
@@ -993,7 +959,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
 
       solicitudId = response['id'];
 
-      // 3. Listener Realtime para esperar respuesta
       final stream = _supabase
           .from('solicitudes_canje')
           .stream(primaryKey: ['id'])
@@ -1003,7 +968,7 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         if (data.isNotEmpty) {
           final estado = data.first['estado'];
           if (estado != 'Pendiente' && estado != 'Cancelado') {
-            Navigator.pop(context); // Cerrar diálogo de espera
+            Navigator.pop(context);
             _mostrarResultadoCanje(
               context,
               estado,
@@ -1014,7 +979,6 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
         }
       });
 
-      // Timeout de 2 minutos
       Future.delayed(const Duration(minutes: 2), () {
         if (subscription != null) {
           subscription!.cancel();
@@ -1023,12 +987,14 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
       });
     } catch (e) {
       if (Navigator.canPop(context)) Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error al conectar: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error al conectar: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -1066,8 +1032,8 @@ class _BeneficiosPageState extends State<BeneficiosPage> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context); // Cerrar resultado
-                Navigator.pop(context); // Cerrar selector de beneficios
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue.shade900,

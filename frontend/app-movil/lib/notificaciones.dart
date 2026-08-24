@@ -8,7 +8,7 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  // 1. Datos de ejemplo corregidos
+  // 1. Datos de ejemplo
   final List<Map<String, dynamic>> _notificaciones = [
     {
       'id': '1',

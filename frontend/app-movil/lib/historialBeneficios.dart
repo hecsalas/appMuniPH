@@ -25,17 +25,20 @@ class _HistorialPageState extends State<HistorialPage> {
     try {
       final List<dynamic> data = await _supabase
           .from('solicitudes_canje')
-          .select(
-            '*, comercios(nombre_fantasia, categoria), beneficios(titulo)',
-          )
-          .order('created_at', ascending: false);
+          .select('''
+          *,
+          comercios:comercio_id (nombre_fantasia, categoria),
+          beneficios:beneficio:id (titulo)
+''')
+          .eq('vecino_nombre', 'Miguel Tapia Troncoso')
+          .order('fecha_solicitud', ascending: false);
 
       setState(() {
         _historial = data.map((e) => Map<String, dynamic>.from(e)).toList();
         _isLoading = false;
       });
     } catch (e) {
-      debugPrint("Error fetching history: $e");
+      print("Error detallado historial: $e");
       setState(() => _isLoading = false);
     }
   }
