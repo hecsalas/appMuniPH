@@ -1,0 +1,8 @@
+- [x] Eliminar carpetas de versiones anteriores
+    - [x] `app_3`
+    - [x] `app_5`
+    - [x] `app369.f42e1644`
+- [x] Limpiar archivos redundantes en la raíz de `App369`
+    - [x] `.dart_tool`
+    - [x] `.flutter-plugins-dependencies`
+- [x] Verificar estado final
