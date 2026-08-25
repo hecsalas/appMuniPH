@@ -5,4 +5,7 @@
 - [x] Limpiar archivos redundantes en la raíz de `App369`
     - [x] `.dart_tool`
     - [x] `.flutter-plugins-dependencies`
+- [x] Actualizar el README principal
+    - [x] Redactar nuevo contenido
+    - [x] Aplicar cambios en `README.md`
 - [x] Verificar estado final

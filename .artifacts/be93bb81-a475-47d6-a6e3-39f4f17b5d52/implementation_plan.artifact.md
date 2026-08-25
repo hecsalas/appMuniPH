@@ -1,40 +1,30 @@
-# Plan para Eliminar Carpetas Duplicadas
+# Plan para Modernizar el README del Proyecto
 
-Tras revisar la estructura del proyecto y el directorio de proyectos (`StudioProjects`), he identificado varias carpetas que parecen ser duplicados, versiones anteriores o archivos temporales.
+El objetivo es actualizar el `README.md` principal para que refleje con precisión la estructura actual del proyecto, las tecnologías utilizadas y proporcione una guía clara para nuevos desarrolladores.
 
 ## Hallazgos de Investigación
 
-He encontrado las siguientes carpetas fuera del proyecto actual que parecen ser duplicadas o versiones obsoletas:
-1.  `C:/Users/2266/StudioProjects/app_3`: Una versión anterior del proyecto (creada en julio).
-2.  `C:/Users/2266/StudioProjects/app_5`: Otra versión anterior (creada en julio/agosto).
-3.  `C:/Users/2266/StudioProjects/app369.f42e1644`: Una carpeta que solo contiene archivos temporales (`.artifacts`).
-
-Dentro del proyecto actual (`App369`), he encontrado archivos redundantes en la raíz que normalmente solo deberían estar dentro de la carpeta del app móvil:
-1.  `App369/.dart_tool` (ya existe en `App369/frontend/mobile-app/.dart_tool`)
-2.  `App369/.flutter-plugins-dependencies` (ya existe en `App369/frontend/mobile-app/.flutter-plugins-dependencies`)
-
-## Preguntas Abiertas
-
-> [!IMPORTANT]
-> ¿Deseas que elimine las carpetas de versiones anteriores (`app_3` y `app_5`) y la carpeta temporal (`app369.f42e1644`)?
->
-> ¿Deseas que limpie los archivos redundantes en la raíz de `App369` (`.dart_tool` y `.flutter-plugins-dependencies`)?
+- **Estructura Real:**
+  - `frontend/mobile-app`: Aplicación Flutter (MiPH).
+  - `frontend/web-portal`: Aplicación Next.js (Admin y Socio).
+  - `backend/`: Esquemas de base de datos y lógica de servicios.
+- **Tecnologías:** Flutter (Material 3), Next.js 15+, Supabase, Tailwind CSS.
+- **Funcionalidades:** Gestión de comercios, sucursales, beneficios, canjes con QR y reportes.
 
 ## Cambios Propuestos
 
-### [Limpieza de Directorio de Proyectos]
+### [Documentación Principal]
 
-#### [DELETE] [app_3](file:///C:/Users/2266/StudioProjects/app_3)
-#### [DELETE] [app_5](file:///C:/Users/2266/StudioProjects/app_5)
-#### [DELETE] [app369.f42e1644](file:///C:/Users/2266/StudioProjects/app369.f42e1644)
-
-### [Limpieza de Raíz del Proyecto App369]
-
-#### [DELETE] [.dart_tool](file:///C:/Users/2266/StudioProjects/App369/.dart_tool)
-#### [DELETE] [.flutter-plugins-dependencies](file:///C:/Users/2266/StudioProjects/App369/.flutter-plugins-dependencies)
+#### [MODIFY] [README.md](file:///C:/Users/2266/StudioProjects/App369/README.md)
+Actualizar el contenido con:
+1.  **Nuevo diseño visual:** Uso de emojis, secciones claras y badges.
+2.  **Rutas corregidas:** Cambiar `/app-movil` por `frontend/mobile-app` y consolidar los portales web en `frontend/web-portal`.
+3.  **Stack Tecnológico detallado:** Incluir versiones y bibliotecas clave (Supabase, Mobile Scanner, etc.).
+4.  **Estructura de Carpetas:** Añadir un mapa visual del proyecto.
+5.  **Configuración de Supabase:** Añadir una nota sobre las variables de entorno necesarias.
 
 ## Plan de Verificación
 
 ### Verificación Manual
-- Confirmar que el proyecto actual (`App369/frontend/mobile-app`) sigue funcionando correctamente tras la limpieza.
-- Verificar que el espacio en disco se haya liberado.
+- Revisar que todos los enlaces a archivos dentro del README funcionen (en el contexto del IDE).
+- Confirmar que las instrucciones de ejecución coincidan con los scripts definidos en `package.json` y `pubspec.yaml`.
